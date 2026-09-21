@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#f4f0e7">
+
+  <title>VUK Karadžić Probe</title>
+
+  <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+
+<div id="app">
+
+  <!-- HEADER -->
+  <header class="top-header">
+
+    <div class="brand">
+      <div class="logo">VK</div>
+
+      <div>
+        <div class="brand-small">VUK KARADŽIĆ</div>
+        <div class="brand-title">Probe</div>
+      </div>
+    </div>
+
+    <button id="ensembleButton" class="ensemble-pill">
+      <span id="currentEnsembleName">Third</span>
+      <span>›</span>
+    </button>
+
+  </header>
+
+
+  <main>
+
+    <!-- HOME -->
+    <section id="homePage" class="page active">
+
+      <div class="page-intro">
+
+        <div class="eyebrow">
+          INSTRUCTOR WORKSPACE
+        </div>
+
+        <h1>Choose an ensemble</h1>
+
+        <p>
+          Your calendar, dances and roster
+          follow this selection.
+        </p>
+
+      </div>
+
+      <div
+        id="ensembleList"
+        class="ensemble-list"
+      ></div>
+
+    </section>
+
+
+    <!-- CALENDAR -->
+    <section id="calendarPage" class="page">
+
+      <div class="section-heading">
+
+        <div>
+          <div class="eyebrow">SCHEDULE</div>
+          <h1>Calendar</h1>
+          <p id="calendarEnsemble"></p>
+        </div>
+
+        <button
+          id="todayButton"
+          class="today-button"
+        >
+          Today
+        </button>
+
+      </div>
+
+
+      <div class="calendar-card">
+
+        <div class="calendar-header">
+
+          <button
+            id="previousMonth"
+            class="calendar-arrow"
+          >
+            ‹
+          </button>
+
+          <h2 id="calendarMonth"></h2>
+
+          <button
+            id="nextMonth"
+            class="calendar-arrow"
+          >
+            ›
+          </button>
+
+        </div>
+
+
+        <div class="weekdays">
+
+          <span>Sun</span>
+          <span>Mon</span>
+          <span>Tue</span>
+          <span>Wed</span>
+          <span>Thu</span>
+          <span>Fri</span>
+          <span>Sat</span>
+
+        </div>
+
+        <div
+          id="calendarGrid"
+          class="calendar-grid"
+        ></div>
+
+      </div>
+
+
+      <div class="practice-heading">
+
+        <h2>Practices</h2>
+
+        <button
+          id="addPracticeButton"
+          class="round-add"
+        >
+          +
+        </button>
+
+      </div>
+
+      <div
+        id="practiceList"
+        class="stack-list"
+      ></div>
+
+    </section>
+
+
+    <!-- DANCES -->
+    <section id="dancesPage" class="page">
+
+      <div class="section-heading">
+
+        <div>
+          <div class="eyebrow">REPERTOIRE</div>
+          <h1>Dances</h1>
+          <p id="danceEnsemble"></p>
+        </div>
+
+        <button
+          id="addDanceButton"
+          class="round-add"
+        >
+          +
+        </button>
+
+      </div>
+
+      <div
+        id="danceList"
+        class="stack-list"
+      ></div>
+
+    </section>
+
+
+    <!-- DANCERS -->
+    <section id="dancersPage" class="page">
+
+      <div class="section-heading">
+
+        <div>
+          <div class="eyebrow">ROSTER</div>
+          <h1>Dancers</h1>
+          <p id="dancerEnsemble"></p>
+        </div>
+
+        <button
+          id="addDancerButton"
+          class="round-add"
+        >
+          +
+        </button>
+
+      </div>
+
+
+      <div class="search-box">
+
+        <span>⌕</span>
+
+        <input
+          id="dancerSearch"
+          type="search"
+          placeholder="Search dancers..."
+          autocomplete="off"
+        >
+
+      </div>
+
+
+      <div id="dancerList"></div>
+
+    </section>
+
+
+    <!-- SETTINGS -->
+    <section id="settingsPage" class="page">
+
+      <div class="section-heading">
+
+        <div>
+          <div class="eyebrow">VUK PROBE</div>
+          <h1>Settings</h1>
+        </div>
+
+      </div>
+
+
+      <div class="settings-card">
+
+        <button id="manageEnsembles">
+          <span>Manage Ensembles</span>
+          <span>›</span>
+        </button>
+
+        <button id="accountsButton">
+          <span>Instructor Accounts</span>
+          <span>›</span>
+        </button>
+
+        <button id="permissionsButton">
+          <span>Permissions</span>
+          <span>›</span>
+        </button>
+
+      </div>
+
+
+      <p class="settings-note">
+        Shared accounts and permanent cloud
+        file storage can be connected later.
+      </p>
+
+    </section>
+
+  </main>
+
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+
+    <button
+      class="nav-button"
+      data-page="calendarPage"
+    >
+      <span class="nav-icon">▣</span>
+      <small>Calendar</small>
+    </button>
+
+    <button
+      class="nav-button"
+      data-page="dancesPage"
+    >
+      <span class="nav-icon">♪</span>
+      <small>Dances</small>
+    </button>
+
+    <button
+      class="nav-button home-nav active"
+      data-page="homePage"
+    >
+      <span class="home-circle">⌂</span>
+      <small>Home</small>
+    </button>
+
+    <button
+      class="nav-button"
+      data-page="dancersPage"
+    >
+      <span class="nav-icon">♙</span>
+      <small>Dancers</small>
+    </button>
+
+    <button
+      class="nav-button"
+      data-page="settingsPage"
+    >
+      <span class="nav-icon">⚙</span>
+      <small>Settings</small>
+    </button>
+
+  </nav>
+
+
+  <!-- MODAL -->
+  <div
+    id="modalOverlay"
+    class="modal-overlay"
+  >
+
+    <div class="modal">
+
+      <div class="modal-header">
+
+        <button
+          id="modalBack"
+          class="modal-back hidden"
+        >
+          ‹ Back
+        </button>
+
+        <div class="modal-title-area">
+
+          <div
+            id="modalEyebrow"
+            class="eyebrow"
+          >
+            VUK
+          </div>
+
+          <h2 id="modalTitle"></h2>
+
+        </div>
+
+        <button
+          id="closeModal"
+          class="close-button"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div id="modalBody"></div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script src="./script.js"></script>
+
+</body>
+</html>
