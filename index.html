@@ -552,6 +552,44 @@
 <!-- =========================
      JAVASCRIPT
 ========================== -->
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import {
+    getDatabase,
+    ref,
+    set,
+    onValue
+  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBHpQLmdhBoImJorhBrQhSHHwml1XEEuso",
+    authDomain: "vuk-probe.firebaseapp.com",
+    databaseURL: "https://vuk-probe-default-rtdb.firebaseio.com",
+    projectId: "vuk-probe",
+    storageBucket: "vuk-probe.firebasestorage.app",
+    messagingSenderId: "895894448380",
+    appId: "1:895894448380:web:7f576b91e7da1da562cf79"
+  };
+
+  const firebaseApp = initializeApp(firebaseConfig);
+  const database = getDatabase(firebaseApp);
+
+  // Make Firebase available to our existing script.js
+  window.vukFirebase = {
+    database,
+    ref,
+    set,
+    onValue
+  };
+
+  window.dispatchEvent(new Event("vukFirebaseReady"));
+</script>
+  
+  
+  
+  
+
 <script src="./script.js"></script>
 
 
