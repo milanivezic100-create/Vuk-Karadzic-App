@@ -220,12 +220,23 @@ normalizeData();
 
 
 function saveData() {
-
+  // Keep a local backup on this device
   localStorage.setItem(
     "vukProbeV4",
     JSON.stringify(data)
   );
 
+  // Also save to the shared Firebase database
+  if (window.vukFirebase) {
+    const { database, ref, set } = window.vukFirebase;
+
+    set(
+      ref(database, "vukProbeV4"),
+      data
+    ).catch((error) => {
+      console.error("Firebase save failed:", error);
+    });
+  }
 }
 
 
@@ -4120,4 +4131,68 @@ renderAll();
 
 openPage(
   "homePage"
+);
+// ==========================================
+// FIREBASE SHARED DATA SYNC
+// ==========================================
+
+let firebaseSyncStarted = false;
+
+function startFirebaseSync() {
+  if (firebaseSyncStarted || !window.vukFirebase) {
+    return;
+  }
+
+  firebaseSyncStarted = true;
+
+  const { database, ref, set, onValue } = window.vukFirebase;
+  const sharedDataRef = ref(database, "vukProbeV4");
+
+  let firstFirebaseLoad = true;
+
+  onValue(sharedDataRef, (snapshot) => {
+    const cloudData = snapshot.val();
+
+    // Firebase is empty the first time:
+    // upload this device's existing VUK data.
+    if (firstFirebaseLoad && cloudData === null) {
+      firstFirebaseLoad = false;
+
+      set(sharedDataRef, data).catch((error) => {
+        console.error("Initial Firebase upload failed:", error);
+      });
+
+      return;
+    }
+
+    firstFirebaseLoad = false;
+
+    // Firebase has shared data:
+    // use it on this device.
+    if (cloudData) {
+      data = cloudData;
+
+      normalizeData();
+
+      localStorage.setItem(
+        "vukProbeV4",
+        JSON.stringify(data)
+      );
+
+      renderAll();
+    }
+  }, (error) => {
+    console.error("Firebase sync failed:", error);
+  });
+}
+
+// Firebase may already be ready...
+if (window.vukFirebase) {
+  startFirebaseSync();
+}
+
+// ...or it may finish loading just after script.js.
+window.addEventListener(
+  "vukFirebaseReady",
+  startFirebaseSync
 );
