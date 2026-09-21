@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
 
@@ -8,41 +9,94 @@
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   >
 
+  <!-- APP / BROWSER COLOURS -->
   <meta name="theme-color" content="#f4f0e7">
+
+  <!-- iPHONE / iPAD WEB APP SETTINGS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="default"
+  >
+
+  <meta
+    name="apple-mobile-web-app-title"
+    content="VUK Probe"
+  >
+
+  <!-- HOME SCREEN ICON -->
+  <link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="./Vuk-app-icon.png"
+  >
+
+  <!-- BROWSER ICON -->
+  <link
+    rel="icon"
+    type="image/png"
+    href="./Vuk-app-icon.png"
+  >
 
   <title>VUK Karadžić Probe</title>
 
   <link rel="stylesheet" href="./styles.css">
 </head>
 
+
 <body>
 
 <div id="app">
 
-  <!-- HEADER -->
+  <!-- =========================
+       HEADER
+  ========================== -->
   <header class="top-header">
 
     <div class="brand">
-      <div class="logo">VK</div>
 
-      <div>
-        <div class="brand-small">VUK KARADŽIĆ</div>
-        <div class="brand-title">Probe</div>
+      <img
+        src="./Vuk-logo.png"
+        alt="VUK Karadžić"
+        class="vuk-logo"
+      >
+
+      <div class="brand-title">
+        Probe
       </div>
+
     </div>
 
-    <button id="ensembleButton" class="ensemble-pill">
-      <span id="currentEnsembleName">Third</span>
+
+    <button
+      id="ensembleButton"
+      class="ensemble-pill"
+    >
+      <span id="currentEnsembleName">
+        Third
+      </span>
+
       <span>›</span>
     </button>
 
   </header>
 
 
+  <!-- =========================
+       MAIN CONTENT
+  ========================== -->
   <main>
 
-    <!-- HOME -->
-    <section id="homePage" class="page active">
+
+    <!-- =========================
+         HOME
+    ========================== -->
+    <section
+      id="homePage"
+      class="page active"
+    >
 
       <div class="page-intro">
 
@@ -50,7 +104,9 @@
           INSTRUCTOR WORKSPACE
         </div>
 
-        <h1>Choose an ensemble</h1>
+        <h1>
+          Choose an ensemble
+        </h1>
 
         <p>
           Your calendar, dances and roster
@@ -58,6 +114,7 @@
         </p>
 
       </div>
+
 
       <div
         id="ensembleList"
@@ -67,16 +124,30 @@
     </section>
 
 
-    <!-- CALENDAR -->
-    <section id="calendarPage" class="page">
+    <!-- =========================
+         CALENDAR
+    ========================== -->
+    <section
+      id="calendarPage"
+      class="page"
+    >
 
       <div class="section-heading">
 
         <div>
-          <div class="eyebrow">SCHEDULE</div>
-          <h1>Calendar</h1>
+
+          <div class="eyebrow">
+            SCHEDULE
+          </div>
+
+          <h1>
+            Calendar
+          </h1>
+
           <p id="calendarEnsemble"></p>
+
         </div>
+
 
         <button
           id="todayButton"
@@ -99,7 +170,9 @@
             ‹
           </button>
 
+
           <h2 id="calendarMonth"></h2>
+
 
           <button
             id="nextMonth"
@@ -123,6 +196,7 @@
 
         </div>
 
+
         <div
           id="calendarGrid"
           class="calendar-grid"
@@ -133,7 +207,9 @@
 
       <div class="practice-heading">
 
-        <h2>Practices</h2>
+        <h2>
+          Practices
+        </h2>
 
         <button
           id="addPracticeButton"
@@ -144,6 +220,7 @@
 
       </div>
 
+
       <div
         id="practiceList"
         class="stack-list"
@@ -152,16 +229,30 @@
     </section>
 
 
-    <!-- DANCES -->
-    <section id="dancesPage" class="page">
+    <!-- =========================
+         DANCES
+    ========================== -->
+    <section
+      id="dancesPage"
+      class="page"
+    >
 
       <div class="section-heading">
 
         <div>
-          <div class="eyebrow">REPERTOIRE</div>
-          <h1>Dances</h1>
+
+          <div class="eyebrow">
+            REPERTOIRE
+          </div>
+
+          <h1>
+            Dances
+          </h1>
+
           <p id="danceEnsemble"></p>
+
         </div>
+
 
         <button
           id="addDanceButton"
@@ -172,6 +263,7 @@
 
       </div>
 
+
       <div
         id="danceList"
         class="stack-list"
@@ -180,16 +272,30 @@
     </section>
 
 
-    <!-- DANCERS -->
-    <section id="dancersPage" class="page">
+    <!-- =========================
+         DANCERS
+    ========================== -->
+    <section
+      id="dancersPage"
+      class="page"
+    >
 
       <div class="section-heading">
 
         <div>
-          <div class="eyebrow">ROSTER</div>
-          <h1>Dancers</h1>
+
+          <div class="eyebrow">
+            ROSTER
+          </div>
+
+          <h1>
+            Dancers
+          </h1>
+
           <p id="dancerEnsemble"></p>
+
         </div>
+
 
         <button
           id="addDancerButton"
@@ -203,7 +309,9 @@
 
       <div class="search-box">
 
-        <span>⌕</span>
+        <span>
+          ⌕
+        </span>
 
         <input
           id="dancerSearch"
@@ -220,14 +328,26 @@
     </section>
 
 
-    <!-- SETTINGS -->
-    <section id="settingsPage" class="page">
+    <!-- =========================
+         SETTINGS
+    ========================== -->
+    <section
+      id="settingsPage"
+      class="page"
+    >
 
       <div class="section-heading">
 
         <div>
-          <div class="eyebrow">VUK PROBE</div>
-          <h1>Settings</h1>
+
+          <div class="eyebrow">
+            VUK PROBE
+          </div>
+
+          <h1>
+            Settings
+          </h1>
+
         </div>
 
       </div>
@@ -236,18 +356,41 @@
       <div class="settings-card">
 
         <button id="manageEnsembles">
-          <span>Manage Ensembles</span>
-          <span>›</span>
+
+          <span>
+            Manage Ensembles
+          </span>
+
+          <span>
+            ›
+          </span>
+
         </button>
+
 
         <button id="accountsButton">
-          <span>Instructor Accounts</span>
-          <span>›</span>
+
+          <span>
+            Instructor Accounts
+          </span>
+
+          <span>
+            ›
+          </span>
+
         </button>
 
+
         <button id="permissionsButton">
-          <span>Permissions</span>
-          <span>›</span>
+
+          <span>
+            Permissions
+          </span>
+
+          <span>
+            ›
+          </span>
+
         </button>
 
       </div>
@@ -263,53 +406,97 @@
   </main>
 
 
-  <!-- BOTTOM NAV -->
+  <!-- =========================
+       BOTTOM NAVIGATION
+  ========================== -->
   <nav class="bottom-nav">
+
 
     <button
       class="nav-button"
       data-page="calendarPage"
     >
-      <span class="nav-icon">▣</span>
-      <small>Calendar</small>
+
+      <span class="nav-icon">
+        ▣
+      </span>
+
+      <small>
+        Calendar
+      </small>
+
     </button>
+
 
     <button
       class="nav-button"
       data-page="dancesPage"
     >
-      <span class="nav-icon">♪</span>
-      <small>Dances</small>
+
+      <span class="nav-icon">
+        ♪
+      </span>
+
+      <small>
+        Dances
+      </small>
+
     </button>
+
 
     <button
       class="nav-button home-nav active"
       data-page="homePage"
     >
-      <span class="home-circle">⌂</span>
-      <small>Home</small>
+
+      <span class="home-circle">
+        ⌂
+      </span>
+
+      <small>
+        Home
+      </small>
+
     </button>
+
 
     <button
       class="nav-button"
       data-page="dancersPage"
     >
-      <span class="nav-icon">♙</span>
-      <small>Dancers</small>
+
+      <span class="nav-icon">
+        ♙
+      </span>
+
+      <small>
+        Dancers
+      </small>
+
     </button>
+
 
     <button
       class="nav-button"
       data-page="settingsPage"
     >
-      <span class="nav-icon">⚙</span>
-      <small>Settings</small>
+
+      <span class="nav-icon">
+        ⚙
+      </span>
+
+      <small>
+        Settings
+      </small>
+
     </button>
 
   </nav>
 
 
-  <!-- MODAL -->
+  <!-- =========================
+       MODAL
+  ========================== -->
   <div
     id="modalOverlay"
     class="modal-overlay"
@@ -317,7 +504,9 @@
 
     <div class="modal">
 
+
       <div class="modal-header">
+
 
         <button
           id="modalBack"
@@ -325,6 +514,7 @@
         >
           ‹ Back
         </button>
+
 
         <div class="modal-title-area">
 
@@ -339,6 +529,7 @@
 
         </div>
 
+
         <button
           id="closeModal"
           class="close-button"
@@ -348,6 +539,7 @@
 
       </div>
 
+
       <div id="modalBody"></div>
 
     </div>
@@ -356,7 +548,12 @@
 
 </div>
 
+
+<!-- =========================
+     JAVASCRIPT
+========================== -->
 <script src="./script.js"></script>
+
 
 </body>
 </html>
