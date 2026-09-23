@@ -1,12 +1,6 @@
 /* ============================================================
    VUK KARADZIC PROBE
-   STYLES.CSS — V7
-   iPhone 14 Pro / mobile-first
-   ============================================================ */
-
-
-/* ============================================================
-   ROOT
+   CLEAN STYLESHEET — V8
    ============================================================ */
 
 :root {
@@ -37,14 +31,10 @@
   --orange: #c77a34;
   --orange-soft: #fbf0e5;
 
-  --shadow:
-    0 4px 18px rgba(58, 35, 28, 0.07);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 
-  --safe-top:
-    env(safe-area-inset-top, 0px);
-
-  --safe-bottom:
-    env(safe-area-inset-bottom, 0px);
+  --shadow: 0 4px 18px rgba(58, 35, 28, 0.07);
 }
 
 
@@ -58,11 +48,10 @@
 }
 
 html {
-  margin: 0;
-  padding: 0;
-
   width: 100%;
   min-height: 100%;
+  margin: 0;
+  padding: 0;
 
   background: var(--cream);
 
@@ -70,16 +59,15 @@ html {
 }
 
 body {
-  margin: 0;
-  padding: 0;
-
   width: 100%;
   min-height: 100dvh;
+
+  margin: 0;
+  padding: 0;
 
   overflow-x: hidden;
 
   background: var(--cream);
-
   color: var(--text);
 
   font-family:
@@ -103,6 +91,7 @@ select {
 
 button {
   color: inherit;
+  cursor: pointer;
 }
 
 button,
@@ -124,10 +113,6 @@ select:focus {
   outline: none;
 }
 
-button {
-  cursor: pointer;
-}
-
 
 /* ============================================================
    APP
@@ -138,11 +123,7 @@ button {
   min-height: 100dvh;
 
   padding-top: var(--safe-top);
-  padding-bottom:
-    calc(
-      90px +
-      var(--safe-bottom)
-    );
+  padding-bottom: calc(90px + var(--safe-bottom));
 
   background: var(--cream);
 }
@@ -157,40 +138,29 @@ button {
   z-index: 20;
 
   width: 100%;
-
-  min-height: 76px;
+  min-height: 69px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding:
-    12px
-    18px
-    8px;
+  padding: 9px 16px 6px;
 
-  background:
-    rgba(
-      247,
-      241,
-      231,
-      0.96
-    );
+  background: rgba(247, 241, 231, 0.97);
 }
 
 .brand {
+  min-width: 0;
+
   display: flex;
   align-items: center;
-
-  min-width: 0;
 }
 
 .vuk-logo {
   display: block;
 
-  width: 96px;
+  width: 88px;
   max-width: 28vw;
-
   height: auto;
 
   object-fit: contain;
@@ -201,20 +171,14 @@ button {
 
   color: var(--burgundy);
 
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
 
   white-space: nowrap;
 }
 
-
-/*
-  Ensemble selection is ONLY
-  on the Home screen.
-*/
-
-.ensemble-pill,
-#ensembleButton {
+#ensembleButton,
+.ensemble-pill {
   display: none !important;
 }
 
@@ -230,11 +194,7 @@ button {
   max-width: 600px;
 
   margin: 0 auto;
-
-  padding:
-    10px
-    18px
-    32px;
+  padding: 7px 16px 27px;
 }
 
 .page.active {
@@ -242,17 +202,11 @@ button {
 }
 
 .page-intro {
-  margin:
-    2px
-    0
-    18px;
+  margin: 2px 0 15px;
 }
 
 .page-intro p {
-  margin:
-    5px
-    0
-    0;
+  margin: 5px 0 0;
 
   color: var(--muted);
 
@@ -270,16 +224,10 @@ button {
     "Times New Roman",
     serif;
 
-  font-size: 32px;
-  line-height: 1.08;
-
+  font-size: 29px;
   font-weight: 700;
+  line-height: 1.08;
 }
-
-
-/* ============================================================
-   REMOVE HELPER WRITING
-   ============================================================ */
 
 .reorder-hint,
 .roster-help,
@@ -293,14 +241,11 @@ button {
    ============================================================ */
 
 .round-add {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
 
-  margin:
-    0
-    0
-    17px
-    auto;
+  margin: 0 0 17px auto;
+  padding: 0;
 
   display: flex;
   align-items: center;
@@ -310,16 +255,13 @@ button {
   border-radius: 50%;
 
   background: var(--burgundy);
-
   color: white;
 
-  font-size: 29px;
+  font-size: 27px;
   font-weight: 300;
   line-height: 1;
 
-  box-shadow:
-    0 5px 14px
-    rgba(100, 21, 34, 0.18);
+  box-shadow: 0 5px 14px rgba(100, 21, 34, 0.18);
 }
 
 .primary-button,
@@ -328,16 +270,13 @@ button {
 .mark-all-button,
 .upload-button {
   width: 100%;
-
   min-height: 48px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding:
-    12px
-    16px;
+  padding: 12px 16px;
 
   border-radius: 13px;
 
@@ -345,7 +284,6 @@ button {
   font-weight: 700;
 
   text-align: center;
-
   text-decoration: none;
 }
 
@@ -353,32 +291,23 @@ button {
   border: 1px solid var(--burgundy);
 
   background: var(--burgundy);
-
   color: white;
 }
 
 .secondary-button {
-  border:
-    1px solid
-    var(--line);
+  border: 1px solid var(--line);
 
   background: white;
-
   color: var(--burgundy);
 }
 
 .danger-button {
   margin-top: 10px;
 
-  border:
-    1px solid
-    #eccdcd;
+  border: 1px solid #eccdcd;
 
-  background:
-    var(--red-soft);
-
-  color:
-    #9e3434;
+  background: var(--red-soft);
+  color: #9e3434;
 }
 
 .danger-button.compact {
@@ -386,33 +315,21 @@ button {
 }
 
 .mark-all-button {
-  margin:
-    14px
-    0;
+  margin: 14px 0;
 
-  border:
-    1px solid
-    #c9e5d5;
+  border: 1px solid #c9e5d5;
 
-  background:
-    var(--green-soft);
-
-  color:
-    var(--green);
+  background: var(--green-soft);
+  color: var(--green);
 }
 
 .upload-button {
   margin-top: 10px;
 
-  border:
-    1px dashed
-    #bba99a;
+  border: 1px dashed #bba99a;
 
-  background:
-    white;
-
-  color:
-    var(--burgundy);
+  background: white;
+  color: var(--burgundy);
 }
 
 
@@ -429,56 +346,30 @@ button {
 
 .ensemble-card {
   width: 100%;
-
   min-height: 72px;
 
   display: grid;
-
-  grid-template-columns:
-    48px
-    1fr
-    24px;
-
+  grid-template-columns: 48px 1fr 24px;
   align-items: center;
 
   gap: 12px;
 
-  padding:
-    11px
-    14px;
+  padding: 11px 14px;
 
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 16px;
 
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.74
-    );
+  background: rgba(255, 255, 255, 0.74);
 
   text-align: left;
 
-  box-shadow:
-    0 2px 10px
-    rgba(58, 35, 28, 0.025);
+  box-shadow: 0 2px 10px rgba(58, 35, 28, 0.025);
 }
 
 .ensemble-card.selected {
-  border-color:
-    rgba(
-      100,
-      21,
-      34,
-      0.48
-    );
+  border-color: rgba(100, 21, 34, 0.48);
 
-  background:
-    #fffafa;
+  background: #fffafa;
 }
 
 .ensemble-number {
@@ -491,9 +382,7 @@ button {
 
   border-radius: 50%;
 
-  background:
-    var(--burgundy);
-
+  background: var(--burgundy);
   color: white;
 
   font-size: 13px;
@@ -508,10 +397,7 @@ button {
 }
 
 .ensemble-card p {
-  margin:
-    4px
-    0
-    0;
+  margin: 4px 0 0;
 
   color: var(--muted);
 
@@ -522,18 +408,12 @@ button {
   width: 18px;
   height: 18px;
 
-  border:
-    2px solid
-    #c8bbb0;
-
+  border: 2px solid #c8bbb0;
   border-radius: 50%;
 }
 
-.ensemble-card.selected
-.radio {
-  border:
-    5px solid
-    var(--burgundy);
+.ensemble-card.selected .radio {
+  border: 5px solid var(--burgundy);
 }
 
 
@@ -543,7 +423,6 @@ button {
 
 .search-box {
   width: 100%;
-
   height: 46px;
 
   display: flex;
@@ -552,29 +431,16 @@ button {
   gap: 9px;
 
   margin-bottom: 18px;
+  padding: 0 13px;
 
-  padding:
-    0
-    13px;
-
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 13px;
 
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.8
-    );
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .search-box span {
-  color:
-    #948780;
+  color: #948780;
 
   font-size: 18px;
 }
@@ -586,7 +452,6 @@ button {
   border: 0;
 
   background: transparent;
-
   color: var(--text);
 
   font-size: 16px;
@@ -598,7 +463,7 @@ button {
 
 
 /* ============================================================
-   BOYS / GIRLS HEADINGS
+   MAIN DANCER ROSTER
    ============================================================ */
 
 .roster-section {
@@ -606,10 +471,7 @@ button {
 }
 
 .roster-section-heading {
-  margin:
-    0
-    0
-    9px;
+  margin: 0 0 9px;
 }
 
 .roster-title,
@@ -617,9 +479,8 @@ button {
   display: inline-block;
 
   font-size: 18px;
-  line-height: 1;
-
   font-weight: 850;
+  line-height: 1;
 
   letter-spacing: 0.04em;
 }
@@ -639,11 +500,6 @@ button {
   color: var(--muted);
 }
 
-
-/* ============================================================
-   DANCER ROWS
-   ============================================================ */
-
 .roster-list {
   display: flex;
   flex-direction: column;
@@ -653,31 +509,19 @@ button {
 
 .dancer-row {
   width: 100%;
-
-  min-height: 58px;
+  min-height: 56px;
 
   display: flex;
   align-items: stretch;
 
   overflow: hidden;
 
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 14px;
 
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.82
-    );
+  background: rgba(255, 255, 255, 0.82);
 
-  box-shadow:
-    0 2px 8px
-    rgba(58, 35, 28, 0.025);
+  box-shadow: 0 2px 8px rgba(58, 35, 28, 0.025);
 }
 
 .dancer-open {
@@ -685,22 +529,12 @@ button {
   min-width: 0;
 
   display: grid;
-
-  grid-template-columns:
-    38px
-    minmax(0, 1fr)
-    auto
-    18px;
-
+  grid-template-columns: 35px minmax(0, 1fr) auto 15px;
   align-items: center;
 
-  gap: 8px;
+  gap: 6px;
 
-  padding:
-    8px
-    8px
-    8px
-    11px;
+  padding: 8px 8px 8px 9px;
 
   border: 0;
 
@@ -711,8 +545,8 @@ button {
 
 .dancer-number,
 .dance-number {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
 
   display: flex;
   align-items: center;
@@ -722,32 +556,23 @@ button {
 
   border-radius: 50%;
 
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 850;
 }
 
 .dancer-number.boy {
-  background:
-    var(--blue-soft);
-
-  color:
-    var(--blue);
+  background: var(--blue-soft);
+  color: var(--blue);
 }
 
 .dancer-number.girl {
-  background:
-    var(--pink-soft);
-
-  color:
-    var(--pink);
+  background: var(--pink-soft);
+  color: var(--pink);
 }
 
 .dancer-number.other {
-  background:
-    #f0ece7;
-
-  color:
-    #71665f;
+  background: #f0ece7;
+  color: #71665f;
 }
 
 .dancer-name {
@@ -755,7 +580,7 @@ button {
 
   color: var(--text);
 
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 720;
 
   text-overflow: ellipsis;
@@ -765,7 +590,7 @@ button {
 .dancer-height {
   color: var(--muted);
 
-  font-size: 12px;
+  font-size: 11px;
 
   white-space: nowrap;
 }
@@ -773,8 +598,7 @@ button {
 .chevron,
 .item-arrow,
 .settings-chevron {
-  color:
-    #a3968e;
+  color: #a3968e;
 
   font-size: 22px;
   line-height: 1;
@@ -782,40 +606,28 @@ button {
 
 
 /* ============================================================
-   DRAG HANDLE
+   GENERAL DRAG HANDLE
    ============================================================ */
 
 .drag-handle {
-  width: 44px;
-  min-width: 44px;
+  width: 40px;
+  min-width: 40px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  margin:
-    7px
-    7px
-    7px
-    0;
-
+  margin: 7px 6px 7px 0;
   padding: 0;
 
-  border:
-    1px solid
-    #ddd1c5;
-
+  border: 1px solid #ddd1c5;
   border-radius: 9px;
 
-  background:
-    #f4ede4;
+  background: #f4ede4;
+  color: #897b72;
 
-  color:
-    #897b72;
-
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
-
   line-height: 1;
 
   touch-action: none;
@@ -824,13 +636,9 @@ button {
 }
 
 .drag-handle:active {
-  cursor: grabbing;
+  background: #e9dfd3;
 
-  background:
-    #e9dfd3;
-
-  transform:
-    scale(0.96);
+  transform: scale(0.96);
 }
 
 .draggable-row {
@@ -842,17 +650,13 @@ button {
 
 .draggable-row.dragging {
   position: relative;
-
   z-index: 100;
 
   opacity: 0.93;
 
-  transform:
-    scale(1.025);
+  transform: scale(1.025);
 
-  box-shadow:
-    0 10px 30px
-    rgba(48, 30, 25, 0.18);
+  box-shadow: 0 10px 30px rgba(48, 30, 25, 0.18);
 }
 
 body.reordering {
@@ -864,7 +668,7 @@ body.reordering {
 
 
 /* ============================================================
-   DANCE SECTIONS
+   DANCE LIST
    ============================================================ */
 
 .dance-section {
@@ -872,10 +676,7 @@ body.reordering {
 }
 
 .dance-section-heading {
-  margin:
-    0
-    0
-    9px;
+  margin: 0 0 9px;
 }
 
 .dance-status-title.in-use {
@@ -887,58 +688,37 @@ body.reordering {
 }
 
 .dance-group-list {
+  min-height: 10px;
+
   display: flex;
   flex-direction: column;
 
   gap: 8px;
-
-  min-height: 10px;
 }
-
-
-/* ============================================================
-   DANCE ROWS
-   ============================================================ */
 
 .dance-row {
   width: 100%;
-
-  min-height: 62px;
+  min-height: 59px;
 
   display: flex;
   align-items: stretch;
 
   overflow: hidden;
 
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 14px;
 
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.82
-    );
+  background: rgba(255, 255, 255, 0.82);
 
-  box-shadow:
-    0 2px 8px
-    rgba(58, 35, 28, 0.025);
+  box-shadow: 0 2px 8px rgba(58, 35, 28, 0.025);
 }
 
 .dance-row.in-use {
-  border-left:
-    3px solid
-    var(--green);
+  border-left: 3px solid var(--green);
 }
 
 .dance-row.not-in-use {
-  border-left:
-    3px solid
-    var(--red);
+  border-left: 3px solid var(--red);
 }
 
 .dance-open {
@@ -946,21 +726,12 @@ body.reordering {
   min-width: 0;
 
   display: grid;
-
-  grid-template-columns:
-    38px
-    minmax(0, 1fr)
-    18px;
-
+  grid-template-columns: 35px minmax(0, 1fr) 15px;
   align-items: center;
 
-  gap: 8px;
+  gap: 6px;
 
-  padding:
-    8px
-    7px
-    8px
-    9px;
+  padding: 8px 7px 8px 8px;
 
   border: 0;
 
@@ -970,19 +741,13 @@ body.reordering {
 }
 
 .dance-number.in-use {
-  background:
-    var(--green-soft);
-
-  color:
-    var(--green);
+  background: var(--green-soft);
+  color: var(--green);
 }
 
 .dance-number.not-in-use {
-  background:
-    var(--red-soft);
-
-  color:
-    var(--red);
+  background: var(--red-soft);
+  color: var(--red);
 }
 
 .dance-card-content {
@@ -997,7 +762,7 @@ body.reordering {
 .dance-card-content strong {
   overflow: hidden;
 
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 750;
 
   text-overflow: ellipsis;
@@ -1017,18 +782,211 @@ body.reordering {
 
 
 /* ============================================================
-   EMPTY
+   DANCE DETAIL — ASSIGNED DANCERS
+   THIS IS THE IMPORTANT FIX
+   ============================================================ */
+
+.dance-dancer-groups {
+  display: block;
+
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
+}
+
+.dance-dancer-section {
+  display: block;
+
+  width: 100%;
+
+  margin: 0 0 24px;
+  padding: 0;
+}
+
+.dance-dancer-group-title {
+  display: block;
+
+  width: 100%;
+
+  margin: 0 0 9px;
+  padding: 0;
+
+  font-size: 18px;
+  font-weight: 850;
+  line-height: 1;
+
+  letter-spacing: 0.04em;
+}
+
+.dance-dancer-group-title.boys {
+  color: var(--blue);
+}
+
+.dance-dancer-group-title.girls {
+  color: var(--pink);
+}
+
+.dance-dancer-group-title.other {
+  color: var(--muted);
+}
+
+.dance-dancer-order-list {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+
+  gap: 8px;
+
+  margin: 0;
+  padding: 0;
+}
+
+.dance-dancer-order-row {
+  width: 100%;
+  min-height: 57px;
+
+  display: grid;
+
+  grid-template-columns:
+    32px
+    minmax(0, 1fr)
+    38px;
+
+  align-items: center;
+
+  column-gap: 9px;
+
+  margin: 0;
+  padding: 7px 6px 7px 10px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--line);
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  box-shadow: 0 2px 8px rgba(58, 35, 28, 0.025);
+
+  transition:
+    transform 0.14s ease,
+    box-shadow 0.14s ease,
+    opacity 0.14s ease;
+}
+
+.dance-dancer-number {
+  grid-column: 1;
+
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0;
+  padding: 0;
+
+  border-radius: 50%;
+
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.dance-dancer-number.boys {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+.dance-dancer-number.girls {
+  background: var(--pink-soft);
+  color: var(--pink);
+}
+
+.dance-dancer-number.other {
+  background: #f0ece7;
+  color: #71665f;
+}
+
+.dance-dancer-name {
+  grid-column: 2;
+
+  min-width: 0;
+
+  margin: 0;
+  padding: 0;
+
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-size: 14px;
+  font-weight: 720;
+  line-height: 1.2;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dance-dancer-drag-handle {
+  grid-column: 3;
+
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  justify-self: end;
+
+  margin: 0;
+  padding: 0;
+
+  border: 1px solid #ddd1c5;
+  border-radius: 9px;
+
+  background: #f4ede4;
+  color: #897b72;
+
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
+
+  touch-action: none;
+}
+
+.dance-dancer-drag-handle:active {
+  background: #e9dfd3;
+
+  transform: scale(0.96);
+}
+
+.dance-dancer-order-row.dragging {
+  position: relative;
+  z-index: 100;
+
+  opacity: 0.94;
+
+  transform: scale(1.02);
+
+  box-shadow: 0 10px 28px rgba(48, 30, 25, 0.16);
+}
+
+
+/* ============================================================
+   EMPTY STATES
    ============================================================ */
 
 .empty {
-  padding:
-    18px
-    12px;
+  padding: 18px 12px;
 
-  border:
-    1px dashed
-    #d8cdc2;
-
+  border: 1px dashed #d8cdc2;
   border-radius: 13px;
 
   color: var(--muted);
@@ -1039,9 +997,7 @@ body.reordering {
 }
 
 .compact-empty {
-  padding:
-    13px
-    10px;
+  padding: 13px 10px;
 }
 
 
@@ -1053,19 +1009,12 @@ body.reordering {
   min-height: 38px;
 
   margin-bottom: 11px;
+  padding: 7px 15px;
 
-  padding:
-    7px
-    15px;
-
-  border:
-    1px solid
-    var(--burgundy);
-
+  border: 1px solid var(--burgundy);
   border-radius: 20px;
 
   background: transparent;
-
   color: var(--burgundy);
 
   font-size: 13px;
@@ -1075,36 +1024,19 @@ body.reordering {
 .calendar-card {
   width: 100%;
 
-  padding:
-    14px
-    10px
-    11px;
+  padding: 12px 7px 9px;
 
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 17px;
 
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.74
-    );
+  background: rgba(255, 255, 255, 0.74);
 
   box-shadow: var(--shadow);
 }
 
 .calendar-header {
   display: grid;
-
-  grid-template-columns:
-    40px
-    1fr
-    40px;
-
+  grid-template-columns: 40px 1fr 40px;
   align-items: center;
 
   margin-bottom: 12px;
@@ -1133,42 +1065,23 @@ body.reordering {
   align-items: center;
   justify-content: center;
 
-  padding:
-    0
-    0
-    3px;
+  padding: 0 0 3px;
 
-  border:
-    1px solid
-    #ddd0c3;
-
+  border: 1px solid #ddd0c3;
   border-radius: 50%;
 
-  background:
-    #fffaf5;
-
+  background: #fffaf5;
   color: var(--burgundy);
-
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
 
   font-size: 30px;
   font-weight: 300;
-
   line-height: 1;
 }
 
 .weekdays,
 .calendar-grid {
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      7,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
 .weekdays {
@@ -1182,7 +1095,6 @@ body.reordering {
   font-weight: 750;
 
   text-align: center;
-
   text-transform: uppercase;
 }
 
@@ -1190,13 +1102,12 @@ body.reordering {
   position: relative;
 
   width: 100%;
-  aspect-ratio: 1 / 1;
-
   min-width: 0;
+
+  aspect-ratio: 1 / 1;
 
   display: flex;
   flex-direction: column;
-
   align-items: center;
   justify-content: center;
 
@@ -1208,10 +1119,9 @@ body.reordering {
   border-radius: 50%;
 
   background: transparent;
-
   color: var(--text);
 
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .calendar-day.other-month {
@@ -1219,19 +1129,11 @@ body.reordering {
 }
 
 .calendar-day.today {
-  box-shadow:
-    inset
-    0
-    0
-    0
-    1.5px
-    var(--burgundy);
+  box-shadow: inset 0 0 0 1.5px var(--burgundy);
 }
 
 .calendar-day.selected {
-  background:
-    var(--burgundy);
-
+  background: var(--burgundy);
   color: white;
 }
 
@@ -1249,8 +1151,7 @@ body.reordering {
 
   border-radius: 50%;
 
-  background:
-    currentColor;
+  background: currentColor;
 }
 
 .practice-heading-row {
@@ -1274,14 +1175,13 @@ body.reordering {
   font-size: 23px;
 }
 
-.practice-heading-row
-.round-add {
+.practice-heading-row .round-add {
   margin: 0;
 }
 
 
 /* ============================================================
-   PRACTICE CARDS
+   PRACTICE LIST
    ============================================================ */
 
 .stack-list {
@@ -1295,37 +1195,20 @@ body.reordering {
 
 .item-card {
   width: 100%;
-
   min-height: 61px;
 
   display: grid;
-
-  grid-template-columns:
-    auto
-    minmax(0, 1fr)
-    18px;
-
+  grid-template-columns: auto minmax(0, 1fr) 18px;
   align-items: center;
 
   gap: 11px;
 
-  padding:
-    10px
-    12px;
+  padding: 10px 12px;
 
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 14px;
 
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.8
-    );
+  background: rgba(255, 255, 255, 0.8);
 
   text-align: left;
 }
@@ -1355,10 +1238,7 @@ body.reordering {
 }
 
 .item-main p {
-  margin:
-    3px
-    0
-    0;
+  margin: 3px 0 0;
 
   color: var(--muted);
 
@@ -1372,60 +1252,28 @@ body.reordering {
 
 .bottom-nav {
   position: fixed;
-
   z-index: 500;
 
   left: 0;
   right: 0;
   bottom: 0;
 
-  height:
-    calc(
-      68px +
-      var(--safe-bottom)
-    );
+  height: calc(68px + var(--safe-bottom));
 
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      5,
-      1fr
-    );
-
+  grid-template-columns: repeat(5, 1fr);
   align-items: start;
 
-  padding:
-    5px
-    5px
-    var(--safe-bottom);
+  padding: 5px 5px var(--safe-bottom);
 
-  border-top:
-    1px solid
-    rgba(
-      95,
-      69,
-      60,
-      0.14
-    );
+  border-top: 1px solid rgba(95, 69, 60, 0.14);
 
-  background:
-    rgba(
-      251,
-      247,
-      240,
-      0.97
-    );
+  background: rgba(251, 247, 240, 0.97);
 
-  -webkit-backdrop-filter:
-    blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
 
-  backdrop-filter:
-    blur(18px);
-
-  box-shadow:
-    0 -5px 20px
-    rgba(50, 30, 24, 0.04);
+  box-shadow: 0 -5px 20px rgba(50, 30, 24, 0.04);
 }
 
 .nav-button {
@@ -1435,7 +1283,6 @@ body.reordering {
 
   display: flex;
   flex-direction: column;
-
   align-items: center;
   justify-content: center;
 
@@ -1446,7 +1293,6 @@ body.reordering {
   border: 0;
 
   background: transparent;
-
   color: #958981;
 
   font-size: 9px;
@@ -1468,45 +1314,26 @@ body.reordering {
   color: var(--burgundy);
 }
 
-
-/*
-  Large Home circle like the
-  earlier version.
-*/
-
 .home-nav {
   overflow: visible;
 }
 
-.home-nav
-.home-circle {
+.home-nav .home-circle {
   width: 52px;
   height: 52px;
 
   margin-top: -26px;
   margin-bottom: 1px;
 
-  border:
-    4px solid
-    var(--cream-2);
-
+  border: 4px solid var(--cream-2);
   border-radius: 50%;
 
-  background:
-    var(--burgundy);
-
+  background: var(--burgundy);
   color: white;
 
   font-size: 26px;
 
-  box-shadow:
-    0 4px 13px
-    rgba(
-      100,
-      21,
-      34,
-      0.24
-    );
+  box-shadow: 0 4px 13px rgba(100, 21, 34, 0.24);
 }
 
 .home-nav > span:last-child {
@@ -1515,7 +1342,7 @@ body.reordering {
 
 
 /* ============================================================
-   MODAL OVERLAY
+   MODAL
    ============================================================ */
 
 body.modal-open {
@@ -1524,42 +1351,25 @@ body.modal-open {
 
 .modal-overlay {
   position: fixed;
-
   z-index: 1000;
 
   inset: 0;
 
   display: none;
-
   align-items: flex-end;
   justify-content: center;
 
-  padding-top:
-    var(--safe-top);
+  padding-top: max(8px, var(--safe-top));
 
-  background:
-    rgba(
-      30,
-      19,
-      17,
-      0.32
-    );
+  background: rgba(30, 19, 17, 0.32);
 
-  -webkit-backdrop-filter:
-    blur(2px);
-
-  backdrop-filter:
-    blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
 }
 
 .modal-overlay.open {
   display: flex;
 }
-
-
-/* ============================================================
-   MODAL
-   ============================================================ */
 
 .modal {
   width: 100%;
@@ -1568,8 +1378,7 @@ body.modal-open {
   max-height:
     calc(
       100dvh -
-      var(--safe-top) -
-      8px
+      max(8px, var(--safe-top))
     );
 
   display: flex;
@@ -1577,18 +1386,11 @@ body.modal-open {
 
   overflow: hidden;
 
-  border-radius:
-    22px
-    22px
-    0
-    0;
+  border-radius: 22px 22px 0 0;
 
-  background:
-    var(--cream-2);
+  background: var(--cream-2);
 
-  box-shadow:
-    0 -8px 35px
-    rgba(30, 17, 15, 0.17);
+  box-shadow: 0 -8px 35px rgba(30, 17, 15, 0.17);
 }
 
 .modal-header {
@@ -1596,30 +1398,19 @@ body.modal-open {
 
   flex-shrink: 0;
 
-  min-height: 70px;
+  min-height: 66px;
 
   display: grid;
-
-  grid-template-columns:
-    76px
-    minmax(0, 1fr)
-    44px;
-
+  grid-template-columns: 72px minmax(0, 1fr) 40px;
   align-items: center;
 
   gap: 4px;
 
-  padding:
-    10px
-    10px
-    9px;
+  padding: 8px;
 
-  border-bottom:
-    1px solid
-    var(--line);
+  border-bottom: 1px solid var(--line);
 
-  background:
-    var(--cream-2);
+  background: var(--cream-2);
 }
 
 .modal-title-area {
@@ -1656,17 +1447,12 @@ body.modal-open {
     "Times New Roman",
     serif;
 
-  font-size: 21px;
+  font-size: 19px;
   line-height: 1.1;
 
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-
-/* ============================================================
-   BETTER BACK BUTTON
-   ============================================================ */
 
 .modal-back {
   min-width: 0;
@@ -1674,14 +1460,11 @@ body.modal-open {
   display: flex;
   align-items: center;
 
-  padding:
-    7px
-    7px;
+  padding: 7px;
 
   border: 0;
 
   background: transparent;
-
   color: var(--burgundy);
 
   font-size: 14px;
@@ -1690,12 +1473,9 @@ body.modal-open {
   white-space: nowrap;
 }
 
-.modal-back::first-letter {
-  font-size: 24px;
-}
-
 .modal-back.hidden {
   visibility: hidden;
+
   pointer-events: none;
 }
 
@@ -1709,29 +1489,21 @@ body.modal-open {
 
   justify-self: end;
 
-  padding:
-    0
-    0
-    3px;
+  padding: 0 0 3px;
 
   border: 0;
   border-radius: 50%;
 
-  background:
-    #eee5da;
-
-  color:
-    #776a62;
+  background: #eee5da;
+  color: #776a62;
 
   font-size: 25px;
   font-weight: 300;
-
   line-height: 1;
 }
 
 #modalBody {
   flex: 1;
-
   min-height: 0;
 
   overflow-x: hidden;
@@ -1740,12 +1512,9 @@ body.modal-open {
   -webkit-overflow-scrolling: touch;
 
   padding:
-    16px
-    16px
-    calc(
-      24px +
-      var(--safe-bottom)
-    );
+    14px
+    14px
+    calc(22px + var(--safe-bottom));
 }
 
 
@@ -1768,8 +1537,7 @@ form {
 
   margin-bottom: 7px;
 
-  color:
-    #625650;
+  color: #625650;
 
   font-size: 12px;
   font-weight: 750;
@@ -1780,27 +1548,15 @@ form {
 .form-group select {
   width: 100%;
   max-width: 100%;
-
   min-height: 47px;
 
-  padding:
-    11px
-    12px;
+  padding: 11px 12px;
 
-  border:
-    1px solid
-    #d9cdc0;
-
+  border: 1px solid #d9cdc0;
   border-radius: 12px;
 
   background: white;
-
   color: var(--text);
-
-  /*
-    16px prevents iOS Safari from
-    zooming when an input is tapped.
-  */
 
   font-size: 16px;
 }
@@ -1815,27 +1571,21 @@ form {
   width: 100%;
 
   display: grid;
-
-  grid-template-columns:
-    minmax(0, 1fr)
-    minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
   gap: 10px;
 }
 
 
 /* ============================================================
-   PRACTICE REPEAT
+   REPEATING PRACTICES
    ============================================================ */
 
 .repeat-selector {
   width: 100%;
 
   display: grid;
-
-  grid-template-columns:
-    1fr
-    1fr;
+  grid-template-columns: 1fr 1fr;
 
   gap: 8px;
 }
@@ -1843,34 +1593,23 @@ form {
 .repeat-option {
   min-height: 44px;
 
-  padding:
-    8px
-    10px;
+  padding: 8px 10px;
 
-  border:
-    1px solid
-    #d8ccc0;
-
+  border: 1px solid #d8ccc0;
   border-radius: 11px;
 
   background: white;
-
-  color:
-    #70635c;
+  color: #70635c;
 
   font-size: 13px;
   font-weight: 700;
 }
 
 .repeat-option.selected {
-  border-color:
-    var(--burgundy);
+  border-color: var(--burgundy);
 
-  background:
-    #f8eaec;
-
-  color:
-    var(--burgundy);
+  background: #f8eaec;
+  color: var(--burgundy);
 }
 
 .repeat-until-group[hidden] {
@@ -1886,17 +1625,13 @@ form {
   width: 100%;
 
   display: grid;
-
-  grid-template-columns:
-    minmax(0, 1fr)
-    minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
   gap: 8px;
 }
 
 .dance-status-option {
   min-width: 0;
-
   min-height: 55px;
 
   display: flex;
@@ -1905,18 +1640,12 @@ form {
 
   gap: 7px;
 
-  padding:
-    9px
-    7px;
+  padding: 9px 7px;
 
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 12px;
 
   background: white;
-
   color: var(--muted);
 
   font-size: 12px;
@@ -1924,8 +1653,7 @@ form {
   text-align: center;
 }
 
-.dance-status-option
-.status-dot {
+.dance-status-option .status-dot {
   width: 9px;
   height: 9px;
 
@@ -1933,49 +1661,34 @@ form {
 
   border-radius: 50%;
 
-  background:
-    #aaa09a;
+  background: #aaa09a;
 }
 
-.dance-status-option.in-use
-.status-dot {
-  background:
-    var(--green);
+.dance-status-option.in-use .status-dot {
+  background: var(--green);
 }
 
-.dance-status-option.not-in-use
-.status-dot {
-  background:
-    var(--red);
+.dance-status-option.not-in-use .status-dot {
+  background: var(--red);
 }
 
 .dance-status-option.in-use.selected {
-  border:
-    2px solid
-    var(--green);
+  border: 2px solid var(--green);
 
-  background:
-    var(--green-soft);
-
-  color:
-    var(--green);
+  background: var(--green-soft);
+  color: var(--green);
 }
 
 .dance-status-option.not-in-use.selected {
-  border:
-    2px solid
-    var(--red);
+  border: 2px solid var(--red);
 
-  background:
-    var(--red-soft);
-
-  color:
-    var(--red);
+  background: var(--red-soft);
+  color: var(--red);
 }
 
 
 /* ============================================================
-   DANCE DANCER PICKER
+   DANCER PICKER IN EDIT DANCE
    ============================================================ */
 
 .picker-group {
@@ -1983,10 +1696,7 @@ form {
 }
 
 .mini-group-title {
-  margin:
-    0
-    0
-    8px;
+  margin: 0 0 8px;
 
   color: var(--burgundy);
 
@@ -2005,7 +1715,6 @@ form {
 
 .edit-dancer-row {
   width: 100%;
-
   min-height: 45px;
 
   display: flex;
@@ -2014,14 +1723,9 @@ form {
 
   gap: 10px;
 
-  padding:
-    8px
-    12px;
+  padding: 8px 12px;
 
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 11px;
 
   background: white;
@@ -2030,35 +1734,26 @@ form {
 }
 
 .edit-dancer-row.selected {
-  border-color:
-    rgba(
-      100,
-      21,
-      34,
-      0.4
-    );
+  border-color: rgba(100, 21, 34, 0.4);
 
-  background:
-    #fff7f7;
+  background: #fff7f7;
 }
 
 .checkmark {
   opacity: 0;
 
-  color:
-    var(--burgundy);
+  color: var(--burgundy);
 
   font-weight: 900;
 }
 
-.edit-dancer-row.selected
-.checkmark {
+.edit-dancer-row.selected .checkmark {
   opacity: 1;
 }
 
 
 /* ============================================================
-   PROFILE / DETAILS
+   PROFILE / DETAIL CARDS
    ============================================================ */
 
 .profile-card,
@@ -2066,14 +1761,9 @@ form {
   width: 100%;
 
   margin-bottom: 13px;
+  padding: 15px;
 
-  padding:
-    15px;
-
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 15px;
 
   background: white;
@@ -2082,8 +1772,7 @@ form {
 .profile-name {
   margin-bottom: 14px;
 
-  color:
-    var(--burgundy);
+  color: var(--burgundy);
 
   font-family:
     Georgia,
@@ -2096,12 +1785,7 @@ form {
 
 .profile-grid {
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 
   gap: 7px;
 }
@@ -2109,14 +1793,11 @@ form {
 .profile-stat {
   min-width: 0;
 
-  padding:
-    10px
-    7px;
+  padding: 10px 7px;
 
   border-radius: 11px;
 
-  background:
-    #f8f3ec;
+  background: #f8f3ec;
 
   text-align: center;
 }
@@ -2163,13 +1844,9 @@ form {
 }
 
 .detail-heading {
-  margin:
-    21px
-    0
-    9px;
+  margin: 21px 0 9px;
 
-  color:
-    var(--burgundy);
+  color: var(--burgundy);
 
   font-size: 16px;
 }
@@ -2182,19 +1859,11 @@ form {
   font-size: 13px;
 }
 
-
-/* ============================================================
-   DANCE STATUS DETAIL
-   ============================================================ */
-
 .dance-detail-status {
   display: inline-flex;
 
   margin-bottom: 11px;
-
-  padding:
-    6px
-    10px;
+  padding: 6px 10px;
 
   border-radius: 18px;
 
@@ -2205,24 +1874,18 @@ form {
 }
 
 .dance-detail-status.in-use {
-  background:
-    var(--green-soft);
-
-  color:
-    var(--green);
+  background: var(--green-soft);
+  color: var(--green);
 }
 
 .dance-detail-status.not-in-use {
-  background:
-    var(--red-soft);
-
-  color:
-    var(--red);
+  background: var(--red-soft);
+  color: var(--red);
 }
 
 
 /* ============================================================
-   SELECTED DANCERS
+   LEGACY SELECTED DANCER LIST
    ============================================================ */
 
 .selected-dancer-list {
@@ -2240,14 +1903,9 @@ form {
 
   gap: 10px;
 
-  padding:
-    7px
-    10px;
+  padding: 7px 10px;
 
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 11px;
 
   background: white;
@@ -2265,11 +1923,8 @@ form {
 
   border-radius: 50%;
 
-  background:
-    #f2e9df;
-
-  color:
-    var(--burgundy);
+  background: #f2e9df;
+  color: var(--burgundy);
 
   font-size: 10px;
   font-weight: 800;
@@ -2288,17 +1943,12 @@ form {
 
 
 /* ============================================================
-   MEDIA
+   DANCE MEDIA
    ============================================================ */
 
 .media-grid {
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
   gap: 8px;
 }
@@ -2312,8 +1962,7 @@ form {
 
   border-radius: 13px;
 
-  background:
-    #eee6dc;
+  background: #eee6dc;
 }
 
 .media-tile img {
@@ -2338,45 +1987,24 @@ form {
   align-items: center;
   justify-content: center;
 
-  padding:
-    0
-    0
-    2px;
+  padding: 0 0 2px;
 
   border: 0;
   border-radius: 50%;
 
-  background:
-    rgba(
-      0,
-      0,
-      0,
-      0.62
-    );
-
+  background: rgba(0, 0, 0, 0.62);
   color: white;
 
   font-size: 20px;
 }
 
 .file-box {
-  padding:
-    16px;
+  padding: 16px;
 
-  border:
-    1px dashed
-    #d4c7bb;
-
+  border: 1px dashed #d4c7bb;
   border-radius: 12px;
 
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.55
-    );
-
+  background: rgba(255, 255, 255, 0.55);
   color: var(--muted);
 
   font-size: 12px;
@@ -2385,13 +2013,9 @@ form {
 }
 
 .audio-card {
-  padding:
-    12px;
+  padding: 12px;
 
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 13px;
 
   background: white;
@@ -2422,7 +2046,6 @@ form {
 
 .attendance-profile-card {
   width: 100%;
-
   min-height: 70px;
 
   display: flex;
@@ -2430,19 +2053,12 @@ form {
   justify-content: space-between;
 
   margin-top: 12px;
+  padding: 11px 13px;
 
-  padding:
-    11px
-    13px;
-
-  border:
-    1px solid
-    #d8e5db;
-
+  border: 1px solid #d8e5db;
   border-radius: 12px;
 
-  background:
-    #f6fbf7;
+  background: #f6fbf7;
 
   text-align: left;
 }
@@ -2455,15 +2071,13 @@ form {
 }
 
 .attendance-percent strong {
-  color:
-    var(--green);
+  color: var(--green);
 
   font-size: 24px;
 }
 
 .attendance-percent span {
-  color:
-    var(--green);
+  color: var(--green);
 
   font-size: 12px;
   font-weight: 700;
@@ -2494,24 +2108,16 @@ form {
   width: 100%;
 
   margin-bottom: 12px;
+  padding: 12px;
 
-  padding:
-    12px;
-
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 13px;
 
   background: white;
 }
 
 .attendance-row h4 {
-  margin:
-    0
-    0
-    9px;
+  margin: 0 0 9px;
 
   overflow: hidden;
 
@@ -2525,89 +2131,55 @@ form {
   width: 100%;
 
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      4,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: 5px;
 }
 
 .attendance-buttons button {
   min-width: 0;
-
   min-height: 39px;
 
-  padding:
-    5px
-    2px;
+  padding: 5px 2px;
 
-  border:
-    1px solid
-    #ddd4ca;
-
+  border: 1px solid #ddd4ca;
   border-radius: 8px;
 
-  background:
-    #faf7f3;
+  background: #faf7f3;
+  color: #786d66;
 
-  color:
-    #786d66;
-
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 750;
 
   white-space: nowrap;
 }
 
-.attendance-buttons
-.present.selected {
-  border-color:
-    var(--green);
+.attendance-buttons .present.selected {
+  border-color: var(--green);
 
-  background:
-    var(--green-soft);
-
-  color:
-    var(--green);
+  background: var(--green-soft);
+  color: var(--green);
 }
 
-.attendance-buttons
-.late.selected {
-  border-color:
-    var(--orange);
+.attendance-buttons .late.selected {
+  border-color: var(--orange);
 
-  background:
-    var(--orange-soft);
-
-  color:
-    var(--orange);
+  background: var(--orange-soft);
+  color: var(--orange);
 }
 
-.attendance-buttons
-.absent.selected {
-  border-color:
-    var(--red);
+.attendance-buttons .absent.selected {
+  border-color: var(--red);
 
-  background:
-    var(--red-soft);
-
-  color:
-    var(--red);
+  background: var(--red-soft);
+  color: var(--red);
 }
 
-.attendance-buttons
-.excused.selected {
-  border-color:
-    #6d6b9d;
+.attendance-buttons .excused.selected {
+  border-color: #6d6b9d;
 
-  background:
-    #efeff8;
-
-  color:
-    #5d5a90;
+  background: #efeff8;
+  color: #5d5a90;
 }
 
 
@@ -2619,26 +2191,17 @@ form {
   width: 100%;
 
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      4,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: 5px;
 
-  margin:
-    12px
-    0;
+  margin: 12px 0;
 }
 
 .summary-box {
   min-width: 0;
 
-  padding:
-    10px
-    2px;
+  padding: 10px 2px;
 
   border-radius: 10px;
 
@@ -2661,41 +2224,27 @@ form {
   font-size: 7px;
   font-weight: 850;
 
-  letter-spacing: 0.02em;
-
   white-space: nowrap;
 }
 
 .summary-box.present {
-  background:
-    var(--green-soft);
-
-  color:
-    var(--green);
+  background: var(--green-soft);
+  color: var(--green);
 }
 
 .summary-box.late {
-  background:
-    var(--orange-soft);
-
-  color:
-    var(--orange);
+  background: var(--orange-soft);
+  color: var(--orange);
 }
 
 .summary-box.absent {
-  background:
-    var(--red-soft);
-
-  color:
-    var(--red);
+  background: var(--red-soft);
+  color: var(--red);
 }
 
 .summary-box.excused {
-  background:
-    #efeff8;
-
-  color:
-    #5d5a90;
+  background: #efeff8;
+  color: #5d5a90;
 }
 
 
@@ -2704,35 +2253,26 @@ form {
    ============================================================ */
 
 .history-hero {
-  padding:
-    19px
-    12px;
-
   margin-bottom: 12px;
+  padding: 19px 12px;
 
-  border:
-    1px solid
-    #d5e6da;
-
+  border: 1px solid #d5e6da;
   border-radius: 15px;
 
-  background:
-    #f6fbf7;
+  background: #f6fbf7;
 
   text-align: center;
 }
 
 .history-percent {
-  color:
-    var(--green);
+  color: var(--green);
 
   font-size: 39px;
   font-weight: 850;
 }
 
 .history-caption {
-  color:
-    var(--green);
+  color: var(--green);
 
   font-size: 13px;
   font-weight: 700;
@@ -2741,8 +2281,7 @@ form {
 .history-not-present {
   margin-top: 4px;
 
-  color:
-    var(--muted);
+  color: var(--muted);
 
   font-size: 10px;
 }
@@ -2757,15 +2296,9 @@ form {
   gap: 10px;
 
   margin-bottom: 7px;
+  padding: 9px 11px;
 
-  padding:
-    9px
-    11px;
-
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 11px;
 
   background: white;
@@ -2776,10 +2309,7 @@ form {
 }
 
 .history-row p {
-  margin:
-    3px
-    0
-    0;
+  margin: 3px 0 0;
 
   color: var(--muted);
 
@@ -2789,9 +2319,7 @@ form {
 .history-status {
   flex-shrink: 0;
 
-  padding:
-    5px
-    7px;
+  padding: 5px 7px;
 
   border-radius: 10px;
 
@@ -2800,35 +2328,23 @@ form {
 }
 
 .history-status.present {
-  background:
-    var(--green-soft);
-
-  color:
-    var(--green);
+  background: var(--green-soft);
+  color: var(--green);
 }
 
 .history-status.late {
-  background:
-    var(--orange-soft);
-
-  color:
-    var(--orange);
+  background: var(--orange-soft);
+  color: var(--orange);
 }
 
 .history-status.absent {
-  background:
-    var(--red-soft);
-
-  color:
-    var(--red);
+  background: var(--red-soft);
+  color: var(--red);
 }
 
 .history-status.excused {
-  background:
-    #efeff8;
-
-  color:
-    #5d5a90;
+  background: #efeff8;
+  color: #5d5a90;
 }
 
 
@@ -2841,13 +2357,9 @@ form {
 }
 
 .settings-section-heading {
-  margin:
-    0
-    0
-    8px;
+  margin: 0 0 8px;
 
-  color:
-    #8e8078;
+  color: #8e8078;
 
   font-size: 11px;
   font-weight: 850;
@@ -2861,10 +2373,7 @@ form {
 
   overflow: hidden;
 
-  border:
-    1px solid
-    var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 14px;
 
   background: white;
@@ -2873,7 +2382,6 @@ form {
 .settings-card > button,
 .settings-notes-row {
   width: 100%;
-
   min-height: 54px;
 
   display: flex;
@@ -2882,17 +2390,12 @@ form {
 
   gap: 10px;
 
-  padding:
-    10px
-    14px;
+  padding: 10px 14px;
 
   border: 0;
-  border-bottom:
-    1px solid
-    #eee6dd;
+  border-bottom: 1px solid #eee6dd;
 
   background: white;
-
   color: var(--text);
 
   font-size: 14px;
@@ -2901,13 +2404,11 @@ form {
   text-align: left;
 }
 
-.settings-card >
-button:last-child {
+.settings-card > button:last-child {
   border-bottom: 0;
 }
 
-.instructor-notes-card
-.settings-notes-row {
+.instructor-notes-card .settings-notes-row {
   border-bottom: 0;
 }
 
@@ -2920,69 +2421,41 @@ button:last-child {
   width: 100%;
   max-width: none;
 
-  height:
-    calc(
-      100dvh -
-      var(--safe-top)
-    );
-
-  max-height:
-    calc(
-      100dvh -
-      var(--safe-top)
-    );
+  height: calc(100dvh - var(--safe-top));
+  max-height: calc(100dvh - var(--safe-top));
 
   border-radius: 0;
 
-  background:
-    #11100f;
+  background: #11100f;
 }
 
-.modal.full-screen-modal
-.modal-header {
-  background:
-    #11100f;
+.modal.full-screen-modal .modal-header {
+  background: #11100f;
 
-  border-bottom-color:
-    #2b2927;
+  border-bottom-color: #2b2927;
 }
 
-.modal.full-screen-modal
-#modalEyebrow {
-  color:
-    #8e8984;
+.modal.full-screen-modal #modalEyebrow {
+  color: #8e8984;
 }
 
-.modal.full-screen-modal
-#modalTitle {
-  color:
-    #f4eee7;
+.modal.full-screen-modal #modalTitle {
+  color: #f4eee7;
 }
 
-.modal.full-screen-modal
-.modal-back {
-  color:
-    #f1e7df;
+.modal.full-screen-modal .modal-back {
+  color: #f1e7df;
 }
 
-.modal.full-screen-modal
-.close-button {
-  background:
-    #292725;
-
-  color:
-    #f4eee7;
+.modal.full-screen-modal .close-button {
+  background: #292725;
+  color: #f4eee7;
 }
 
-.modal.full-screen-modal
-#modalBody {
-  padding:
-    0
-    0
-    var(--safe-bottom);
+.modal.full-screen-modal #modalBody {
+  padding: 0 0 var(--safe-bottom);
 
-  background:
-    #11100f;
+  background: #11100f;
 }
 
 .notes-full-page {
@@ -2991,8 +2464,7 @@ button:last-child {
   display: flex;
   flex-direction: column;
 
-  background:
-    #11100f;
+  background: #11100f;
 }
 
 .notes-save-line {
@@ -3003,12 +2475,9 @@ button:last-child {
 
   gap: 7px;
 
-  padding:
-    8px
-    16px;
+  padding: 8px 16px;
 
-  color:
-    #8f8a85;
+  color: #8f8a85;
 
   font-size: 10px;
 }
@@ -3019,8 +2488,7 @@ button:last-child {
 
   border-radius: 50%;
 
-  background:
-    #5ca777;
+  background: #5ca777;
 }
 
 .instructor-notes-editor {
@@ -3036,54 +2504,32 @@ button:last-child {
       var(--safe-bottom)
     );
 
-  padding:
-    17px
-    18px
-    60px;
+  padding: 17px 18px 60px;
 
   border: 0;
   border-radius: 0;
 
   resize: none;
 
-  background-color:
-    #11100f;
+  background-color: #11100f;
 
   background-image:
     repeating-linear-gradient(
       to bottom,
       transparent,
       transparent 30px,
-      rgba(
-        255,
-        255,
-        255,
-        0.055
-      ) 31px
+      rgba(255, 255, 255, 0.055) 31px
     );
 
-  background-attachment:
-    local;
-
-  color:
-    #f3eee8;
-
-  caret-color:
-    #f3eee8;
-
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "SF Pro Text",
-    sans-serif;
+  color: #f3eee8;
+  caret-color: #f3eee8;
 
   font-size: 16px;
   line-height: 31px;
 }
 
 .instructor-notes-editor::placeholder {
-  color:
-    #6f6a66;
+  color: #6f6a66;
 }
 
 
@@ -3093,37 +2539,18 @@ button:last-child {
 
 .app-toast {
   position: fixed;
-
   z-index: 3000;
 
   left: 50%;
+  bottom: calc(88px + var(--safe-bottom));
 
-  bottom:
-    calc(
-      88px +
-      var(--safe-bottom)
-    );
+  max-width: calc(100vw - 40px);
 
-  max-width:
-    calc(
-      100vw -
-      40px
-    );
-
-  padding:
-    10px
-    14px;
+  padding: 10px 14px;
 
   border-radius: 18px;
 
-  background:
-    rgba(
-      38,
-      29,
-      26,
-      0.93
-    );
-
+  background: rgba(38, 29, 26, 0.93);
   color: white;
 
   font-size: 12px;
@@ -3135,11 +2562,7 @@ button:last-child {
 
   pointer-events: none;
 
-  transform:
-    translate(
-      -50%,
-      10px
-    );
+  transform: translate(-50%, 10px);
 
   transition:
     opacity 0.18s ease,
@@ -3149,11 +2572,7 @@ button:last-child {
 .app-toast.show {
   opacity: 1;
 
-  transform:
-    translate(
-      -50%,
-      0
-    );
+  transform: translate(-50%, 0);
 }
 
 
@@ -3163,40 +2582,23 @@ button:last-child {
 
 .upload-overlay {
   position: fixed;
-
   z-index: 5000;
 
   inset: 0;
 
   display: none;
-
   align-items: center;
   justify-content: center;
 
   padding:
-    calc(
-      20px +
-      var(--safe-top)
-    )
+    calc(20px + var(--safe-top))
     20px
-    calc(
-      20px +
-      var(--safe-bottom)
-    );
+    calc(20px + var(--safe-bottom));
 
-  background:
-    rgba(
-      24,
-      17,
-      15,
-      0.58
-    );
+  background: rgba(24, 17, 15, 0.58);
 
-  -webkit-backdrop-filter:
-    blur(4px);
-
-  backdrop-filter:
-    blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 }
 
 .upload-overlay.open {
@@ -3209,30 +2611,23 @@ button:last-child {
 
   display: flex;
   flex-direction: column;
-
   align-items: center;
 
   gap: 12px;
 
-  padding:
-    23px
-    18px;
+  padding: 23px 18px;
 
   border-radius: 18px;
 
-  background:
-    var(--cream-2);
+  background: var(--cream-2);
 
-  box-shadow:
-    0 15px 45px
-    rgba(0, 0, 0, 0.2);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
 
   text-align: center;
 }
 
 .upload-box strong {
-  color:
-    var(--burgundy);
+  color: var(--burgundy);
 
   font-size: 14px;
 }
@@ -3241,46 +2636,29 @@ button:last-child {
   width: 32px;
   height: 32px;
 
-  border:
-    3px solid
-    #e1d4c8;
-
-  border-top-color:
-    var(--burgundy);
-
+  border: 3px solid #e1d4c8;
+  border-top-color: var(--burgundy);
   border-radius: 50%;
 
-  animation:
-    vukSpin
-    0.75s
-    linear
-    infinite;
+  animation: vukSpin 0.75s linear infinite;
 }
 
 @keyframes vukSpin {
   to {
-    transform:
-      rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
 .upload-cancel-button {
   min-height: 39px;
 
-  padding:
-    7px
-    17px;
+  padding: 7px 17px;
 
-  border:
-    1px solid
-    #d8cbc0;
-
+  border: 1px solid #d8cbc0;
   border-radius: 10px;
 
   background: white;
-
-  color:
-    var(--burgundy);
+  color: var(--burgundy);
 
   font-size: 12px;
   font-weight: 700;
@@ -3288,175 +2666,10 @@ button:last-child {
 
 
 /* ============================================================
-   IPHONE 14 PRO / SMALL PHONE TUNING
+   SMALL PHONE
    ============================================================ */
 
-/*
-  iPhone 14 Pro CSS viewport is
-  approximately 393px wide.
-
-  These rules deliberately keep things
-  compact around that size.
-*/
-
-@media
-(max-width: 430px) {
-
-  .top-header {
-    min-height: 69px;
-
-    padding:
-      9px
-      16px
-      6px;
-  }
-
-  .vuk-logo {
-    width: 88px;
-  }
-
-  .brand-title {
-    font-size: 16px;
-  }
-
-  .page {
-    padding:
-      7px
-      16px
-      27px;
-  }
-
-  .section-heading {
-    font-size: 29px;
-  }
-
-  .page-intro {
-    margin-bottom: 15px;
-  }
-
-  .round-add {
-    width: 42px;
-    height: 42px;
-
-    font-size: 27px;
-  }
-
-  .roster-title,
-  .dance-status-title {
-    font-size: 18px;
-  }
-
-  .dancer-row {
-    min-height: 56px;
-  }
-
-  .dance-row {
-    min-height: 59px;
-  }
-
-  .drag-handle {
-    width: 40px;
-    min-width: 40px;
-
-    margin:
-      7px
-      6px
-      7px
-      0;
-
-    font-size: 22px;
-  }
-
-  .dancer-open {
-    grid-template-columns:
-      35px
-      minmax(0, 1fr)
-      auto
-      15px;
-
-    gap: 6px;
-
-    padding-left: 9px;
-  }
-
-  .dance-open {
-    grid-template-columns:
-      35px
-      minmax(0, 1fr)
-      15px;
-
-    gap: 6px;
-
-    padding-left: 8px;
-  }
-
-  .dancer-number,
-  .dance-number {
-    width: 32px;
-    height: 32px;
-
-    font-size: 10px;
-  }
-
-  .dancer-name,
-  .dance-card-content strong {
-    font-size: 14px;
-  }
-
-  .dancer-height {
-    font-size: 11px;
-  }
-
-  .calendar-card {
-    padding:
-      12px
-      7px
-      9px;
-  }
-
-  .calendar-day {
-    font-size: 11px;
-  }
-
-  .modal-header {
-    min-height: 66px;
-
-    grid-template-columns:
-      72px
-      minmax(0, 1fr)
-      40px;
-
-    padding:
-      8px
-      8px;
-  }
-
-  #modalTitle {
-    font-size: 19px;
-  }
-
-  #modalBody {
-    padding:
-      14px
-      14px
-      calc(
-        22px +
-        var(--safe-bottom)
-      );
-  }
-
-  .attendance-buttons button {
-    font-size: 9px;
-  }
-}
-
-
-/* ============================================================
-   VERY NARROW PHONES
-   ============================================================ */
-
-@media
-(max-width: 360px) {
+@media (max-width: 360px) {
 
   .page {
     padding-left: 12px;
@@ -3468,37 +2681,26 @@ button:last-child {
   }
 
   .dancer-open {
-    grid-template-columns:
-      34px
-      minmax(0, 1fr)
-      15px;
+    grid-template-columns: 34px minmax(0, 1fr) 15px;
   }
 
-  .attendance-buttons.four {
-    grid-template-columns:
-      1fr
-      1fr;
-  }
-
+  .attendance-buttons.four,
   .attendance-summary.four {
-    grid-template-columns:
-      1fr
-      1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .form-row {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
   }
+
 }
 
 
 /* ============================================================
-   LANDSCAPE / LARGER PHONE
+   LARGER PHONE / LANDSCAPE
    ============================================================ */
 
-@media
-(min-width: 431px) {
+@media (min-width: 431px) {
 
   .page {
     padding-left: 22px;
@@ -3509,6 +2711,7 @@ button:last-child {
     padding-left: 20px;
     padding-right: 20px;
   }
+
 }
 
 
@@ -3516,420 +2719,17 @@ button:last-child {
    REDUCED MOTION
    ============================================================ */
 
-@media
-(prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) {
 
   *,
   *::before,
   *::after {
     scroll-behavior: auto !important;
 
-    transition-duration:
-      0.01ms !important;
+    transition-duration: 0.01ms !important;
 
-    animation-duration:
-      0.01ms !important;
-
-    animation-iteration-count:
-      1 !important;
-  }
-}
-
-
-/* ============================================================
-   DANCE-SPECIFIC DANCER ORDER
-   ============================================================ */
-
-.dance-dancer-groups {
-  width: 100%;
-}
-
-.dance-dancer-section {
-  margin-bottom: 22px;
-}
-
-.dance-dancer-group-title {
-  margin:
-    0
-    0
-    8px;
-
-  font-size: 17px;
-  font-weight: 850;
-
-  letter-spacing: 0.04em;
-}
-
-.dance-dancer-group-title.boys {
-  color: var(--blue);
-}
-
-.dance-dancer-group-title.girls {
-  color: var(--pink);
-}
-
-.dance-dancer-group-title.other {
-  color: var(--muted);
-}
-
-.dance-dancer-order-list {
-  display: flex;
-  flex-direction: column;
-
-  gap: 7px;
-}
-
-.dance-dancer-order-row {
-  width: 100%;
-  min-height: 57px;
-
-  display: grid;
-
-  grid-template-columns:
-    38px
-    minmax(0, 1fr)
-    42px;
-
-  align-items: center;
-
-  gap: 9px;
-
-  padding:
-    6px
-    6px
-    6px
-    10px;
-
-  border:
-    1px solid
-    var(--line);
-
-  border-radius: 14px;
-
-  background:
-    white;
-
-  transition:
-    transform 0.14s ease,
-    box-shadow 0.14s ease,
-    opacity 0.14s ease;
-}
-
-.dance-dancer-order-row.dragging {
-  position: relative;
-
-  z-index: 100;
-
-  opacity: 0.94;
-
-  transform:
-    scale(1.02);
-
-  box-shadow:
-    0 10px 28px
-    rgba(48, 30, 25, 0.16);
-}
-
-.dance-dancer-number {
-  width: 34px;
-  height: 34px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  font-size: 11px;
-  font-weight: 850;
-}
-
-.dance-dancer-number.boys {
-  background:
-    var(--blue-soft);
-
-  color:
-    var(--blue);
-}
-
-.dance-dancer-number.girls {
-  background:
-    var(--pink-soft);
-
-  color:
-    var(--pink);
-}
-
-.dance-dancer-number.other {
-  background:
-    #f0ece7;
-
-  color:
-    #71665f;
-}
-
-.dance-dancer-name {
-  min-width: 0;
-
-  overflow: hidden;
-
-  color: var(--text);
-
-  font-size: 15px;
-  font-weight: 720;
-
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.dance-dancer-drag-handle {
-  width: 38px;
-  min-width: 38px;
-
-  height: 40px;
-
-  margin: 0;
-
-  justify-self: end;
-
-  touch-action: none;
-}
-
-
-/* iPhone 14 Pro */
-
-@media (max-width: 430px) {
-
-  .dance-dancer-order-row {
-    grid-template-columns:
-      35px
-      minmax(0, 1fr)
-      39px;
-
-    gap: 7px;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 
-  .dance-dancer-number {
-    width: 32px;
-    height: 32px;
-
-    font-size: 10px;
-  }
-
-  .dance-dancer-name {
-    font-size: 14px;
-  }
-
-  .dance-dancer-drag-handle {
-    width: 36px;
-    min-width: 36px;
-
-    height: 38px;
-  }
-}
-
-
-/* ============================================================
-   FIX — DANCE DANCER ROW LAYOUT
-   ============================================================ */
-
-.dance-dancer-groups .dance-dancer-section {
-  display: block !important;
-  width: 100% !important;
-  margin: 0 0 24px 0 !important;
-}
-
-.dance-dancer-groups .dance-dancer-group-title {
-  display: block !important;
-  width: 100% !important;
-
-  margin: 0 0 9px 0 !important;
-
-  font-size: 18px !important;
-  font-weight: 850 !important;
-  letter-spacing: 0.04em !important;
-}
-
-.dance-dancer-groups .dance-dancer-group-title.boys {
-  color: var(--blue) !important;
-}
-
-.dance-dancer-groups .dance-dancer-group-title.girls {
-  color: var(--pink) !important;
-}
-
-.dance-dancer-groups .dance-dancer-order-list {
-  display: flex !important;
-  flex-direction: column !important;
-
-  width: 100% !important;
-
-  gap: 8px !important;
-}
-
-.dance-dancer-groups .dance-dancer-order-row {
-  width: 100% !important;
-  min-height: 58px !important;
-
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-
-  gap: 10px !important;
-
-  padding: 7px 7px 7px 11px !important;
-
-  border: 1px solid var(--line) !important;
-  border-radius: 14px !important;
-
-  background: #ffffff !important;
-
-  box-sizing: border-box !important;
-}
-
-
-/* NUMBER CIRCLE */
-
-.dance-dancer-groups .dance-dancer-number {
-  width: 34px !important;
-  height: 34px !important;
-
-  min-width: 34px !important;
-  flex: 0 0 34px !important;
-
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  padding: 0 !important;
-  margin: 0 !important;
-
-  border-radius: 50% !important;
-
-  font-size: 11px !important;
-  font-weight: 850 !important;
-  line-height: 1 !important;
-}
-
-.dance-dancer-groups .dance-dancer-number.boys {
-  background: var(--blue-soft) !important;
-  color: var(--blue) !important;
-}
-
-.dance-dancer-groups .dance-dancer-number.girls {
-  background: var(--pink-soft) !important;
-  color: var(--pink) !important;
-}
-
-.dance-dancer-groups .dance-dancer-number.other {
-  background: #f0ece7 !important;
-  color: #71665f !important;
-}
-
-
-/* DANCER NAME */
-
-.dance-dancer-groups .dance-dancer-name {
-  flex: 1 1 auto !important;
-
-  min-width: 0 !important;
-
-  margin: 0 !important;
-  padding: 0 !important;
-
-  overflow: hidden !important;
-
-  color: var(--text) !important;
-
-  font-size: 15px !important;
-  font-weight: 720 !important;
-  line-height: 1.2 !important;
-
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-
-/* SMALL DRAG BOX ON RIGHT */
-
-.dance-dancer-groups .dance-dancer-drag-handle {
-  width: 40px !important;
-  height: 40px !important;
-
-  min-width: 40px !important;
-  flex: 0 0 40px !important;
-
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  margin: 0 !important;
-  padding: 0 !important;
-
-  border: 1px solid #ddd1c5 !important;
-  border-radius: 9px !important;
-
-  background: #f4ede4 !important;
-
-  color: #897b72 !important;
-
-  font-size: 23px !important;
-  font-weight: 600 !important;
-  line-height: 1 !important;
-
-  touch-action: none !important;
-}
-
-
-/* DRAGGING */
-
-.dance-dancer-groups .dance-dancer-order-row.dragging {
-  position: relative !important;
-  z-index: 100 !important;
-
-  opacity: 0.94 !important;
-
-  transform: scale(1.02) !important;
-
-  box-shadow:
-    0 10px 28px
-    rgba(48, 30, 25, 0.16) !important;
-}
-
-
-/* IPHONE 14 PRO */
-
-@media (max-width: 430px) {
-
-  .dance-dancer-groups .dance-dancer-order-row {
-    min-height: 57px !important;
-
-    padding:
-      7px
-      6px
-      7px
-      10px !important;
-  }
-
-  .dance-dancer-groups .dance-dancer-number {
-    width: 32px !important;
-    height: 32px !important;
-
-    min-width: 32px !important;
-    flex-basis: 32px !important;
-
-    font-size: 10px !important;
-  }
-
-  .dance-dancer-groups .dance-dancer-name {
-    font-size: 14px !important;
-  }
-
-  .dance-dancer-groups .dance-dancer-drag-handle {
-    width: 38px !important;
-    height: 38px !important;
-
-    min-width: 38px !important;
-    flex-basis: 38px !important;
-  }
 }
