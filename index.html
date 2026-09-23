@@ -3,12 +3,6 @@
 <head>
   <meta charset="UTF-8">
 
-  <!--
-    iPhone / Home Screen support.
-    viewport-fit=cover allows us to use the iPhone safe areas
-    correctly in styles.css without content hiding behind
-    the status bar or Home indicator.
-  -->
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
@@ -33,19 +27,18 @@
 
   <title>VUK Karadžić Probe</title>
 
-  <!-- Home Screen icon -->
   <link
     rel="apple-touch-icon"
     href="Vuk-app-icon.png"
   >
 
   <!--
-    Version changed so the iPhone does not keep using
-    an older cached copy of styles.css.
+    v9 keeps this clean rebuild separate from
+    the older cached versions on iPhone.
   -->
   <link
     rel="stylesheet"
-    href="styles.css?v=7"
+    href="styles.css?v=9"
   >
 </head>
 
@@ -74,15 +67,15 @@
       </div>
 
       <!--
-        Kept in the HTML for compatibility with existing
-        JavaScript/data, but hidden by the app.
-        Ensemble changing will happen from Home only.
+        Kept for JavaScript compatibility.
+        Ensemble selection happens from Home.
       -->
       <button
         id="ensembleButton"
         class="ensemble-pill"
         type="button"
         aria-hidden="true"
+        tabindex="-1"
       >
         Ensemble
       </button>
@@ -172,6 +165,7 @@
 
 
         <div class="weekdays">
+
           <span>Sun</span>
           <span>Mon</span>
           <span>Tue</span>
@@ -179,6 +173,7 @@
           <span>Thu</span>
           <span>Fri</span>
           <span>Sat</span>
+
         </div>
 
 
@@ -246,20 +241,7 @@
       </button>
 
 
-      <!--
-        Kept only for backwards compatibility.
-        It will stay hidden.
-      -->
-      <p
-        class="reorder-hint"
-        aria-hidden="true"
-      ></p>
-
-
-      <div
-        id="danceList"
-        class="stack-list"
-      ></div>
+      <div id="danceList"></div>
 
     </main>
 
@@ -311,16 +293,6 @@
       </div>
 
 
-      <!--
-        No instructional/helper writing.
-        Kept empty for backwards compatibility.
-      -->
-      <p
-        class="roster-help"
-        aria-hidden="true"
-      ></p>
-
-
       <div id="dancerList"></div>
 
     </main>
@@ -346,35 +318,22 @@
       </div>
 
 
-      <!-- SHARED -->
-
       <section class="settings-section">
 
         <h2 class="settings-section-heading">
           SHARED
         </h2>
 
-
-        <div class="instructor-notes-card">
-
-          <!--
-            JavaScript turns this into the
-            Instructor Notes settings row.
-          -->
-
-        </div>
+        <div class="instructor-notes-card"></div>
 
       </section>
 
-
-      <!-- APP SETTINGS -->
 
       <section class="settings-section">
 
         <h2 class="settings-section-heading">
           APP SETTINGS
         </h2>
-
 
         <div class="settings-card">
 
@@ -422,16 +381,6 @@
         </div>
 
       </section>
-
-
-      <!--
-        Existing element kept for compatibility,
-        but we no longer display helper writing.
-      -->
-      <p
-        class="settings-note"
-        aria-hidden="true"
-      ></p>
 
     </main>
 
@@ -624,11 +573,6 @@
         Uploading...
       </strong>
 
-      <!--
-        We'll wire this up in the new script.js.
-        It gives us a way out instead of trapping
-        the app forever if Firebase Storage hangs.
-      -->
       <button
         id="cancelUploadButton"
         class="upload-cancel-button"
@@ -744,7 +688,6 @@
       getDownloadURL,
 
       deleteObject
-
     };
 
 
@@ -758,11 +701,11 @@
 
 
   <!--
-    Version changed so your iPhone loads the new
-    JavaScript instead of an older cached copy.
+    Matching clean rebuild JavaScript.
+    v9 prevents iPhone from loading the old cached script.
   -->
   <script
-    src="script.js?v=7"
+    src="script.js?v=9"
     defer
   ></script>
 
