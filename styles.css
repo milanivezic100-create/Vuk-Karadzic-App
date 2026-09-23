@@ -1,6 +1,6 @@
 /* ============================================================
    VUK KARADZIC PROBE
-   styles.css
+   styles.css — V9
    iPhone-first layout
    ============================================================ */
 
@@ -104,6 +104,7 @@ select {
 #app {
   width: 100%;
   max-width: 430px;
+
   min-height: 100vh;
   min-height: 100dvh;
 
@@ -148,7 +149,6 @@ select {
   height: 74px;
 
   object-fit: cover;
-
   display: block;
 
   border-radius: 2px;
@@ -291,7 +291,6 @@ select {
 
 .primary-button {
   width: 100%;
-
   min-height: 56px;
 
   margin-top: 18px;
@@ -314,7 +313,6 @@ select {
 
 .danger-button {
   width: 100%;
-
   min-height: 52px;
 
   margin-top: 12px;
@@ -376,6 +374,7 @@ select {
   padding: 13px 15px;
 
   display: grid;
+
   grid-template-columns:
     46px
     minmax(0, 1fr)
@@ -520,7 +519,7 @@ select {
 
 
 /* ============================================================
-   LARGE SECTION HEADINGS
+   SECTION HEADINGS
    ============================================================ */
 
 .roster-section,
@@ -571,7 +570,7 @@ select {
 
 
 /* ============================================================
-   DANCER ROWS
+   DANCER / DANCE LISTS
    ============================================================ */
 
 .roster-list,
@@ -596,15 +595,25 @@ select {
   touch-action: pan-y;
 }
 
-.dancer-open,
-.dance-open {
-  width: 100%;
+
+/* ============================================================
+   MAIN DANCER ROW
+   Button + dedicated drag handle
+   ============================================================ */
+
+.dancer-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.dancer-open {
+  flex: 1;
+  min-width: 0;
   min-height: 65px;
 
-  padding: 10px 13px;
+  padding: 10px 8px 10px 13px;
 
   border: 0;
-
   background: transparent;
 
   display: flex;
@@ -676,6 +685,46 @@ select {
 
 
 /* ============================================================
+   DRAG HANDLE
+   Only this starts dancer dragging
+   ============================================================ */
+
+.drag-handle {
+  width: 46px;
+  min-width: 46px;
+
+  border: 0;
+  border-left: 1px solid var(--line);
+
+  background: #faf6ef;
+  color: #8b837a;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 27px;
+  line-height: 1;
+  font-weight: 600;
+
+  cursor: grab;
+
+  touch-action: none;
+
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+
+  background: #f1e9dd;
+
+  color: var(--burgundy);
+}
+
+
+/* ============================================================
    DANCE ROWS
    ============================================================ */
 
@@ -689,6 +738,24 @@ select {
   border-left:
     4px solid
     var(--red);
+}
+
+.dance-open {
+  width: 100%;
+  min-height: 65px;
+
+  padding: 10px 13px;
+
+  border: 0;
+
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+
+  text-align: left;
+
+  cursor: pointer;
 }
 
 .dance-number.in-use {
@@ -738,6 +805,7 @@ select {
 
 .draggable-row.dragging {
   position: relative;
+
   z-index: 30;
 
   opacity: 0.82;
@@ -754,8 +822,75 @@ body.reordering {
   -webkit-user-select: none;
 }
 
-body.reordering .draggable-row {
+body.reordering .drag-handle {
   touch-action: none;
+}
+
+
+/* ============================================================
+   DANCERS INSIDE A DANCE
+   ============================================================ */
+
+.dance-assigned-dancers {
+  display: grid;
+  gap: 22px;
+}
+
+.dance-dancer-section {
+  width: 100%;
+}
+
+.dance-dancer-section .roster-title {
+  margin-bottom: 10px;
+}
+
+.dance-dancer-order-list {
+  display: grid;
+  gap: 8px;
+}
+
+.dance-dancer-row {
+  width: 100%;
+  min-height: 56px;
+
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+
+  background: var(--white);
+
+  display: flex;
+  align-items: stretch;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 4px 14px
+    rgba(70, 50, 30, 0.045);
+}
+
+.dance-dancer-main {
+  flex: 1;
+  min-width: 0;
+
+  padding:
+    9px
+    8px
+    9px
+    13px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dance-dancer-name {
+  min-width: 0;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  font-size: 15px;
 }
 
 
@@ -871,6 +1006,7 @@ body.reordering .draggable-row {
 
 .weekdays {
   display: grid;
+
   grid-template-columns:
     repeat(7, 1fr);
 
@@ -886,6 +1022,7 @@ body.reordering .draggable-row {
 
 .calendar-grid {
   display: grid;
+
   grid-template-columns:
     repeat(7, minmax(0, 1fr));
 
@@ -894,6 +1031,7 @@ body.reordering .draggable-row {
 
 .calendar-day {
   width: 100%;
+
   aspect-ratio: 1 / 1.08;
 
   min-width: 0;
@@ -926,6 +1064,7 @@ body.reordering .draggable-row {
 
 .calendar-day.today .day-number {
   color: var(--burgundy);
+
   font-weight: 800;
 }
 
@@ -990,7 +1129,6 @@ body.reordering .draggable-row {
 
 .item-card {
   width: 100%;
-
   min-height: 68px;
 
   padding: 11px 13px;
@@ -1041,6 +1179,69 @@ body.reordering .draggable-row {
 
 
 /* ============================================================
+   ONE TIME / WEEKLY PRACTICE SELECTOR
+   ============================================================ */
+
+.practice-repeat-selector {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 8px;
+}
+
+.practice-repeat-option {
+  min-width: 0;
+  min-height: 50px;
+
+  padding: 8px 10px;
+
+  border: 1.5px solid var(--line);
+  border-radius: 15px;
+
+  background: var(--white);
+  color: var(--muted);
+
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.practice-repeat-option.selected {
+  border-color: var(--burgundy);
+
+  background: #f6e8eb;
+  color: var(--burgundy);
+}
+
+.practice-end-date-group[hidden] {
+  display: none !important;
+}
+
+.practice-repeat-badge {
+  display: inline-flex;
+
+  margin-top: 10px;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  background: #f2e4e7;
+  color: var(--burgundy);
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+
+/* ============================================================
    SETTINGS
    ============================================================ */
 
@@ -1085,6 +1286,7 @@ body.reordering .draggable-row {
   padding: 0 16px;
 
   border: 0;
+
   border-bottom:
     1px solid
     var(--line);
@@ -1213,6 +1415,7 @@ body.reordering .draggable-row {
   min-width: 0;
 
   border: 0;
+
   background: transparent;
 
   padding: 8px 0;
@@ -1338,6 +1541,7 @@ body.reordering .draggable-row {
 
 .form-row {
   display: grid;
+
   grid-template-columns:
     minmax(0, 1fr)
     minmax(0, 1fr);
@@ -1386,7 +1590,10 @@ body.reordering .draggable-row {
 
 .dance-status-selector {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+
+  grid-template-columns:
+    1fr
+    1fr;
 
   gap: 9px;
 
@@ -1439,12 +1646,14 @@ body.reordering .draggable-row {
 
 .dance-status-option.in-use.selected {
   border-color: var(--green);
+
   background: var(--green-soft);
   color: #2f6f49;
 }
 
 .dance-status-option.not-in-use.selected {
   border-color: var(--red);
+
   background: var(--red-soft);
   color: #9b3d3d;
 }
@@ -1511,6 +1720,7 @@ body.reordering .draggable-row {
 .edit-dancer-row.selected
 .checkmark {
   border-color: var(--burgundy);
+
   background: var(--burgundy);
   color: white;
 }
@@ -1618,6 +1828,7 @@ body.reordering .draggable-row {
 
 .profile-grid {
   display: grid;
+
   grid-template-columns:
     repeat(3, minmax(0, 1fr));
 
@@ -1722,47 +1933,12 @@ body.reordering .draggable-row {
 
 
 /* ============================================================
-   SELECTED DANCERS
-   ============================================================ */
-
-.selected-dancer-list {
-  display: grid;
-  gap: 7px;
-}
-
-.selected-dancer {
-  min-height: 48px;
-
-  padding: 0 13px;
-
-  border: 1px solid var(--line);
-  border-radius: 14px;
-
-  background: var(--white);
-
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.selected-dancer > span {
-  color: var(--burgundy);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-weight: 700;
-}
-
-
-/* ============================================================
    MEDIA
    ============================================================ */
 
 .media-grid {
   display: grid;
+
   grid-template-columns:
     repeat(2, minmax(0, 1fr));
 
@@ -1802,9 +1978,12 @@ body.reordering .draggable-row {
 
   background:
     rgba(0, 0, 0, 0.68);
+
   color: white;
 
   font-size: 19px;
+
+  cursor: pointer;
 }
 
 .file-box {
@@ -1851,6 +2030,7 @@ body.reordering .draggable-row {
   border:
     1.5px solid
     #b8d7c3;
+
   border-radius: 17px;
 
   background: var(--green-soft);
@@ -1975,7 +2155,6 @@ body.reordering .draggable-row {
   border-radius: 12px;
 
   background: var(--cream-2);
-
   color: var(--muted);
 
   font-size: 10px;
@@ -1987,6 +2166,7 @@ body.reordering .draggable-row {
 .attendance-buttons
 button.present.selected {
   border-color: var(--green);
+
   background: var(--green-soft);
   color: var(--green);
 }
@@ -1994,6 +2174,7 @@ button.present.selected {
 .attendance-buttons
 button.late.selected {
   border-color: var(--yellow);
+
   background: var(--yellow-soft);
   color: var(--yellow);
 }
@@ -2001,6 +2182,7 @@ button.late.selected {
 .attendance-buttons
 button.absent.selected {
   border-color: var(--red);
+
   background: var(--red-soft);
   color: var(--red);
 }
@@ -2008,6 +2190,7 @@ button.absent.selected {
 .attendance-buttons
 button.excused.selected {
   border-color: var(--purple);
+
   background: var(--purple-soft);
   color: var(--purple);
 }
@@ -2169,7 +2352,9 @@ button.excused.selected {
 .full-screen-modal
 .close-button {
   background: #272523;
+
   border-color: #373431;
+
   color: white;
 }
 
@@ -2265,7 +2450,8 @@ button.excused.selected {
 
   z-index: 500;
 
-  transform: translateX(-50%);
+  transform:
+    translateX(-50%);
 
   width: 100%;
   max-width: 430px;
@@ -2289,7 +2475,12 @@ button.excused.selected {
     var(--line);
 
   background:
-    rgba(255, 253, 249, 0.97);
+    rgba(
+      255,
+      253,
+      249,
+      0.97
+    );
 
   display: grid;
 
@@ -2346,6 +2537,8 @@ button.excused.selected {
   position: relative;
 
   justify-content: flex-end;
+
+  padding-top: 31px;
 }
 
 .home-circle {
@@ -2354,7 +2547,8 @@ button.excused.selected {
   top: -25px;
   left: 50%;
 
-  transform: translateX(-50%);
+  transform:
+    translateX(-50%);
 
   width: 58px;
   height: 58px;
@@ -2385,7 +2579,8 @@ button.excused.selected {
   top: -25px;
   left: 50%;
 
-  transform: translateX(-50%);
+  transform:
+    translateX(-50%);
 
   width: 58px;
   height: 58px;
@@ -2406,10 +2601,6 @@ button.excused.selected {
   font-size: 23px;
 }
 
-.home-nav {
-  padding-top: 31px;
-}
-
 .home-nav.active
 .nav-icon,
 .home-nav.active
@@ -2428,6 +2619,7 @@ button.excused.selected {
   position: fixed;
 
   left: 50%;
+
   bottom:
     calc(
       92px +
@@ -2437,10 +2629,16 @@ button.excused.selected {
   z-index: 3000;
 
   transform:
-    translate(-50%, 15px);
+    translate(
+      -50%,
+      15px
+    );
 
   max-width:
-    calc(100% - 36px);
+    calc(
+      100% -
+      36px
+    );
 
   padding:
     10px
@@ -2449,7 +2647,12 @@ button.excused.selected {
   border-radius: 999px;
 
   background:
-    rgba(20, 18, 16, 0.92);
+    rgba(
+      20,
+      18,
+      16,
+      0.92
+    );
 
   color: white;
 
@@ -2457,6 +2660,7 @@ button.excused.selected {
   font-weight: 700;
 
   opacity: 0;
+
   pointer-events: none;
 
   transition:
@@ -2469,7 +2673,10 @@ button.excused.selected {
   opacity: 1;
 
   transform:
-    translate(-50%, 0);
+    translate(
+      -50%,
+      0
+    );
 }
 
 
@@ -2491,7 +2698,12 @@ button.excused.selected {
   padding: 20px;
 
   background:
-    rgba(25, 22, 19, 0.58);
+    rgba(
+      25,
+      22,
+      19,
+      0.58
+    );
 
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -2535,7 +2747,10 @@ button.excused.selected {
   border-radius: 50%;
 
   animation:
-    spin 0.8s linear infinite;
+    spin
+    0.8s
+    linear
+    infinite;
 }
 
 @keyframes spin {
@@ -2589,6 +2804,11 @@ button.excused.selected {
   .summary-box span {
     font-size: 7px;
   }
+
+  .drag-handle {
+    width: 43px;
+    min-width: 43px;
+  }
 }
 
 
@@ -2613,7 +2833,7 @@ button.excused.selected {
 
 
 /* ============================================================
-   PREVENT DESKTOP/TABLET STRETCH
+   PREVENT DESKTOP / TABLET STRETCH
    ============================================================ */
 
 @media (
@@ -2630,3 +2850,8 @@ button.excused.selected {
       rgba(0, 0, 0, 0.08);
   }
 }
+
+
+/* ============================================================
+   END OF STYLES.CSS
+   ============================================================ */
