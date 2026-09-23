@@ -42,7 +42,8 @@
 
   <title>VUK Karadžić Probe</title>
 
-  <link rel="stylesheet" href="./styles.css">
+  <!-- v5 added to help iPhone/iPad load the newest CSS -->
+  <link rel="stylesheet" href="./styles.css?v=5">
 </head>
 
 
@@ -73,6 +74,7 @@
     <button
       id="ensembleButton"
       class="ensemble-pill"
+      type="button"
     >
       <span id="currentEnsembleName">
         Third
@@ -109,8 +111,8 @@
         </h1>
 
         <p>
-          Your calendar, dances and roster
-          follow this selection.
+          Your calendar, dances, roster and
+          instructor notes follow this selection.
         </p>
 
       </div>
@@ -152,6 +154,7 @@
         <button
           id="todayButton"
           class="today-button"
+          type="button"
         >
           Today
         </button>
@@ -166,6 +169,8 @@
           <button
             id="previousMonth"
             class="calendar-arrow"
+            type="button"
+            aria-label="Previous month"
           >
             ‹
           </button>
@@ -177,6 +182,8 @@
           <button
             id="nextMonth"
             class="calendar-arrow"
+            type="button"
+            aria-label="Next month"
           >
             ›
           </button>
@@ -214,6 +221,8 @@
         <button
           id="addPracticeButton"
           class="round-add"
+          type="button"
+          aria-label="Add practice"
         >
           +
         </button>
@@ -257,10 +266,18 @@
         <button
           id="addDanceButton"
           class="round-add"
+          type="button"
+          aria-label="Add dance"
         >
           +
         </button>
 
+      </div>
+
+
+      <div class="reorder-hint">
+        Use the reorder controls to arrange dances
+        in the order you want.
       </div>
 
 
@@ -300,6 +317,8 @@
         <button
           id="addDancerButton"
           class="round-add"
+          type="button"
+          aria-label="Add dancer"
         >
           +
         </button>
@@ -320,6 +339,13 @@
           autocomplete="off"
         >
 
+      </div>
+
+
+      <div class="roster-help">
+        Boys and girls stay separate. Use the
+        reorder controls to arrange names within
+        each group.
       </div>
 
 
@@ -348,57 +374,135 @@
             Settings
           </h1>
 
+          <p id="settingsEnsemble"></p>
+
         </div>
 
       </div>
 
 
-      <div class="settings-card">
+      <!-- =========================
+           SHARED INSTRUCTOR NOTES
+      ========================== -->
+      <div class="settings-section">
 
-        <button id="manageEnsembles">
+        <div class="settings-section-heading">
 
-          <span>
-            Manage Ensembles
-          </span>
+          <div>
 
-          <span>
-            ›
-          </span>
+            <div class="eyebrow">
+              SHARED
+            </div>
 
-        </button>
+            <h2>
+              Instructor Notes
+            </h2>
 
+          </div>
 
-        <button id="accountsButton">
-
-          <span>
-            Instructor Accounts
-          </span>
-
-          <span>
-            ›
-          </span>
-
-        </button>
+        </div>
 
 
-        <button id="permissionsButton">
+        <div class="instructor-notes-card">
 
-          <span>
-            Permissions
-          </span>
+          <p class="instructor-notes-description">
+            Notes for the currently selected ensemble.
+            These notes are shared with the other
+            instructors using VUK Probe.
+          </p>
 
-          <span>
-            ›
-          </span>
 
-        </button>
+          <textarea
+            id="instructorNotes"
+            class="instructor-notes-input"
+            placeholder="Leave notes for the other instructors..."
+            aria-label="Instructor notes"
+          ></textarea>
+
+
+          <div
+            id="notesSaveStatus"
+            class="notes-save-status"
+          >
+            Changes save automatically.
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           APP SETTINGS
+      ========================== -->
+      <div class="settings-section">
+
+        <div class="settings-section-heading">
+
+          <div class="eyebrow">
+            APP SETTINGS
+          </div>
+
+        </div>
+
+
+        <div class="settings-card">
+
+          <button
+            id="manageEnsembles"
+            type="button"
+          >
+
+            <span>
+              Manage Ensembles
+            </span>
+
+            <span>
+              ›
+            </span>
+
+          </button>
+
+
+          <button
+            id="accountsButton"
+            type="button"
+          >
+
+            <span>
+              Instructor Accounts
+            </span>
+
+            <span>
+              ›
+            </span>
+
+          </button>
+
+
+          <button
+            id="permissionsButton"
+            type="button"
+          >
+
+            <span>
+              Permissions
+            </span>
+
+            <span>
+              ›
+            </span>
+
+          </button>
+
+        </div>
 
       </div>
 
 
       <p class="settings-note">
-        Shared accounts and permanent cloud
-        file storage can be connected later.
+        Instructor notes belong to the selected
+        ensemble and sync with the shared database.
       </p>
 
     </section>
@@ -415,6 +519,7 @@
     <button
       class="nav-button"
       data-page="calendarPage"
+      type="button"
     >
 
       <span class="nav-icon">
@@ -431,6 +536,7 @@
     <button
       class="nav-button"
       data-page="dancesPage"
+      type="button"
     >
 
       <span class="nav-icon">
@@ -447,6 +553,7 @@
     <button
       class="nav-button home-nav active"
       data-page="homePage"
+      type="button"
     >
 
       <span class="home-circle">
@@ -463,6 +570,7 @@
     <button
       class="nav-button"
       data-page="dancersPage"
+      type="button"
     >
 
       <span class="nav-icon">
@@ -479,6 +587,7 @@
     <button
       class="nav-button"
       data-page="settingsPage"
+      type="button"
     >
 
       <span class="nav-icon">
@@ -502,7 +611,11 @@
     class="modal-overlay"
   >
 
-    <div class="modal">
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+    >
 
 
       <div class="modal-header">
@@ -511,6 +624,7 @@
         <button
           id="modalBack"
           class="modal-back hidden"
+          type="button"
         >
           ‹ Back
         </button>
@@ -533,6 +647,8 @@
         <button
           id="closeModal"
           class="close-button"
+          type="button"
+          aria-label="Close"
         >
           ×
         </button>
@@ -546,51 +662,150 @@
 
   </div>
 
+
+  <!-- =========================
+       SMALL APP MESSAGE
+  ========================== -->
+  <div
+    id="appToast"
+    class="app-toast"
+    aria-live="polite"
+  ></div>
+
+
+  <!-- =========================
+       LOADING OVERLAY FOR MEDIA
+  ========================== -->
+  <div
+    id="uploadOverlay"
+    class="upload-overlay"
+    aria-hidden="true"
+  >
+
+    <div class="upload-box">
+
+      <div class="upload-spinner"></div>
+
+      <strong id="uploadMessage">
+        Uploading...
+      </strong>
+
+    </div>
+
+  </div>
+
 </div>
 
 
 <!-- =========================
-     JAVASCRIPT
+     FIREBASE
 ========================== -->
-<!-- FIREBASE -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+  import {
+    initializeApp
+  } from
+    "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+
   import {
     getDatabase,
-    ref,
+    ref as dbRef,
     set,
+    update,
+    remove,
+    push,
     onValue
-  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+  } from
+    "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+
+  import {
+    getStorage,
+    ref as storageRef,
+    uploadBytes,
+    getDownloadURL,
+    deleteObject
+  } from
+    "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
+
 
   const firebaseConfig = {
-    apiKey: "AIzaSyBHpQLmdhBoImJorhBrQhSHHwml1XEEuso",
-    authDomain: "vuk-probe.firebaseapp.com",
-    databaseURL: "https://vuk-probe-default-rtdb.firebaseio.com",
-    projectId: "vuk-probe",
-    storageBucket: "vuk-probe.firebasestorage.app",
-    messagingSenderId: "895894448380",
-    appId: "1:895894448380:web:7f576b91e7da1da562cf79"
+
+    apiKey:
+      "AIzaSyBHpQLmdhBoImJorhBrQhSHHwml1XEEuso",
+
+    authDomain:
+      "vuk-probe.firebaseapp.com",
+
+    databaseURL:
+      "https://vuk-probe-default-rtdb.firebaseio.com",
+
+    projectId:
+      "vuk-probe",
+
+    storageBucket:
+      "vuk-probe.firebasestorage.app",
+
+    messagingSenderId:
+      "895894448380",
+
+    appId:
+      "1:895894448380:web:7f576b91e7da1da562cf79"
+
   };
 
-  const firebaseApp = initializeApp(firebaseConfig);
-  const database = getDatabase(firebaseApp);
 
-  // Make Firebase available to our existing script.js
+  const firebaseApp =
+    initializeApp(firebaseConfig);
+
+
+  const database =
+    getDatabase(firebaseApp);
+
+
+  const storage =
+    getStorage(firebaseApp);
+
+
+  /*
+    Make Firebase available to script.js.
+
+    Database and Storage refs have different names
+    so they cannot conflict with one another.
+  */
   window.vukFirebase = {
+
     database,
-    ref,
+    dbRef,
     set,
-    onValue
+    update,
+    remove,
+    push,
+    onValue,
+
+    storage,
+    storageRef,
+    uploadBytes,
+    getDownloadURL,
+    deleteObject
+
   };
 
-  window.dispatchEvent(new Event("vukFirebaseReady"));
-</script>
-  
-  
-  
-  
 
-<script src="./script.js"></script>
+  window.dispatchEvent(
+    new Event("vukFirebaseReady")
+  );
+
+</script>
+
+
+<!-- =========================
+     MAIN APP JAVASCRIPT
+========================== -->
+
+<!-- v5 helps prevent iPhone/iPad from using old cached JS -->
+<script src="./script.js?v=5"></script>
 
 
 </body>
