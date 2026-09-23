@@ -1,7 +1,6 @@
 /* ============================================================
    VUK KARADZIC PROBE
-   styles.css — V9
-   iPhone-first layout
+   styles.css — V9.1 CLEAN
    ============================================================ */
 
 :root {
@@ -53,6 +52,7 @@ html {
 
 body {
   margin: 0;
+
   min-height: 100vh;
   min-height: 100dvh;
 
@@ -244,6 +244,7 @@ select {
   font-size: clamp(38px, 11vw, 50px);
   line-height: 0.98;
   font-weight: 700;
+
   letter-spacing: -1.3px;
 }
 
@@ -570,18 +571,17 @@ select {
 
 
 /* ============================================================
-   DANCER / DANCE LISTS
+   MAIN DANCER LIST
    ============================================================ */
 
-.roster-list,
-.dance-group-list {
+.roster-list {
   display: grid;
   gap: 9px;
 }
 
-.dancer-row,
-.dance-row {
+.dancer-row {
   width: 100%;
+  min-height: 65px;
 
   border: 1.5px solid var(--line);
   border-radius: 18px;
@@ -592,26 +592,23 @@ select {
 
   overflow: hidden;
 
-  touch-action: pan-y;
-}
-
-
-/* ============================================================
-   MAIN DANCER ROW
-   Button + dedicated drag handle
-   ============================================================ */
-
-.dancer-row {
   display: flex;
   align-items: stretch;
+
+  touch-action: pan-y;
 }
 
 .dancer-open {
   flex: 1;
   min-width: 0;
+
   min-height: 65px;
 
-  padding: 10px 8px 10px 13px;
+  padding:
+    10px
+    10px
+    10px
+    13px;
 
   border: 0;
   background: transparent;
@@ -663,11 +660,16 @@ select {
 }
 
 .dancer-height {
-  margin-left: 8px;
+  flex: 0 0 auto;
+
+  margin-left: auto;
+  padding-left: 8px;
 
   color: var(--muted);
 
   font-size: 13px;
+
+  white-space: nowrap;
 }
 
 .chevron,
@@ -686,24 +688,32 @@ select {
 
 /* ============================================================
    DRAG HANDLE
-   Only this starts dancer dragging
+   ALWAYS FAR RIGHT
    ============================================================ */
 
 .drag-handle {
-  width: 46px;
-  min-width: 46px;
+  flex: 0 0 48px;
+
+  width: 48px;
+  min-width: 48px;
+
+  margin: 0;
 
   border: 0;
   border-left: 1px solid var(--line);
 
-  background: #faf6ef;
-  color: #8b837a;
+  border-radius: 0;
+
+  background: #f5f2ed;
+  color: #77716b;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 27px;
+  align-self: stretch;
+
+  font-size: 25px;
   line-height: 1;
   font-weight: 600;
 
@@ -718,15 +728,35 @@ select {
 .drag-handle:active {
   cursor: grabbing;
 
-  background: #f1e9dd;
+  background: #eee7dd;
 
   color: var(--burgundy);
 }
 
 
 /* ============================================================
-   DANCE ROWS
+   DANCE LIST
    ============================================================ */
+
+.dance-group-list {
+  display: grid;
+  gap: 9px;
+}
+
+.dance-row {
+  width: 100%;
+
+  border: 1.5px solid var(--line);
+  border-radius: 18px;
+
+  background: var(--white);
+
+  box-shadow: var(--shadow);
+
+  overflow: hidden;
+
+  touch-action: pan-y;
+}
 
 .dance-row.in-use {
   border-left:
@@ -803,14 +833,16 @@ select {
   -webkit-user-select: none;
 }
 
-.draggable-row.dragging {
+.draggable-row.dragging,
+.dancer-row.dragging,
+.dance-dancer-row.dragging {
   position: relative;
 
   z-index: 30;
 
   opacity: 0.82;
 
-  transform: scale(1.025);
+  transform: scale(1.015);
 
   box-shadow:
     0 14px 30px
@@ -829,32 +861,58 @@ body.reordering .drag-handle {
 
 /* ============================================================
    DANCERS INSIDE A DANCE
+   SAME VISUAL STYLE AS MAIN ROSTER
    ============================================================ */
 
 .dance-assigned-dancers {
-  display: grid;
-  gap: 22px;
+  display: block;
 }
 
 .dance-dancer-section {
   width: 100%;
+
+  margin-bottom: 26px;
 }
 
-.dance-dancer-section .roster-title {
-  margin-bottom: 10px;
+.dance-dancer-section .roster-title,
+.dance-dancer-section .mini-group-title {
+  margin:
+    0
+    0
+    11px;
+
+  font-size: 16px;
+  line-height: 1;
+
+  font-weight: 900;
+  letter-spacing: 2.1px;
+}
+
+.dance-dancer-section .boys {
+  color: var(--boy);
+}
+
+.dance-dancer-section .girls {
+  color: var(--girl);
+}
+
+.dance-dancer-section .other {
+  color: #7c746d;
 }
 
 .dance-dancer-order-list {
   display: grid;
-  gap: 8px;
+  gap: 9px;
 }
 
 .dance-dancer-row {
   width: 100%;
-  min-height: 56px;
+  min-height: 65px;
+
+  margin: 0;
 
   border: 1.5px solid var(--line);
-  border-radius: 16px;
+  border-radius: 18px;
 
   background: var(--white);
 
@@ -863,34 +921,93 @@ body.reordering .drag-handle {
 
   overflow: hidden;
 
-  box-shadow:
-    0 4px 14px
-    rgba(70, 50, 30, 0.045);
+  box-shadow: var(--shadow);
+
+  touch-action: pan-y;
 }
 
 .dance-dancer-main {
   flex: 1;
   min-width: 0;
 
+  min-height: 65px;
+
   padding:
-    9px
-    8px
-    9px
+    10px
+    10px
+    10px
     13px;
 
   display: flex;
   align-items: center;
-  gap: 8px;
+}
+
+.dance-dancer-main .dancer-number {
+  width: 48px;
+  min-width: 48px;
+
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.dance-dancer-section
+[data-dance-dancer-list="boys"]
+.dancer-number {
+  color: var(--boy);
+}
+
+.dance-dancer-section
+[data-dance-dancer-list="girls"]
+.dancer-number {
+  color: var(--girl);
+}
+
+.dance-dancer-section
+[data-dance-dancer-list="other"]
+.dancer-number {
+  color: #7c746d;
 }
 
 .dance-dancer-name {
+  flex: 1;
   min-width: 0;
+
+  margin: 0;
 
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 
-  font-size: 15px;
+  color: var(--text);
+
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.dance-dancer-row > .drag-handle {
+  flex: 0 0 48px;
+
+  width: 48px;
+  min-width: 48px;
+
+  margin: 0;
+
+  border: 0;
+  border-left: 1px solid var(--line);
+
+  border-radius: 0;
+
+  background: #f5f2ed;
+
+  align-self: stretch;
 }
 
 
@@ -1094,9 +1211,19 @@ body.reordering .drag-handle {
   opacity: 0.25;
 }
 
+
+/* ============================================================
+   CALENDAR PRACTICES AREA
+   + BUTTON HAS ITS OWN ROW
+   ============================================================ */
+
+#calendarPage {
+  position: relative;
+}
+
 .practice-heading {
   margin:
-    27px
+    24px
     0
     12px;
 
@@ -1105,16 +1232,28 @@ body.reordering .drag-handle {
   font-weight: 800;
 }
 
-#calendarPage {
-  position: relative;
-}
+/*
+  Important:
+  this is intentionally NOT absolute.
+  It sits below the calendar and above
+  the practice cards.
+*/
 
 #addPracticeButton {
-  position: absolute;
+  position: static;
 
-  right: 18px;
+  width: 54px;
+  height: 54px;
 
-  margin-top: 15px;
+  margin:
+    0
+    0
+    14px
+    auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
@@ -1186,6 +1325,7 @@ body.reordering .drag-handle {
   width: 100%;
 
   display: grid;
+
   grid-template-columns:
     repeat(2, minmax(0, 1fr));
 
@@ -1329,7 +1469,7 @@ body.reordering .drag-handle {
 
 
 /* ============================================================
-   MODAL OVERLAY
+   MODAL
    ============================================================ */
 
 .modal-overlay {
@@ -1432,10 +1572,6 @@ body.reordering .drag-handle {
 
 .modal-back.hidden {
   visibility: hidden;
-}
-
-.modal-back::first-letter {
-  font-size: 21px;
 }
 
 .modal-title-area {
@@ -1585,7 +1721,7 @@ body.reordering .drag-handle {
 
 
 /* ============================================================
-   DANCE STATUS SELECTOR
+   DANCE STATUS
    ============================================================ */
 
 .dance-status-selector {
@@ -2530,7 +2666,7 @@ button.excused.selected {
 
 
 /* ============================================================
-   LARGE CIRCLE HOME BUTTON
+   LARGE HOME BUTTON
    ============================================================ */
 
 .nav-button.home-nav {
@@ -2762,12 +2898,10 @@ button.excused.selected {
 
 
 /* ============================================================
-   SMALL iPHONES
+   SMALL IPHONES
    ============================================================ */
 
-@media (
-  max-width: 370px
-) {
+@media (max-width: 370px) {
   .page {
     padding-left: 14px;
     padding-right: 14px;
@@ -2792,8 +2926,7 @@ button.excused.selected {
   }
 
   #addDanceButton,
-  #addDancerButton,
-  #addPracticeButton {
+  #addDancerButton {
     right: 14px;
   }
 
@@ -2805,22 +2938,28 @@ button.excused.selected {
     font-size: 7px;
   }
 
-  .drag-handle {
-    width: 43px;
-    min-width: 43px;
+  .drag-handle,
+  .dance-dancer-row > .drag-handle {
+    flex-basis: 44px;
+
+    width: 44px;
+    min-width: 44px;
+  }
+
+  .dancer-height {
+    font-size: 12px;
   }
 }
 
 
 /* ============================================================
-   iPHONE 14 PRO / SIMILAR
+   IPHONE 14 PRO / SIMILAR
    ============================================================ */
 
-@media (
-  min-width: 371px
-) and (
-  max-width: 430px
-) {
+@media
+(min-width: 371px)
+and
+(max-width: 430px) {
   #app {
     width: 100%;
   }
@@ -2833,12 +2972,10 @@ button.excused.selected {
 
 
 /* ============================================================
-   PREVENT DESKTOP / TABLET STRETCH
+   DESKTOP / TABLET
    ============================================================ */
 
-@media (
-  min-width: 431px
-) {
+@media (min-width: 431px) {
   body {
     background: #e9e3d9;
   }
@@ -2853,5 +2990,5 @@ button.excused.selected {
 
 
 /* ============================================================
-   END OF STYLES.CSS
+   END OF STYLES.CSS — V9.1 CLEAN
    ============================================================ */
