@@ -7263,3 +7263,736 @@ renderAll();
 /* ============================================================
    END V7 UPDATE
    ============================================================ */
+
+
+
+
+/* ============================================================
+   VUK PROBE — DANCE-SPECIFIC DANCER ORDER
+   Boys / Girls separated + independent drag ordering
+   ============================================================ */
+
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+
+function danceOrderedDancers(dance) {
+  const assignedIds =
+    Array.isArray(dance.dancerIds)
+      ? dance.dancerIds
+      : [];
+
+  /*
+    dancerOrder is unique to THIS dance.
+    If an older dance doesn't have it yet,
+    start with its existing dancerIds.
+  */
+
+  if (!Array.isArray(dance.dancerOrder)) {
+    dance.dancerOrder = [
+      ...assignedIds
+    ];
+  }
+
+
+  /*
+    Remove dancers no longer assigned.
+  */
+
+  dance.dancerOrder =
+    dance.dancerOrder.filter(
+      id =>
+        assignedIds.some(
+          assignedId =>
+            sameId(
+              assignedId,
+              id
+            )
+        )
+    );
+
+
+  /*
+    Add newly assigned dancers without
+    disturbing the saved custom order.
+  */
+
+  assignedIds.forEach(id => {
+
+    const alreadyThere =
+      dance.dancerOrder.some(
+        orderedId =>
+          sameId(
+            orderedId,
+            id
+          )
+      );
+
+
+    if (!alreadyThere) {
+      dance.dancerOrder.push(id);
+    }
+
+  });
+
+
+  return dance.dancerOrder
+    .map(id =>
+      findDancer(id)
+    )
+    .filter(Boolean);
+}
+
+
+
+function danceDancerGroupHTML(
+  label,
+  className,
+  dancers
+) {
+
+  if (!dancers.length) {
+    return "";
+  }
+
+
+  return `
+    <section
+      class="dance-dancer-section"
+    >
+
+      <div
+        class="dance-dancer-group-title ${className}"
+      >
+        ${label}
+      </div>
+
+
+      <div
+        class="dance-dancer-order-list"
+        data-dance-dancer-list="${className}"
+      >
+
+        ${dancers
+          .map(
+            (dancer, index) => `
+              <div
+                class="dance-dancer-order-row"
+                data-dance-dancer-row="${escapeHTML(
+                  dancer.id
+                )}"
+              >
+
+                <div
+                  class="dance-dancer-number ${className}"
+                >
+                  ${String(
+                    index + 1
+                  ).padStart(
+                    2,
+                    "0"
+                  )}
+                </div>
+
+
+                <div
+                  class="dance-dancer-name"
+                >
+                  ${escapeHTML(
+                    dancerName(
+                      dancer
+                    )
+                  )}
+                </div>
+
+
+                <button
+                  type="button"
+                  class="drag-handle dance-dancer-drag-handle"
+                  data-dance-dancer-drag
+                  aria-label="Reorder ${escapeHTML(
+                    dancerName(
+                      dancer
+                    )
+                  )}"
+                >
+                  ≡
+                </button>
+
+              </div>
+            `
+          )
+          .join("")}
+
+      </div>
+
+    </section>
+  `;
+}
+
+
+
+/* ============================================================
+   DANCE DETAIL PAGE
+   ============================================================ */
+
+showDance = function(id) {
+
+  const dance =
+    findDance(id);
+
+
+  if (!dance) {
+    return;
+  }
+
+
+  const orderedDancers =
+    danceOrderedDancers(
+      dance
+    );
+
+
+  const boys =
+    orderedDancers.filter(
+      dancer =>
+        dancer.gender ===
+        "Male"
+    );
+
+
+  const girls =
+    orderedDancers.filter(
+      dancer =>
+        dancer.gender ===
+        "Female"
+    );
+
+
+  const other =
+    orderedDancers.filter(
+      dancer =>
+        dancer.gender !==
+          "Male" &&
+        dancer.gender !==
+          "Female"
+    );
+
+
+  openModal({
+
+    eyebrow:
+      "REPERTOIRE",
+
+    title:
+      dance.name ||
+      "Dance",
+
+    body: `
+
+      <div
+        class="dance-detail-status ${
+          dance.inUse === false
+            ? "not-in-use"
+            : "in-use"
+        }"
+      >
+        ${
+          dance.inUse === false
+            ? "NOT IN USE"
+            : "IN USE"
+        }
+      </div>
+
+
+      <div class="detail-card">
+
+        <span class="detail-label">
+          Choreographer
+        </span>
+
+
+        <div class="detail-value">
+          ${escapeHTML(
+            dance.choreographer ||
+            "—"
+          )}
+        </div>
+
+      </div>
+
+
+      ${
+        orderedDancers.length
+          ? `
+            <h3 class="detail-heading">
+              Dancers
+            </h3>
+
+
+            <div
+              class="dance-dancer-groups"
+              data-dance-order-id="${escapeHTML(
+                dance.id
+              )}"
+            >
+
+              ${danceDancerGroupHTML(
+                "BOYS",
+                "boys",
+                boys
+              )}
+
+
+              ${danceDancerGroupHTML(
+                "GIRLS",
+                "girls",
+                girls
+              )}
+
+
+              ${danceDancerGroupHTML(
+                "OTHER",
+                "other",
+                other
+              )}
+
+            </div>
+          `
+          : ""
+      }
+
+
+      ${danceMediaHTML(
+        dance
+      )}
+
+
+      <button
+        type="button"
+        class="primary-button"
+        id="editDanceButton"
+      >
+        Edit Dance
+      </button>
+
+    `
+  });
+
+
+  document
+    .getElementById(
+      "editDanceButton"
+    )
+    ?.addEventListener(
+      "click",
+      () =>
+        showDanceForm(
+          dance.id
+        )
+    );
+
+
+  setupDanceMediaEvents(
+    dance
+  );
+
+
+  setupDanceDancerReordering(
+    dance
+  );
+};
+
+
+
+/* ============================================================
+   DANCE DANCER DRAGGING
+   ============================================================ */
+
+let danceDancerDragState =
+  null;
+
+
+function setupDanceDancerReordering(
+  dance
+) {
+
+  document
+    .querySelectorAll(
+      "[data-dance-dancer-drag]"
+    )
+    .forEach(handle => {
+
+      handle.addEventListener(
+        "pointerdown",
+        event => {
+
+          if (
+            event.pointerType ===
+              "mouse" &&
+            event.button !== 0
+          ) {
+            return;
+          }
+
+
+          event.preventDefault();
+
+
+          const row =
+            handle.closest(
+              "[data-dance-dancer-row]"
+            );
+
+
+          const list =
+            handle.closest(
+              "[data-dance-dancer-list]"
+            );
+
+
+          if (
+            !row ||
+            !list
+          ) {
+            return;
+          }
+
+
+          danceDancerDragState = {
+            pointerId:
+              event.pointerId,
+
+            row,
+
+            list,
+
+            dance,
+
+            startY:
+              event.clientY,
+
+            active:
+              false
+          };
+
+
+          handle.setPointerCapture?.(
+            event.pointerId
+          );
+
+        }
+      );
+
+
+      handle.addEventListener(
+        "pointermove",
+        moveDanceDancer
+      );
+
+
+      handle.addEventListener(
+        "pointerup",
+        endDanceDancerDrag
+      );
+
+
+      handle.addEventListener(
+        "pointercancel",
+        endDanceDancerDrag
+      );
+
+    });
+}
+
+
+
+function moveDanceDancer(event) {
+
+  const state =
+    danceDancerDragState;
+
+
+  if (
+    !state ||
+    event.pointerId !==
+      state.pointerId
+  ) {
+    return;
+  }
+
+
+  const distance =
+    Math.abs(
+      event.clientY -
+      state.startY
+    );
+
+
+  if (
+    !state.active &&
+    distance < 5
+  ) {
+    return;
+  }
+
+
+  if (!state.active) {
+
+    state.active =
+      true;
+
+
+    state.row.classList.add(
+      "dragging"
+    );
+
+
+    document.body.classList.add(
+      "reordering"
+    );
+  }
+
+
+  event.preventDefault();
+
+
+  const element =
+    document.elementFromPoint(
+      event.clientX,
+      event.clientY
+    );
+
+
+  if (!element) {
+    return;
+  }
+
+
+  const targetList =
+    element.closest(
+      "[data-dance-dancer-list]"
+    );
+
+
+  /*
+    IMPORTANT:
+    Boys can only reorder inside BOYS.
+    Girls can only reorder inside GIRLS.
+  */
+
+  if (
+    !targetList ||
+    targetList !==
+      state.list
+  ) {
+    return;
+  }
+
+
+  const rows =
+    [
+      ...targetList.querySelectorAll(
+        "[data-dance-dancer-row]"
+      )
+    ]
+      .filter(
+        row =>
+          row !==
+          state.row
+      );
+
+
+  const before =
+    rows.find(row => {
+
+      const rect =
+        row.getBoundingClientRect();
+
+
+      return (
+        event.clientY <
+        rect.top +
+          rect.height / 2
+      );
+    });
+
+
+  if (before) {
+
+    targetList.insertBefore(
+      state.row,
+      before
+    );
+
+  } else {
+
+    targetList.appendChild(
+      state.row
+    );
+  }
+
+
+  refreshDanceDancerNumbers(
+    targetList
+  );
+}
+
+
+
+function refreshDanceDancerNumbers(
+  list
+) {
+
+  list
+    .querySelectorAll(
+      "[data-dance-dancer-row]"
+    )
+    .forEach(
+      (row, index) => {
+
+        const number =
+          row.querySelector(
+            ".dance-dancer-number"
+          );
+
+
+        if (number) {
+
+          number.textContent =
+            String(
+              index + 1
+            ).padStart(
+              2,
+              "0"
+            );
+        }
+
+      }
+    );
+}
+
+
+
+async function endDanceDancerDrag(
+  event
+) {
+
+  const state =
+    danceDancerDragState;
+
+
+  if (
+    !state ||
+    event.pointerId !==
+      state.pointerId
+  ) {
+    return;
+  }
+
+
+  const wasActive =
+    state.active;
+
+
+  state.row.classList.remove(
+    "dragging"
+  );
+
+
+  document.body.classList.remove(
+    "reordering"
+  );
+
+
+  const dance =
+    state.dance;
+
+
+  danceDancerDragState =
+    null;
+
+
+  if (!wasActive) {
+    return;
+  }
+
+
+  /*
+    Read Boys / Girls / Other
+    directly from the new screen order.
+  */
+
+  const newOrder =
+    [];
+
+
+  document
+    .querySelectorAll(
+      "[data-dance-dancer-list]"
+    )
+    .forEach(list => {
+
+      list
+        .querySelectorAll(
+          "[data-dance-dancer-row]"
+        )
+        .forEach(row => {
+
+          newOrder.push(
+            row.dataset
+              .danceDancerRow
+          );
+
+        });
+
+    });
+
+
+  dance.dancerOrder =
+    newOrder;
+
+
+  /*
+    Keep dancerIds synchronized with
+    the assigned dancers, while the
+    separate dancerOrder controls the
+    order for this dance only.
+  */
+
+  saveLocalOnly();
+
+
+  await saveCloudPath(
+    selectedEnsembleCloudPath(),
+    getSelectedEnsemble()
+  );
+
+
+  showToast(
+    "Dance order saved"
+  );
+}
+
+
+
+/* ============================================================
+   KEEP CUSTOM ORDER WHEN EDITING DANCE ASSIGNMENTS
+   ============================================================ */
+
+/*
+  The existing Edit Dance screen can continue
+  adding/removing dancers normally.
+
+  Whenever the dance is opened again,
+  danceOrderedDancers() automatically:
+    - keeps existing custom positions
+    - removes unassigned dancers
+    - adds newly assigned dancers at the end
+*/
+
+
+/* ============================================================
+   END DANCE-SPECIFIC DANCER ORDER UPDATE
+   ============================================================ */
