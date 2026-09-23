@@ -1,7 +1,7 @@
 /* ============================================================
    VUK KARADZIC PROBE
    SCRIPT.JS
-   iPhone-first version
+   Clean rebuild + recurrence + drag ordering
    ============================================================ */
 
 const STORAGE_KEY = "vukProbeV4";
@@ -16,56 +16,114 @@ const ENSEMBLE_NAMES = [
   "Fifth Ensemble"
 ];
 
+
 /* ============================================================
    DOM
    ============================================================ */
 
-const app = document.getElementById("app");
+const app =
+  document.getElementById("app");
 
-const ensembleButton = document.getElementById("ensembleButton");
-const ensembleList = document.getElementById("ensembleList");
+const ensembleButton =
+  document.getElementById("ensembleButton");
 
-const pages = document.querySelectorAll(".page");
-const navButtons = document.querySelectorAll(".nav-button");
+const ensembleList =
+  document.getElementById("ensembleList");
 
-const danceEnsemble = document.getElementById("danceEnsemble");
-const dancerEnsemble = document.getElementById("dancerEnsemble");
-const settingsEnsemble = document.getElementById("settingsEnsemble");
+const pages =
+  document.querySelectorAll(".page");
 
-const danceList = document.getElementById("danceList");
-const dancerList = document.getElementById("dancerList");
-const dancerSearch = document.getElementById("dancerSearch");
+const navButtons =
+  document.querySelectorAll(".nav-button");
 
-const addDanceButton = document.getElementById("addDanceButton");
-const addDancerButton = document.getElementById("addDancerButton");
+const danceEnsemble =
+  document.getElementById("danceEnsemble");
 
-const calendarMonth = document.getElementById("calendarMonth");
-const calendarGrid = document.getElementById("calendarGrid");
-const todayButton = document.getElementById("todayButton");
-const practiceList = document.getElementById("practiceList");
-const addPracticeButton = document.getElementById("addPracticeButton");
+const dancerEnsemble =
+  document.getElementById("dancerEnsemble");
 
-const modalOverlay = document.getElementById("modalOverlay");
-const modal = modalOverlay?.querySelector(".modal");
-const modalBack = document.getElementById("modalBack");
-const modalEyebrow = document.getElementById("modalEyebrow");
-const modalTitle = document.getElementById("modalTitle");
-const modalBody = document.getElementById("modalBody");
-const closeModalButton = document.getElementById("closeModal");
+const settingsEnsemble =
+  document.getElementById("settingsEnsemble");
 
-const appToast = document.getElementById("appToast");
+const danceList =
+  document.getElementById("danceList");
 
-const uploadOverlay = document.getElementById("uploadOverlay");
-const uploadMessage = document.getElementById("uploadMessage");
+const dancerList =
+  document.getElementById("dancerList");
+
+const dancerSearch =
+  document.getElementById("dancerSearch");
+
+const addDanceButton =
+  document.getElementById("addDanceButton");
+
+const addDancerButton =
+  document.getElementById("addDancerButton");
+
+const calendarMonth =
+  document.getElementById("calendarMonth");
+
+const calendarGrid =
+  document.getElementById("calendarGrid");
+
+const todayButton =
+  document.getElementById("todayButton");
+
+const practiceList =
+  document.getElementById("practiceList");
+
+const addPracticeButton =
+  document.getElementById("addPracticeButton");
+
+const modalOverlay =
+  document.getElementById("modalOverlay");
+
+const modal =
+  modalOverlay?.querySelector(".modal");
+
+const modalBack =
+  document.getElementById("modalBack");
+
+const modalEyebrow =
+  document.getElementById("modalEyebrow");
+
+const modalTitle =
+  document.getElementById("modalTitle");
+
+const modalBody =
+  document.getElementById("modalBody");
+
+const closeModalButton =
+  document.getElementById("closeModal");
+
+const appToast =
+  document.getElementById("appToast");
+
+const uploadOverlay =
+  document.getElementById("uploadOverlay");
+
+const uploadMessage =
+  document.getElementById("uploadMessage");
+
+const cancelUploadButton =
+  document.getElementById(
+    "cancelUploadButton"
+  );
 
 const manageEnsemblesButton =
-  document.getElementById("manageEnsembles");
+  document.getElementById(
+    "manageEnsembles"
+  );
 
 const accountsButton =
-  document.getElementById("accountsButton");
+  document.getElementById(
+    "accountsButton"
+  );
 
 const permissionsButton =
-  document.getElementById("permissionsButton");
+  document.getElementById(
+    "permissionsButton"
+  );
 
 
 /* ============================================================
@@ -85,9 +143,11 @@ function blankEnsemble(name) {
 const defaultData = {
   selectedEnsemble: 0,
 
-  ensembles: ENSEMBLE_NAMES.map(name =>
-    blankEnsemble(name)
-  )
+  ensembles:
+    ENSEMBLE_NAMES.map(
+      name =>
+        blankEnsemble(name)
+    )
 };
 
 
@@ -122,8 +182,10 @@ function escapeHTML(value = "") {
 
 function titleCase(value = "") {
   return String(value)
-    .replace(/\b\w/g, char =>
-      char.toUpperCase()
+    .replace(
+      /\b\w/g,
+      char =>
+        char.toUpperCase()
     );
 }
 
@@ -146,24 +208,36 @@ function ensembleName() {
 function findDancer(id) {
   return getSelectedEnsemble()
     .dancers
-    .find(dancer =>
-      sameId(dancer.id, id)
+    .find(
+      dancer =>
+        sameId(
+          dancer.id,
+          id
+        )
     );
 }
 
 function findDance(id) {
   return getSelectedEnsemble()
     .dances
-    .find(dance =>
-      sameId(dance.id, id)
+    .find(
+      dance =>
+        sameId(
+          dance.id,
+          id
+        )
     );
 }
 
 function findPractice(id) {
   return getSelectedEnsemble()
     .practices
-    .find(practice =>
-      sameId(practice.id, id)
+    .find(
+      practice =>
+        sameId(
+          practice.id,
+          id
+        )
     );
 }
 
@@ -197,13 +271,16 @@ function groupDancers(gender) {
     .dancers
     .filter(
       dancer =>
-        normalGender(dancer.gender) ===
-        gender
+        normalGender(
+          dancer.gender
+        ) === gender
     );
 }
 
 function dancerName(dancer) {
-  if (!dancer) return "";
+  if (!dancer) {
+    return "";
+  }
 
   if (dancer.name) {
     return dancer.name;
@@ -218,24 +295,36 @@ function dancerName(dancer) {
 }
 
 function showToast(message) {
-  if (!appToast) return;
+  if (!appToast) {
+    return;
+  }
 
-  appToast.textContent = message;
-  appToast.classList.add("show");
+  appToast.textContent =
+    message;
 
-  clearTimeout(showToast.timer);
-
-  showToast.timer = setTimeout(
-    () =>
-      appToast.classList.remove(
-        "show"
-      ),
-    1800
+  appToast.classList.add(
+    "show"
   );
+
+  clearTimeout(
+    showToast.timer
+  );
+
+  showToast.timer =
+    setTimeout(
+      () => {
+        appToast.classList.remove(
+          "show"
+        );
+      },
+      1800
+    );
 }
 
 function showUpload(message) {
-  if (!uploadOverlay) return;
+  if (!uploadOverlay) {
+    return;
+  }
 
   if (uploadMessage) {
     uploadMessage.textContent =
@@ -245,20 +334,34 @@ function showUpload(message) {
   uploadOverlay.classList.add(
     "open"
   );
+
+  uploadOverlay.setAttribute(
+    "aria-hidden",
+    "false"
+  );
 }
 
 function hideUpload() {
   uploadOverlay?.classList.remove(
     "open"
   );
+
+  uploadOverlay?.setAttribute(
+    "aria-hidden",
+    "true"
+  );
 }
 
 function formatDate(dateString) {
-  if (!dateString) return "";
+  if (!dateString) {
+    return "";
+  }
 
-  const date = new Date(
-    dateString + "T12:00:00"
-  );
+  const date =
+    new Date(
+      dateString +
+      "T12:00:00"
+    );
 
   return date.toLocaleDateString(
     "en-CA",
@@ -272,12 +375,15 @@ function formatDate(dateString) {
 }
 
 function formatTime(time) {
-  if (!time) return "";
+  if (!time) {
+    return "";
+  }
 
   const [hour, minute] =
     time.split(":");
 
-  const date = new Date();
+  const date =
+    new Date();
 
   date.setHours(
     Number(hour),
@@ -295,6 +401,45 @@ function formatTime(time) {
   );
 }
 
+function dateToInputValue(date) {
+  const year =
+    date.getFullYear();
+
+  const month =
+    String(
+      date.getMonth() + 1
+    ).padStart(2, "0");
+
+  const day =
+    String(
+      date.getDate()
+    ).padStart(2, "0");
+
+  return (
+    `${year}-${month}-${day}`
+  );
+}
+
+function addDaysToDateString(
+  dateString,
+  numberOfDays
+) {
+  const date =
+    new Date(
+      dateString +
+      "T12:00:00"
+    );
+
+  date.setDate(
+    date.getDate() +
+    numberOfDays
+  );
+
+  return dateToInputValue(
+    date
+  );
+}
+
 
 /* ============================================================
    DATA NORMALIZATION
@@ -303,7 +448,9 @@ function formatTime(time) {
 function normalizeData(raw) {
   if (
     !raw ||
-    !Array.isArray(raw.ensembles)
+    !Array.isArray(
+      raw.ensembles
+    )
   ) {
     return structuredClone(
       defaultData
@@ -317,11 +464,13 @@ function normalizeData(raw) {
   normalized.selectedEnsemble =
     Number.isInteger(
       Number(
-        normalized.selectedEnsemble
+        normalized
+          .selectedEnsemble
       )
     )
       ? Number(
-          normalized.selectedEnsemble
+          normalized
+            .selectedEnsemble
         )
       : 0;
 
@@ -330,28 +479,41 @@ function normalizeData(raw) {
       0,
       Math.min(
         4,
-        normalized.selectedEnsemble
+        normalized
+          .selectedEnsemble
       )
     );
 
   normalized.ensembles =
     ENSEMBLE_NAMES.map(
-      (fallbackName, index) => {
+      (
+        fallbackName,
+        index
+      ) => {
+
         const old =
-          raw.ensembles[index] || {};
+          raw.ensembles[
+            index
+          ] || {};
 
         const dancers =
-          Array.isArray(old.dancers)
+          Array.isArray(
+            old.dancers
+          )
             ? old.dancers
             : [];
 
         const dances =
-          Array.isArray(old.dances)
+          Array.isArray(
+            old.dances
+          )
             ? old.dances
             : [];
 
         const practices =
-          Array.isArray(old.practices)
+          Array.isArray(
+            old.practices
+          )
             ? old.practices
             : [];
 
@@ -377,26 +539,16 @@ function normalizeData(raw) {
                   ),
 
                 notes:
-                  dancer.notes || ""
+                  dancer.notes ||
+                  ""
               })
             ),
 
           dances:
             dances.map(
-              dance => ({
-                ...dance,
+              dance => {
 
-                id:
-                  dance.id ??
-                  uid("dance"),
-
-                inUse:
-                  typeof dance.inUse ===
-                  "boolean"
-                    ? dance.inUse
-                    : true,
-
-                dancerIds:
+                const dancerIds =
                   Array.isArray(
                     dance.dancerIds
                   )
@@ -405,15 +557,81 @@ function normalizeData(raw) {
                         dance.dancers
                       )
                     ? dance.dancers
-                    : [],
+                    : [];
 
-                photos:
+                /*
+                  Each dance now keeps
+                  its OWN dancer order.
+
+                  Existing dances that
+                  don't have dancerOrder
+                  automatically begin with
+                  their existing dancerIds.
+                */
+
+                const oldOrder =
                   Array.isArray(
-                    dance.photos
+                    dance.dancerOrder
                   )
-                    ? dance.photos
-                    : []
-              })
+                    ? dance.dancerOrder
+                    : [];
+
+                const dancerOrder =
+                  oldOrder
+                    .filter(
+                      dancerId =>
+                        dancerIds.some(
+                          id =>
+                            sameId(
+                              id,
+                              dancerId
+                            )
+                        )
+                    );
+
+                dancerIds.forEach(
+                  dancerId => {
+                    if (
+                      !dancerOrder.some(
+                        id =>
+                          sameId(
+                            id,
+                            dancerId
+                          )
+                      )
+                    ) {
+                      dancerOrder.push(
+                        dancerId
+                      );
+                    }
+                  }
+                );
+
+                return {
+                  ...dance,
+
+                  id:
+                    dance.id ??
+                    uid("dance"),
+
+                  inUse:
+                    typeof dance.inUse ===
+                    "boolean"
+                      ? dance.inUse
+                      : true,
+
+                  dancerIds,
+
+                  dancerOrder,
+
+                  photos:
+                    Array.isArray(
+                      dance.photos
+                    )
+                      ? dance.photos
+                      : []
+                };
+              }
             ),
 
           practices:
@@ -427,7 +645,8 @@ function normalizeData(raw) {
 
                 attendance:
                   practice.attendance &&
-                  typeof practice.attendance ===
+                  typeof practice
+                    .attendance ===
                     "object"
                     ? practice.attendance
                     : {}
@@ -452,6 +671,7 @@ function normalizeData(raw) {
 
 function loadLocalData() {
   try {
+
     const current =
       localStorage.getItem(
         STORAGE_KEY
@@ -459,7 +679,9 @@ function loadLocalData() {
 
     if (current) {
       return normalizeData(
-        JSON.parse(current)
+        JSON.parse(
+          current
+        )
       );
     }
 
@@ -470,10 +692,14 @@ function loadLocalData() {
 
     if (old) {
       return normalizeData(
-        JSON.parse(old)
+        JSON.parse(
+          old
+        )
       );
     }
+
   } catch (error) {
+
     console.error(
       "Could not load local data:",
       error
@@ -485,7 +711,8 @@ function loadLocalData() {
   );
 }
 
-let data = loadLocalData();
+let data =
+  loadLocalData();
 
 
 /* ============================================================
@@ -493,10 +720,15 @@ let data = loadLocalData();
    ============================================================ */
 
 let firebaseReady = false;
-let applyingCloudUpdate = false;
+
+let applyingCloudUpdate =
+  false;
 
 function getFirebase() {
-  return window.vukFirebase || null;
+  return (
+    window.vukFirebase ||
+    null
+  );
 }
 
 function saveLocalOnly() {
@@ -516,11 +748,15 @@ async function saveData() {
     return;
   }
 
-  const fb = getFirebase();
+  const fb =
+    getFirebase();
 
-  if (!fb) return;
+  if (!fb) {
+    return;
+  }
 
   try {
+
     await fb.set(
       fb.dbRef(
         fb.database,
@@ -528,7 +764,9 @@ async function saveData() {
       ),
       data
     );
+
   } catch (error) {
+
     console.error(
       "Firebase save failed:",
       error
@@ -546,52 +784,75 @@ async function saveData() {
    ============================================================ */
 
 function openPage(pageId) {
-  pages.forEach(page => {
-    page.classList.toggle(
-      "active",
-      page.id === pageId
-    );
-  });
 
-  navButtons.forEach(button => {
-    const target =
-      button.dataset.page;
+  pages.forEach(
+    page => {
+      page.classList.toggle(
+        "active",
+        page.id === pageId
+      );
+    }
+  );
 
-    button.classList.toggle(
-      "active",
-      target === pageId
-    );
-  });
+  navButtons.forEach(
+    button => {
+
+      const target =
+        button.dataset.page;
+
+      button.classList.toggle(
+        "active",
+        target === pageId
+      );
+    }
+  );
 
   window.scrollTo({
     top: 0,
     behavior: "instant"
   });
 
-  renderPage(pageId);
+  renderPage(
+    pageId
+  );
 }
 
 function renderPage(pageId) {
   updateEnsembleLabels();
 
-  if (pageId === "homePage") {
+  if (
+    pageId ===
+    "homePage"
+  ) {
     renderEnsembles();
   }
 
-  if (pageId === "dancersPage") {
+  if (
+    pageId ===
+    "dancersPage"
+  ) {
     renderDancers();
   }
 
-  if (pageId === "dancesPage") {
+  if (
+    pageId ===
+    "dancesPage"
+  ) {
     renderDances();
   }
 
-  if (pageId === "calendarPage") {
+  if (
+    pageId ===
+    "calendarPage"
+  ) {
     renderCalendar();
     renderPractices();
   }
 
-  if (pageId === "settingsPage") {
+  if (
+    pageId ===
+    "settingsPage"
+  ) {
     renderSettings();
   }
 }
@@ -602,7 +863,9 @@ function renderPage(pageId) {
    ============================================================ */
 
 function removeHeaderEnsembleButton() {
-  if (!ensembleButton) return;
+  if (!ensembleButton) {
+    return;
+  }
 
   ensembleButton.style.display =
     "none";
@@ -619,7 +882,8 @@ function removeHeaderEnsembleButton() {
    ============================================================ */
 
 function updateEnsembleLabels() {
-  const name = ensembleName();
+  const name =
+    ensembleName();
 
   if (danceEnsemble) {
     danceEnsemble.textContent =
@@ -643,18 +907,26 @@ function updateEnsembleLabels() {
    ============================================================ */
 
 function renderEnsembles() {
-  if (!ensembleList) return;
+  if (!ensembleList) {
+    return;
+  }
 
   ensembleList.innerHTML =
     data.ensembles
       .map(
-        (ensemble, index) => {
+        (
+          ensemble,
+          index
+        ) => {
+
           const selected =
             index ===
             data.selectedEnsemble;
 
           const dancerCount =
-            ensemble.dancers?.length ||
+            ensemble
+              .dancers
+              ?.length ||
             0;
 
           return `
@@ -667,10 +939,16 @@ function renderEnsembles() {
               }"
               data-ensemble="${index}"
             >
-              <div class="ensemble-number">
+
+              <div
+                class="ensemble-number"
+              >
                 ${String(
                   index + 1
-                ).padStart(2, "0")}
+                ).padStart(
+                  2,
+                  "0"
+                )}
               </div>
 
               <div>
@@ -690,7 +968,10 @@ function renderEnsembles() {
                 </p>
               </div>
 
-              <span class="radio"></span>
+              <span
+                class="radio"
+              ></span>
+
             </button>
           `;
         }
@@ -701,47 +982,49 @@ function renderEnsembles() {
     .querySelectorAll(
       "[data-ensemble]"
     )
-    .forEach(button => {
-      button.addEventListener(
-        "click",
-        async () => {
-          data.selectedEnsemble =
-            Number(
-              button.dataset.ensemble
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          async () => {
+
+            data.selectedEnsemble =
+              Number(
+                button.dataset
+                  .ensemble
+              );
+
+            saveLocalOnly();
+
+            renderAll();
+
+            showToast(
+              `${ensembleName()} selected`
             );
 
-          saveLocalOnly();
-
-          /*
-             Selection is still included
-             in the existing data model,
-             but immediately update this
-             device's interface.
-          */
-
-          renderAll();
-
-          showToast(
-            `${ensembleName()} selected`
-          );
-
-          await saveData();
-        }
-      );
-    });
+            await saveData();
+          }
+        );
+      }
+    );
 }
 
 
 /* ============================================================
    DANCER LIST
+   BOYS / GIRLS + DEDICATED DRAG HANDLE
    ============================================================ */
 
 function renderDancers() {
-  if (!dancerList) return;
+  if (!dancerList) {
+    return;
+  }
 
   const query =
     String(
-      dancerSearch?.value || ""
+      dancerSearch?.value ||
+      ""
     )
       .trim()
       .toLowerCase();
@@ -766,147 +1049,202 @@ function renderDancers() {
 
   let html = "";
 
-  groups.forEach(group => {
-    let dancers =
-      groupDancers(group.gender);
+  groups.forEach(
+    group => {
 
-    if (query) {
-      dancers =
-        dancers.filter(dancer =>
-          dancerName(dancer)
-            .toLowerCase()
-            .includes(query)
+      let dancers =
+        groupDancers(
+          group.gender
         );
-    }
 
-    if (
-      group.gender === "Other" &&
-      dancers.length === 0
-    ) {
-      return;
-    }
+      if (query) {
+        dancers =
+          dancers.filter(
+            dancer =>
+              dancerName(
+                dancer
+              )
+                .toLowerCase()
+                .includes(
+                  query
+                )
+          );
+      }
 
-    html += `
-      <section
-        class="roster-section"
-      >
-        <div
-          class="roster-section-heading"
-        >
-          <div
-            class="roster-title ${group.className}"
-          >
-            ${group.label}
-          </div>
-        </div>
+      if (
+        group.gender ===
+          "Other" &&
+        dancers.length === 0
+      ) {
+        return;
+      }
 
-        <div
-          class="roster-list"
-          data-dancer-list="${group.gender}"
-        >
-    `;
-
-    if (dancers.length === 0) {
       html += `
-        <div class="empty compact-empty">
-          No dancers
-        </div>
-      `;
-    } else {
-      dancers.forEach(
-        (dancer, index) => {
-          const number =
-            String(
-              index + 1
-            ).padStart(2, "0");
+        <section
+          class="roster-section"
+        >
 
-          const numberClass =
-            group.gender === "Male"
-              ? "boy"
-              : group.gender ===
-                "Female"
-              ? "girl"
-              : "other";
-
-          html += `
+          <div
+            class="roster-section-heading"
+          >
             <div
-              class="dancer-row draggable-row"
-              data-dancer-row="${escapeHTML(
-                dancer.id
-              )}"
-              data-gender="${group.gender}"
+              class="roster-title ${group.className}"
             >
-              <button
-                type="button"
-                class="dancer-open"
-                data-open-dancer="${escapeHTML(
+              ${group.label}
+            </div>
+          </div>
+
+          <div
+            class="roster-list"
+            data-dancer-list="${group.gender}"
+          >
+      `;
+
+      if (
+        dancers.length === 0
+      ) {
+
+        html += `
+          <div
+            class="empty compact-empty"
+          >
+            No dancers
+          </div>
+        `;
+
+      } else {
+
+        dancers.forEach(
+          (
+            dancer,
+            index
+          ) => {
+
+            const number =
+              String(
+                index + 1
+              ).padStart(
+                2,
+                "0"
+              );
+
+            const numberClass =
+              group.gender ===
+                "Male"
+                ? "boy"
+                : group.gender ===
+                  "Female"
+                ? "girl"
+                : "other";
+
+            html += `
+              <div
+                class="dancer-row draggable-row"
+                data-dancer-row="${escapeHTML(
                   dancer.id
                 )}"
+                data-gender="${group.gender}"
               >
-                <span
-                  class="dancer-number ${numberClass}"
-                >
-                  ${number}
-                </span>
 
-                <span class="dancer-name">
-                  ${escapeHTML(
+                <button
+                  type="button"
+                  class="dancer-open"
+                  data-open-dancer="${escapeHTML(
+                    dancer.id
+                  )}"
+                >
+
+                  <span
+                    class="dancer-number ${numberClass}"
+                  >
+                    ${number}
+                  </span>
+
+                  <span
+                    class="dancer-name"
+                  >
+                    ${escapeHTML(
+                      dancerName(
+                        dancer
+                      )
+                    )}
+                  </span>
+
+                  <span
+                    class="dancer-height"
+                  >
+                    ${
+                      dancer.height
+                        ? escapeHTML(
+                            dancer.height
+                          )
+                        : ""
+                    }
+                  </span>
+
+                  <span
+                    class="chevron"
+                  >
+                    ›
+                  </span>
+
+                </button>
+
+                <button
+                  type="button"
+                  class="drag-handle"
+                  data-dancer-drag
+                  aria-label="Reorder ${escapeHTML(
                     dancerName(
                       dancer
                     )
-                  )}
-                </span>
+                  )}"
+                >
+                  ≡
+                </button>
 
-                <span class="dancer-height">
-                  ${
-                    dancer.height
-                      ? escapeHTML(
-                          dancer.height
-                        )
-                      : ""
-                  }
-                </span>
+              </div>
+            `;
+          }
+        );
+      }
 
-                <span class="chevron">
-                  ›
-                </span>
-              </button>
-            </div>
-          `;
-        }
-      );
+      html += `
+          </div>
+        </section>
+      `;
     }
+  );
 
-    html += `
-        </div>
-      </section>
-    `;
-  });
-
-  dancerList.innerHTML = html;
+  dancerList.innerHTML =
+    html;
 
   dancerList
     .querySelectorAll(
       "[data-open-dancer]"
     )
-    .forEach(button => {
-      button.addEventListener(
-        "click",
-        () => {
-          if (
-            Date.now() <
-            suppressClickUntil
-          ) {
-            return;
-          }
+    .forEach(
+      button => {
 
-          showDancer(
-            button.dataset
-              .openDancer
-          );
-        }
-      );
-    });
+        button.addEventListener(
+          "click",
+          () => {
+
+            if (
+              Date.now() <
+              suppressClickUntil
+            ) {
+              return;
+            }
+
+            showDancer(
+              button.dataset
+                .openDancer
+            );
+          }
+        );
+      }
+    );
 
   if (!query) {
     setupDancerReordering();
@@ -915,14 +1253,16 @@ function renderDancers() {
 
 
 /* ============================================================
-   DANCER FORM
+   DANCER PROFILE
    ============================================================ */
 
 function showDancer(id) {
   const dancer =
     findDancer(id);
 
-  if (!dancer) return;
+  if (!dancer) {
+    return;
+  }
 
   const stats =
     attendanceStatsForDancer(
@@ -930,20 +1270,40 @@ function showDancer(id) {
     );
 
   openModal({
-    eyebrow: "DANCER",
-    title: dancerName(dancer),
+    eyebrow:
+      "DANCER",
+
+    title:
+      dancerName(
+        dancer
+      ),
 
     body: `
-      <div class="profile-card">
-        <div class="profile-name">
+      <div
+        class="profile-card"
+      >
+
+        <div
+          class="profile-name"
+        >
           ${escapeHTML(
-            dancerName(dancer)
+            dancerName(
+              dancer
+            )
           )}
         </div>
 
-        <div class="profile-grid">
-          <div class="profile-stat">
-            <span>Gender</span>
+        <div
+          class="profile-grid"
+        >
+
+          <div
+            class="profile-stat"
+          >
+            <span>
+              Gender
+            </span>
+
             <strong>
               ${escapeHTML(
                 normalGender(
@@ -953,8 +1313,13 @@ function showDancer(id) {
             </strong>
           </div>
 
-          <div class="profile-stat">
-            <span>Height</span>
+          <div
+            class="profile-stat"
+          >
+            <span>
+              Height
+            </span>
+
             <strong>
               ${escapeHTML(
                 dancer.height ||
@@ -963,8 +1328,13 @@ function showDancer(id) {
             </strong>
           </div>
 
-          <div class="profile-stat">
-            <span>Shoe Size</span>
+          <div
+            class="profile-stat"
+          >
+            <span>
+              Shoe Size
+            </span>
+
             <strong>
               ${escapeHTML(
                 dancer.shoeSize ||
@@ -972,6 +1342,7 @@ function showDancer(id) {
               )}
             </strong>
           </div>
+
         </div>
 
         <button
@@ -979,8 +1350,12 @@ function showDancer(id) {
           class="attendance-profile-card"
           id="openAttendanceHistory"
         >
+
           <div>
-            <div class="attendance-percent">
+
+            <div
+              class="attendance-percent"
+            >
               <strong>
                 ${stats.percent}%
               </strong>
@@ -990,28 +1365,42 @@ function showDancer(id) {
               </span>
             </div>
 
-            <div class="not-present-percent">
+            <div
+              class="not-present-percent"
+            >
               ${
                 100 -
                 stats.percent
               }% Not Present
             </div>
+
           </div>
 
-          <span class="chevron">
+          <span
+            class="chevron"
+          >
             ›
           </span>
+
         </button>
+
       </div>
 
       ${
         dancer.notes
           ? `
-            <div class="notes-card">
-              <h3>Notes</h3>
-              <p>${escapeHTML(
-                dancer.notes
-              )}</p>
+            <div
+              class="notes-card"
+            >
+              <h3>
+                Notes
+              </h3>
+
+              <p>
+                ${escapeHTML(
+                  dancer.notes
+                )}
+              </p>
             </div>
           `
           : ""
@@ -1033,10 +1422,11 @@ function showDancer(id) {
     )
     ?.addEventListener(
       "click",
-      () =>
+      () => {
         showDancerForm(
           dancer.id
-        )
+        );
+      }
     );
 
   document
@@ -1045,28 +1435,44 @@ function showDancer(id) {
     )
     ?.addEventListener(
       "click",
-      () =>
+      () => {
         showAttendanceHistory(
           dancer.id
-        )
+        );
+      }
     );
 }
 
-function showDancerForm(id = null) {
+
+/* ============================================================
+   ADD / EDIT DANCER
+   ============================================================ */
+
+function showDancerForm(
+  id = null
+) {
   const dancer =
-    id ? findDancer(id) : null;
+    id
+      ? findDancer(id)
+      : null;
 
   openModal({
-    eyebrow: "DANCER",
+    eyebrow:
+      "DANCER",
+
     title:
       dancer
         ? "Edit Dancer"
         : "Add Dancer",
 
     body: `
-      <form id="dancerForm">
+      <form
+        id="dancerForm"
+      >
 
-        <div class="form-group">
+        <div
+          class="form-group"
+        >
           <label>
             Name
           </label>
@@ -1075,12 +1481,16 @@ function showDancerForm(id = null) {
             id="dancerNameInput"
             required
             value="${escapeHTML(
-              dancerName(dancer)
+              dancerName(
+                dancer
+              )
             )}"
           >
         </div>
 
-        <div class="form-group">
+        <div
+          class="form-group"
+        >
           <label>
             Gender
           </label>
@@ -1088,6 +1498,7 @@ function showDancerForm(id = null) {
           <select
             id="dancerGenderInput"
           >
+
             <option
               value="Male"
               ${
@@ -1098,7 +1509,7 @@ function showDancerForm(id = null) {
                   : ""
               }
             >
-              Boy
+              Male
             </option>
 
             <option
@@ -1111,7 +1522,7 @@ function showDancerForm(id = null) {
                   : ""
               }
             >
-              Girl
+              Female
             </option>
 
             <option
@@ -1126,51 +1537,55 @@ function showDancerForm(id = null) {
             >
               Other
             </option>
+
           </select>
         </div>
 
-        <div class="form-row">
+        <div
+          class="form-group"
+        >
+          <label>
+            Height
+          </label>
 
-          <div class="form-group">
-            <label>
-              Height
-            </label>
-
-            <input
-              id="dancerHeightInput"
-              value="${escapeHTML(
-                dancer?.height || ""
-              )}"
-              placeholder="e.g. 175 cm"
-            >
-          </div>
-
-          <div class="form-group">
-            <label>
-              Shoe Size
-            </label>
-
-            <input
-              id="dancerShoeInput"
-              value="${escapeHTML(
-                dancer?.shoeSize ||
-                ""
-              )}"
-            >
-          </div>
-
+          <input
+            id="dancerHeightInput"
+            value="${escapeHTML(
+              dancer?.height ||
+              ""
+            )}"
+          >
         </div>
 
-        <div class="form-group">
+        <div
+          class="form-group"
+        >
+          <label>
+            Shoe Size
+          </label>
+
+          <input
+            id="dancerShoeInput"
+            value="${escapeHTML(
+              dancer?.shoeSize ||
+              ""
+            )}"
+          >
+        </div>
+
+        <div
+          class="form-group"
+        >
           <label>
             Notes
           </label>
 
           <textarea
             id="dancerNotesInput"
-            placeholder="Notes about this dancer..."
+            rows="5"
           >${escapeHTML(
-            dancer?.notes || ""
+            dancer?.notes ||
+            ""
           )}</textarea>
         </div>
 
@@ -1210,6 +1625,7 @@ function showDancerForm(id = null) {
     ?.addEventListener(
       "submit",
       async event => {
+
         event.preventDefault();
 
         const name =
@@ -1220,15 +1636,19 @@ function showDancerForm(id = null) {
             .value
             .trim();
 
-        if (!name) return;
+        if (!name) {
+          return;
+        }
 
         const values = {
           name,
 
           gender:
-            document.getElementById(
-              "dancerGenderInput"
-            ).value,
+            document
+              .getElementById(
+                "dancerGenderInput"
+              )
+              .value,
 
           height:
             document
@@ -1256,15 +1676,20 @@ function showDancerForm(id = null) {
         };
 
         if (dancer) {
+
           Object.assign(
             dancer,
             values
           );
+
         } else {
+
           getSelectedEnsemble()
             .dancers
             .push({
-              id: uid("dancer"),
+              id:
+                uid("dancer"),
+
               ...values
             });
         }
@@ -1290,6 +1715,7 @@ function showDancerForm(id = null) {
     ?.addEventListener(
       "click",
       async () => {
+
         if (
           !confirm(
             `Delete ${dancerName(
@@ -1312,11 +1738,30 @@ function showDancerForm(id = null) {
               )
           );
 
+        /*
+          Remove deleted dancer
+          from every dance AND from
+          every dance's custom order.
+        */
+
         ensemble.dances.forEach(
           dance => {
+
             dance.dancerIds =
               (
                 dance.dancerIds ||
+                []
+              ).filter(
+                dancerId =>
+                  !sameId(
+                    dancerId,
+                    dancer.id
+                  )
+              );
+
+            dance.dancerOrder =
+              (
+                dance.dancerOrder ||
                 []
               ).filter(
                 dancerId =>
@@ -1343,11 +1788,21 @@ function showDancerForm(id = null) {
 
 
 /* ============================================================
+   END OF PART 1 OF 4
+
+   IMPORTANT:
+   Part 2 goes DIRECTLY underneath this line.
+   Do not add another <script> tag.
+   Do not commit yet.
+   ============================================================ */
+/* ============================================================
    DANCES
    ============================================================ */
 
 function renderDances() {
-  if (!danceList) return;
+  if (!danceList) {
+    return;
+  }
 
   const dances =
     getSelectedEnsemble()
@@ -1383,27 +1838,31 @@ function renderDances() {
     .querySelectorAll(
       "[data-open-dance]"
     )
-    .forEach(button => {
-      button.addEventListener(
-        "click",
-        () => {
-          if (
-            Date.now() <
-            suppressClickUntil
-          ) {
-            return;
-          }
+    .forEach(
+      button => {
+        button.addEventListener(
+          "click",
+          () => {
 
-          showDance(
-            button.dataset
-              .openDance
-          );
-        }
-      );
-    });
+            if (
+              Date.now() <
+              suppressClickUntil
+            ) {
+              return;
+            }
+
+            showDance(
+              button.dataset
+                .openDance
+            );
+          }
+        );
+      }
+    );
 
   setupDanceReordering();
 }
+
 
 function danceSectionHTML(
   label,
@@ -1414,6 +1873,7 @@ function danceSectionHTML(
     <section
       class="dance-section ${statusClass}"
     >
+
       <div
         class="dance-section-heading"
       >
@@ -1440,7 +1900,10 @@ function danceSectionHTML(
             `
             : dances
                 .map(
-                  (dance, index) =>
+                  (
+                    dance,
+                    index
+                  ) =>
                     danceRowHTML(
                       dance,
                       index,
@@ -1455,14 +1918,19 @@ function danceSectionHTML(
   `;
 }
 
+
 function danceRowHTML(
   dance,
   index,
   statusClass
 ) {
   const number =
-    String(index + 1)
-      .padStart(2, "0");
+    String(
+      index + 1
+    ).padStart(
+      2,
+      "0"
+    );
 
   return `
     <div
@@ -1471,6 +1939,7 @@ function danceRowHTML(
         dance.id
       )}"
     >
+
       <button
         type="button"
         class="dance-open"
@@ -1478,6 +1947,7 @@ function danceRowHTML(
           dance.id
         )}"
       >
+
         <span
           class="dance-number ${statusClass}"
         >
@@ -1507,11 +1977,196 @@ function danceRowHTML(
           }
         </span>
 
-        <span class="chevron">
+        <span
+          class="chevron"
+        >
           ›
         </span>
+
       </button>
+
     </div>
+  `;
+}
+
+
+/* ============================================================
+   DANCE-SPECIFIC DANCER ORDER
+   ============================================================ */
+
+function danceOrderedDancers(
+  dance
+) {
+  const assignedIds =
+    Array.isArray(
+      dance.dancerIds
+    )
+      ? dance.dancerIds
+      : [];
+
+  if (
+    !Array.isArray(
+      dance.dancerOrder
+    )
+  ) {
+    dance.dancerOrder =
+      [];
+  }
+
+  /*
+    Remove anyone who is no
+    longer assigned to this dance.
+  */
+
+  dance.dancerOrder =
+    dance.dancerOrder.filter(
+      dancerId =>
+        assignedIds.some(
+          id =>
+            sameId(
+              id,
+              dancerId
+            )
+        )
+    );
+
+  /*
+    Add newly assigned dancers
+    without disturbing the order
+    that was already saved.
+  */
+
+  assignedIds.forEach(
+    dancerId => {
+
+      const alreadyThere =
+        dance.dancerOrder.some(
+          id =>
+            sameId(
+              id,
+              dancerId
+            )
+        );
+
+      if (!alreadyThere) {
+        dance.dancerOrder.push(
+          dancerId
+        );
+      }
+    }
+  );
+
+  return dance.dancerOrder
+    .map(
+      dancerId =>
+        findDancer(
+          dancerId
+        )
+    )
+    .filter(Boolean);
+}
+
+
+function danceDancerGroupHTML(
+  label,
+  className,
+  dancers
+) {
+  if (!dancers.length) {
+    return "";
+  }
+
+  return `
+    <section
+      class="dance-dancer-section"
+    >
+
+      <div
+        class="roster-title ${className}"
+      >
+        ${label}
+      </div>
+
+      <div
+        class="dance-dancer-order-list"
+        data-dance-dancer-list="${className}"
+      >
+
+        ${dancers
+          .map(
+            (
+              dancer,
+              index
+            ) => {
+
+              const number =
+                String(
+                  index + 1
+                ).padStart(
+                  2,
+                  "0"
+                );
+
+              const numberClass =
+                className ===
+                  "boys"
+                  ? "boy"
+                  : className ===
+                    "girls"
+                  ? "girl"
+                  : "other";
+
+              return `
+                <div
+                  class="dance-dancer-row draggable-row"
+                  data-dance-dancer-row="${escapeHTML(
+                    dancer.id
+                  )}"
+                >
+
+                  <div
+                    class="dance-dancer-main"
+                  >
+
+                    <span
+                      class="dancer-number ${numberClass}"
+                    >
+                      ${number}
+                    </span>
+
+                    <strong
+                      class="dance-dancer-name"
+                    >
+                      ${escapeHTML(
+                        dancerName(
+                          dancer
+                        )
+                      )}
+                    </strong>
+
+                  </div>
+
+                  <button
+                    type="button"
+                    class="drag-handle"
+                    data-dance-dancer-drag
+                    aria-label="Reorder ${escapeHTML(
+                      dancerName(
+                        dancer
+                      )
+                    )}"
+                  >
+                    ≡
+                  </button>
+
+                </div>
+              `;
+            }
+          )
+          .join("")}
+
+      </div>
+    </section>
   `;
 }
 
@@ -1524,19 +2179,42 @@ function showDance(id) {
   const dance =
     findDance(id);
 
-  if (!dance) return;
+  if (!dance) {
+    return;
+  }
 
-  const dancers =
-    (
-      dance.dancerIds || []
-    )
-      .map(id =>
-        findDancer(id)
-      )
-      .filter(Boolean);
+  const orderedDancers =
+    danceOrderedDancers(
+      dance
+    );
+
+  const boys =
+    orderedDancers.filter(
+      dancer =>
+        normalGender(
+          dancer.gender
+        ) === "Male"
+    );
+
+  const girls =
+    orderedDancers.filter(
+      dancer =>
+        normalGender(
+          dancer.gender
+        ) === "Female"
+    );
+
+  const other =
+    orderedDancers.filter(
+      dancer =>
+        normalGender(
+          dancer.gender
+        ) === "Other"
+    );
 
   openModal({
-    eyebrow: "REPERTOIRE",
+    eyebrow:
+      "REPERTOIRE",
 
     title:
       dance.name ||
@@ -1557,12 +2235,18 @@ function showDance(id) {
         }
       </div>
 
-      <div class="detail-card">
-        <span class="detail-label">
+      <div
+        class="detail-card"
+      >
+        <span
+          class="detail-label"
+        >
           Choreographer
         </span>
 
-        <div class="detail-value">
+        <div
+          class="detail-value"
+        >
           ${escapeHTML(
             dance.choreographer ||
             "—"
@@ -1571,44 +2255,45 @@ function showDance(id) {
       </div>
 
       ${
-        dancers.length
+        orderedDancers.length
           ? `
-            <h3 class="detail-heading">
+            <h3
+              class="detail-heading"
+            >
               Dancers
             </h3>
 
             <div
-              class="selected-dancer-list"
+              class="dance-assigned-dancers"
             >
-              ${dancers
-                .map(
-                  (dancer, index) => `
-                    <div
-                      class="selected-dancer"
-                    >
-                      <span>
-                        ${String(
-                          index + 1
-                        ).padStart(
-                          2,
-                          "0"
-                        )}
-                      </span>
 
-                      <strong>
-                        ${escapeHTML(
-                          dancerName(
-                            dancer
-                          )
-                        )}
-                      </strong>
-                    </div>
-                  `
-                )
-                .join("")}
+              ${danceDancerGroupHTML(
+                "BOYS",
+                "boys",
+                boys
+              )}
+
+              ${danceDancerGroupHTML(
+                "GIRLS",
+                "girls",
+                girls
+              )}
+
+              ${danceDancerGroupHTML(
+                "OTHER",
+                "other",
+                other
+              )}
+
             </div>
           `
-          : ""
+          : `
+            <div
+              class="empty compact-empty"
+            >
+              No dancers assigned
+            </div>
+          `
       }
 
       ${danceMediaHTML(
@@ -1631,11 +2316,16 @@ function showDance(id) {
     )
     ?.addEventListener(
       "click",
-      () =>
+      () => {
         showDanceForm(
           dance.id
-        )
+        );
+      }
     );
+
+  setupDanceDancerReordering(
+    dance
+  );
 
   setupDanceMediaEvents(
     dance
@@ -1647,9 +2337,13 @@ function showDance(id) {
    DANCE FORM
    ============================================================ */
 
-function showDanceForm(id = null) {
+function showDanceForm(
+  id = null
+) {
   const dance =
-    id ? findDance(id) : null;
+    id
+      ? findDance(id)
+      : null;
 
   const selectedIds =
     dance
@@ -1667,7 +2361,8 @@ function showDanceForm(id = null) {
       : true;
 
   openModal({
-    eyebrow: "REPERTOIRE",
+    eyebrow:
+      "REPERTOIRE",
 
     title:
       dance
@@ -1675,9 +2370,13 @@ function showDanceForm(id = null) {
         : "Add Dance",
 
     body: `
-      <form id="danceForm">
+      <form
+        id="danceForm"
+      >
 
-        <div class="form-group">
+        <div
+          class="form-group"
+        >
           <label>
             Dance Name
           </label>
@@ -1686,12 +2385,15 @@ function showDanceForm(id = null) {
             id="danceNameInput"
             required
             value="${escapeHTML(
-              dance?.name || ""
+              dance?.name ||
+              ""
             )}"
           >
         </div>
 
-        <div class="form-group">
+        <div
+          class="form-group"
+        >
           <label>
             Choreographer
           </label>
@@ -1705,7 +2407,9 @@ function showDanceForm(id = null) {
           >
         </div>
 
-        <div class="form-group">
+        <div
+          class="form-group"
+        >
           <label>
             Dance Status
           </label>
@@ -1713,6 +2417,7 @@ function showDanceForm(id = null) {
           <div
             class="dance-status-selector"
           >
+
             <button
               type="button"
               class="dance-status-option in-use ${
@@ -1722,6 +2427,7 @@ function showDanceForm(id = null) {
               }"
               data-status-value="true"
             >
+
               <span
                 class="status-dot"
               ></span>
@@ -1731,6 +2437,7 @@ function showDanceForm(id = null) {
                   In Use
                 </strong>
               </span>
+
             </button>
 
             <button
@@ -1742,6 +2449,7 @@ function showDanceForm(id = null) {
               }"
               data-status-value="false"
             >
+
               <span
                 class="status-dot"
               ></span>
@@ -1751,16 +2459,22 @@ function showDanceForm(id = null) {
                   Not In Use
                 </strong>
               </span>
+
             </button>
+
           </div>
         </div>
 
-        <div class="form-group">
+        <div
+          class="form-group"
+        >
           <label>
             Dancers
           </label>
 
-          <div id="danceDancerPicker">
+          <div
+            id="danceDancerPicker"
+          >
             ${danceDancerPickerHTML(
               selectedIds
             )}
@@ -1796,92 +2510,97 @@ function showDanceForm(id = null) {
     `
   });
 
-  /*
-     STATUS BUTTONS
-     This is intentionally handled
-     directly instead of relying on
-     form values.
-  */
-
   document
     .querySelectorAll(
       "[data-status-value]"
     )
-    .forEach(button => {
-      button.addEventListener(
-        "click",
-        event => {
-          event.preventDefault();
+    .forEach(
+      button => {
 
-          selectedStatus =
-            button.dataset
-              .statusValue ===
-            "true";
+        button.addEventListener(
+          "click",
+          event => {
 
-          document
-            .querySelectorAll(
-              "[data-status-value]"
-            )
-            .forEach(option => {
-              option.classList.toggle(
-                "selected",
-                option === button
+            event.preventDefault();
+
+            selectedStatus =
+              button.dataset
+                .statusValue ===
+              "true";
+
+            document
+              .querySelectorAll(
+                "[data-status-value]"
+              )
+              .forEach(
+                option => {
+
+                  option.classList.toggle(
+                    "selected",
+                    option ===
+                      button
+                  );
+                }
               );
-            });
-        }
-      );
-    });
-
-  /*
-     DANCER CHECKBOX BUTTONS
-  */
+          }
+        );
+      }
+    );
 
   document
     .querySelectorAll(
       "[data-pick-dancer]"
     )
-    .forEach(button => {
-      button.addEventListener(
-        "click",
-        event => {
-          event.preventDefault();
+    .forEach(
+      button => {
 
-          const dancerId =
-            button.dataset
-              .pickDancer;
+        button.addEventListener(
+          "click",
+          event => {
 
-          const existingIndex =
-            selectedIds.findIndex(
-              id =>
-                sameId(
-                  id,
-                  dancerId
-                )
-            );
+            event.preventDefault();
 
-          if (
-            existingIndex >= 0
-          ) {
-            selectedIds.splice(
-              existingIndex,
-              1
-            );
+            const dancerId =
+              button.dataset
+                .pickDancer;
 
-            button.classList.remove(
-              "selected"
-            );
-          } else {
-            selectedIds.push(
-              dancerId
-            );
+            const existingIndex =
+              selectedIds
+                .findIndex(
+                  selectedId =>
+                    sameId(
+                      selectedId,
+                      dancerId
+                    )
+                );
 
-            button.classList.add(
-              "selected"
-            );
+            if (
+              existingIndex >= 0
+            ) {
+
+              selectedIds.splice(
+                existingIndex,
+                1
+              );
+
+              button.classList.remove(
+                "selected"
+              );
+
+            } else {
+
+              selectedIds.push(
+                dancerId
+              );
+
+              button.classList.add(
+                "selected"
+              );
+            }
           }
-        }
-      );
-    });
+        );
+      }
+    );
 
   document
     .getElementById(
@@ -1890,6 +2609,7 @@ function showDanceForm(id = null) {
     ?.addEventListener(
       "submit",
       async event => {
+
         event.preventDefault();
 
         const name =
@@ -1900,7 +2620,9 @@ function showDanceForm(id = null) {
             .value
             .trim();
 
-        if (!name) return;
+        if (!name) {
+          return;
+        }
 
         const values = {
           name,
@@ -1917,21 +2639,82 @@ function showDanceForm(id = null) {
             selectedStatus,
 
           dancerIds:
-            [...selectedIds]
+            [
+              ...selectedIds
+            ]
         };
 
         if (dance) {
+
           Object.assign(
             dance,
             values
           );
+
+          /*
+            Preserve existing custom
+            dance order while removing
+            unchecked dancers and adding
+            newly checked dancers.
+          */
+
+          const oldOrder =
+            Array.isArray(
+              dance.dancerOrder
+            )
+              ? dance.dancerOrder
+              : [];
+
+          dance.dancerOrder =
+            oldOrder.filter(
+              dancerId =>
+                selectedIds.some(
+                  selectedId =>
+                    sameId(
+                      selectedId,
+                      dancerId
+                    )
+                )
+            );
+
+          selectedIds.forEach(
+            dancerId => {
+
+              const exists =
+                dance.dancerOrder
+                  .some(
+                    currentId =>
+                      sameId(
+                        currentId,
+                        dancerId
+                      )
+                  );
+
+              if (!exists) {
+                dance.dancerOrder.push(
+                  dancerId
+                );
+              }
+            }
+          );
+
         } else {
+
           getSelectedEnsemble()
             .dances
             .push({
-              id: uid("dance"),
+              id:
+                uid("dance"),
+
               ...values,
+
+              dancerOrder:
+                [
+                  ...selectedIds
+                ],
+
               photos: [],
+
               music: null
             });
         }
@@ -1957,6 +2740,7 @@ function showDanceForm(id = null) {
     ?.addEventListener(
       "click",
       async () => {
+
         if (
           !confirm(
             `Delete ${
@@ -1993,6 +2777,11 @@ function showDanceForm(id = null) {
     );
 }
 
+
+/* ============================================================
+   DANCE DANCER PICKER
+   ============================================================ */
+
 function danceDancerPickerHTML(
   selectedIds
 ) {
@@ -2015,73 +2804,86 @@ function danceDancerPickerHTML(
   ];
 
   return groups
-    .map(group => {
-      const dancers =
-        groupDancers(
-          group.gender
-        );
+    .map(
+      group => {
 
-      if (!dancers.length) {
-        return "";
+        const dancers =
+          groupDancers(
+            group.gender
+          );
+
+        if (
+          !dancers.length
+        ) {
+          return "";
+        }
+
+        return `
+          <div
+            class="picker-group"
+          >
+
+            <div
+              class="mini-group-title ${group.className}"
+            >
+              ${group.label}
+            </div>
+
+            <div
+              class="dance-picker"
+            >
+
+              ${dancers
+                .map(
+                  dancer => {
+
+                    const selected =
+                      selectedIds.some(
+                        id =>
+                          sameId(
+                            id,
+                            dancer.id
+                          )
+                      );
+
+                    return `
+                      <button
+                        type="button"
+                        class="edit-dancer-row ${
+                          selected
+                            ? "selected"
+                            : ""
+                        }"
+                        data-pick-dancer="${escapeHTML(
+                          dancer.id
+                        )}"
+                      >
+
+                        <span>
+                          ${escapeHTML(
+                            dancerName(
+                              dancer
+                            )
+                          )}
+                        </span>
+
+                        <span
+                          class="checkmark"
+                        >
+                          ✓
+                        </span>
+
+                      </button>
+                    `;
+                  }
+                )
+                .join("")}
+
+            </div>
+          </div>
+        `;
       }
-
-      return `
-        <div
-          class="picker-group"
-        >
-          <div
-            class="mini-group-title ${group.className}"
-          >
-            ${group.label}
-          </div>
-
-          <div
-            class="dance-picker"
-          >
-            ${dancers
-              .map(dancer => {
-                const selected =
-                  selectedIds.some(
-                    id =>
-                      sameId(
-                        id,
-                        dancer.id
-                      )
-                  );
-
-                return `
-                  <button
-                    type="button"
-                    class="edit-dancer-row ${
-                      selected
-                        ? "selected"
-                        : ""
-                    }"
-                    data-pick-dancer="${escapeHTML(
-                      dancer.id
-                    )}"
-                  >
-                    <span>
-                      ${escapeHTML(
-                        dancerName(
-                          dancer
-                        )
-                      )}
-                    </span>
-
-                    <span
-                      class="checkmark"
-                    >
-                      ✓
-                    </span>
-                  </button>
-                `;
-              })
-              .join("")}
-          </div>
-        </div>
-      `;
-    })
+    )
     .join("");
 }
 
@@ -2090,33 +2892,45 @@ function danceDancerPickerHTML(
    DANCE MEDIA
    ============================================================ */
 
-function danceMediaHTML(dance) {
+function danceMediaHTML(
+  dance
+) {
   const photos =
-    Array.isArray(dance.photos)
+    Array.isArray(
+      dance.photos
+    )
       ? dance.photos
       : [];
 
   const music =
-    dance.music || null;
+    dance.music ||
+    null;
 
   return `
-    <h3 class="detail-heading">
+    <h3
+      class="detail-heading"
+    >
       Photos
     </h3>
 
     ${
       photos.length
         ? `
-          <div class="media-grid">
+          <div
+            class="media-grid"
+          >
+
             ${photos
               .map(
                 photo => `
                   <div
                     class="media-tile"
                   >
+
                     <img
                       src="${escapeHTML(
-                        photo.url || ""
+                        photo.url ||
+                        ""
                       )}"
                       alt=""
                     >
@@ -2132,14 +2946,18 @@ function danceMediaHTML(dance) {
                     >
                       ×
                     </button>
+
                   </div>
                 `
               )
               .join("")}
+
           </div>
         `
         : `
-          <div class="file-box">
+          <div
+            class="file-box"
+          >
             No photos
           </div>
         `
@@ -2158,14 +2976,19 @@ function danceMediaHTML(dance) {
       >
     </label>
 
-    <h3 class="detail-heading">
+    <h3
+      class="detail-heading"
+    >
       Music
     </h3>
 
     ${
       music?.url
         ? `
-          <div class="audio-card">
+          <div
+            class="audio-card"
+          >
+
             <strong>
               ${escapeHTML(
                 music.name ||
@@ -2180,6 +3003,7 @@ function danceMediaHTML(dance) {
                 music.url
               )}"
             ></audio>
+
           </div>
 
           <button
@@ -2191,7 +3015,9 @@ function danceMediaHTML(dance) {
           </button>
         `
         : `
-          <div class="file-box">
+          <div
+            class="file-box"
+          >
             No music added
           </div>
         `
@@ -2216,6 +3042,7 @@ function danceMediaHTML(dance) {
   `;
 }
 
+
 function setupDanceMediaEvents(
   dance
 ) {
@@ -2227,10 +3054,13 @@ function setupDanceMediaEvents(
   photoInput?.addEventListener(
     "change",
     async () => {
+
       const file =
         photoInput.files?.[0];
 
-      if (!file) return;
+      if (!file) {
+        return;
+      }
 
       await uploadDancePhoto(
         dance,
@@ -2247,10 +3077,13 @@ function setupDanceMediaEvents(
   musicInput?.addEventListener(
     "change",
     async () => {
+
       const file =
         musicInput.files?.[0];
 
-      if (!file) return;
+      if (!file) {
+        return;
+      }
 
       await uploadDanceMusic(
         dance,
@@ -2263,18 +3096,22 @@ function setupDanceMediaEvents(
     .querySelectorAll(
       "[data-delete-photo]"
     )
-    .forEach(button => {
-      button.addEventListener(
-        "click",
-        async () => {
-          await deleteDancePhoto(
-            dance,
-            button.dataset
-              .deletePhoto
-          );
-        }
-      );
-    });
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          async () => {
+
+            await deleteDancePhoto(
+              dance,
+              button.dataset
+                .deletePhoto
+            );
+          }
+        );
+      }
+    );
 
   document
     .getElementById(
@@ -2283,6 +3120,7 @@ function setupDanceMediaEvents(
     ?.addEventListener(
       "click",
       async () => {
+
         await deleteDanceMusic(
           dance
         );
@@ -2290,29 +3128,41 @@ function setupDanceMediaEvents(
     );
 }
 
+
+/* ============================================================
+   UPLOAD DANCE PHOTO
+   ============================================================ */
+
 async function uploadDancePhoto(
   dance,
   file
 ) {
-  const fb = getFirebase();
+  const fb =
+    getFirebase();
 
   if (!fb?.storage) {
     showToast(
       "Storage is not available"
     );
+
     return;
   }
 
+  showUpload(
+    "Uploading photo..."
+  );
+
   try {
-    showUpload(
-      "Uploading photo..."
-    );
+
+    const safeName =
+      String(file.name)
+        .replace(
+          /[^a-zA-Z0-9._-]/g,
+          "_"
+        );
 
     const path =
-      `dance-media/` +
-      `${dance.id}/photos/` +
-      `${uid("photo")}-` +
-      `${file.name}`;
+      `dance-media/${data.selectedEnsemble}/${dance.id}/photos/${Date.now()}-${safeName}`;
 
     const fileRef =
       fb.storageRef(
@@ -2339,22 +3189,32 @@ async function uploadDancePhoto(
     }
 
     dance.photos.push({
-      url,
+      name:
+        file.name,
+
       path,
-      name: file.name
+
+      url
     });
 
     await saveData();
 
     hideUpload();
 
-    showDance(dance.id);
-
     showToast(
-      "Photo uploaded"
+      "Photo added"
     );
+
+    showDance(
+      dance.id
+    );
+
   } catch (error) {
-    console.error(error);
+
+    console.error(
+      "Photo upload failed:",
+      error
+    );
 
     hideUpload();
 
@@ -2364,147 +3224,112 @@ async function uploadDancePhoto(
   }
 }
 
-async function deleteDancePhoto(
-  dance,
-  key
-) {
-  if (
-    !confirm(
-      "Delete this photo?"
-    )
-  ) {
-    return;
-  }
 
-  const photo =
-    (
-      dance.photos || []
-    ).find(
-      item =>
-        item.path === key ||
-        item.url === key
-    );
-
-  const fb = getFirebase();
-
-  try {
-    if (
-      photo?.path &&
-      fb?.storage
-    ) {
-      await fb.deleteObject(
-        fb.storageRef(
-          fb.storage,
-          photo.path
-        )
-      );
-    }
-  } catch (error) {
-    console.warn(
-      "Storage delete:",
-      error
-    );
-  }
-
-  dance.photos =
-    (
-      dance.photos || []
-    ).filter(
-      item =>
-        item.path !== key &&
-        item.url !== key
-    );
-
-  await saveData();
-
-  showDance(dance.id);
-}
+/* ============================================================
+   UPLOAD DANCE MUSIC
+   ============================================================ */
 
 async function uploadDanceMusic(
   dance,
   file
 ) {
-  const fb = getFirebase();
+  const fb =
+    getFirebase();
 
   if (!fb?.storage) {
     showToast(
       "Storage is not available"
     );
+
     return;
   }
 
+  showUpload(
+    "Uploading music..."
+  );
+
   try {
-    showUpload(
-      "Uploading music..."
-    );
+
+    const safeName =
+      String(file.name)
+        .replace(
+          /[^a-zA-Z0-9._-]/g,
+          "_"
+        );
 
     const path =
-      `dance-media/` +
-      `${dance.id}/music/` +
-      `${uid("music")}-` +
-      `${file.name}`;
+      `dance-media/${data.selectedEnsemble}/${dance.id}/music/${Date.now()}-${safeName}`;
 
-    const newRef =
+    const fileRef =
       fb.storageRef(
         fb.storage,
         path
       );
 
     await fb.uploadBytes(
-      newRef,
+      fileRef,
       file
     );
 
     const url =
       await fb.getDownloadURL(
-        newRef
+        fileRef
       );
 
-    const oldMusic =
-      dance.music;
-
-    dance.music = {
-      url,
-      path,
-      name: file.name
-    };
-
-    await saveData();
-
     /*
-       Delete old music only AFTER
-       the replacement has uploaded
-       successfully.
+      Remove old music file
+      after successful upload
+      when possible.
     */
 
     if (
-      oldMusic?.path &&
-      oldMusic.path !== path
+      dance.music?.path
     ) {
       try {
+
         await fb.deleteObject(
           fb.storageRef(
             fb.storage,
-            oldMusic.path
+            dance.music.path
           )
         );
+
       } catch (error) {
+
         console.warn(
-          "Old music delete:",
+          "Old music could not be removed:",
           error
         );
       }
     }
 
+    dance.music = {
+      name:
+        file.name,
+
+      path,
+
+      url
+    };
+
+    await saveData();
+
     hideUpload();
 
-    showDance(dance.id);
-
     showToast(
-      "Music uploaded"
+      "Music added"
     );
+
+    showDance(
+      dance.id
+    );
+
   } catch (error) {
-    console.error(error);
+
+    console.error(
+      "Music upload failed:",
+      error
+    );
 
     hideUpload();
 
@@ -2514,9 +3339,99 @@ async function uploadDanceMusic(
   }
 }
 
+
+/* ============================================================
+   DELETE DANCE PHOTO
+   ============================================================ */
+
+async function deleteDancePhoto(
+  dance,
+  pathOrUrl
+) {
+  if (
+    !confirm(
+      "Delete this photo?"
+    )
+  ) {
+    return;
+  }
+
+  const photos =
+    Array.isArray(
+      dance.photos
+    )
+      ? dance.photos
+      : [];
+
+  const photo =
+    photos.find(
+      item =>
+        item.path ===
+          pathOrUrl ||
+        item.url ===
+          pathOrUrl
+    );
+
+  if (!photo) {
+    return;
+  }
+
+  const fb =
+    getFirebase();
+
+  if (
+    fb?.storage &&
+    photo.path
+  ) {
+    try {
+
+      await fb.deleteObject(
+        fb.storageRef(
+          fb.storage,
+          photo.path
+        )
+      );
+
+    } catch (error) {
+
+      console.warn(
+        "Storage photo delete failed:",
+        error
+      );
+    }
+  }
+
+  dance.photos =
+    photos.filter(
+      item =>
+        item !== photo
+    );
+
+  await saveData();
+
+  showToast(
+    "Photo deleted"
+  );
+
+  showDance(
+    dance.id
+  );
+}
+
+
+/* ============================================================
+   DELETE DANCE MUSIC
+   ============================================================ */
+
 async function deleteDanceMusic(
   dance
 ) {
+  if (
+    !dance.music
+  ) {
+    return;
+  }
+
   if (
     !confirm(
       "Delete this music?"
@@ -2525,45 +3440,71 @@ async function deleteDanceMusic(
     return;
   }
 
-  const fb = getFirebase();
+  const fb =
+    getFirebase();
 
-  try {
-    if (
-      dance.music?.path &&
-      fb?.storage
-    ) {
+  if (
+    fb?.storage &&
+    dance.music.path
+  ) {
+    try {
+
       await fb.deleteObject(
         fb.storageRef(
           fb.storage,
           dance.music.path
         )
       );
+
+    } catch (error) {
+
+      console.warn(
+        "Storage music delete failed:",
+        error
+      );
     }
-  } catch (error) {
-    console.warn(error);
   }
 
-  dance.music = null;
+  dance.music =
+    null;
 
   await saveData();
 
-  showDance(dance.id);
+  showToast(
+    "Music deleted"
+  );
+
+  showDance(
+    dance.id
+  );
 }
 
 
 /* ============================================================
+   END OF PART 2 OF 4
+
+   Part 3 goes DIRECTLY underneath this line.
+   Do not add a <script> tag.
+   Do not commit yet.
+   ============================================================ */
+/* ============================================================
    REORDERING
-   Touch / pointer friendly
+   Handle-only + iPhone / pointer friendly
    ============================================================ */
 
-let dragState = null;
-let suppressClickUntil = 0;
+let dragState =
+  null;
+
+let suppressClickUntil =
+  0;
+
 
 function beginReorder({
   event,
   row,
   list,
-  type
+  type,
+  dance = null
 }) {
   if (
     event.pointerType ===
@@ -2573,13 +3514,19 @@ function beginReorder({
     return;
   }
 
+  event.preventDefault();
+
   dragState = {
     pointerId:
       event.pointerId,
 
     row,
+
     list,
+
     type,
+
+    dance,
 
     startX:
       event.clientX,
@@ -2587,15 +3534,20 @@ function beginReorder({
     startY:
       event.clientY,
 
-    active: false
+    active:
+      false
   };
 
-  row.setPointerCapture?.(
-    event.pointerId
-  );
+  event.currentTarget
+    ?.setPointerCapture?.(
+      event.pointerId
+    );
 }
 
-function moveReorder(event) {
+
+function moveReorder(
+  event
+) {
   if (
     !dragState ||
     event.pointerId !==
@@ -2615,21 +3567,26 @@ function moveReorder(event) {
 
   if (
     !dragState.active &&
-    distance < 9
+    distance < 8
   ) {
     return;
   }
 
-  if (!dragState.active) {
-    dragState.active = true;
+  if (
+    !dragState.active
+  ) {
+    dragState.active =
+      true;
 
-    dragState.row.classList.add(
-      "dragging"
-    );
+    dragState.row
+      .classList.add(
+        "dragging"
+      );
 
-    document.body.classList.add(
-      "reordering"
-    );
+    document.body
+      .classList.add(
+        "reordering"
+      );
   }
 
   event.preventDefault();
@@ -2640,22 +3597,29 @@ function moveReorder(event) {
       event.clientY
     );
 
-  if (!element) return;
+  if (!element) {
+    return;
+  }
 
-  let targetList;
+  let targetList =
+    null;
+
+  let selector =
+    null;
 
   if (
-    dragState.type === "dance"
+    dragState.type ===
+    "dancer"
   ) {
-    targetList =
-      element.closest(
-        "[data-dance-list]"
-      );
-  } else {
     targetList =
       element.closest(
         "[data-dancer-list]"
       );
+
+    /*
+      Main roster dancers can only
+      move inside their own gender.
+    */
 
     if (
       targetList &&
@@ -2666,25 +3630,81 @@ function moveReorder(event) {
     ) {
       return;
     }
+
+    selector =
+      "[data-dancer-row]";
   }
 
-  if (!targetList) return;
+  if (
+    dragState.type ===
+    "dance"
+  ) {
+    targetList =
+      element.closest(
+        "[data-dance-list]"
+      );
 
-  /*
-     Remove empty placeholder
-     while dragging into a list.
-  */
+    /*
+      Keep dance status groups
+      separate while dragging.
+      Status itself is changed
+      through Edit Dance.
+    */
+
+    if (
+      targetList &&
+      targetList.dataset
+        .danceList !==
+        dragState.list.dataset
+          .danceList
+    ) {
+      return;
+    }
+
+    selector =
+      "[data-dance-row]";
+  }
+
+  if (
+    dragState.type ===
+    "danceDancer"
+  ) {
+    targetList =
+      element.closest(
+        "[data-dance-dancer-list]"
+      );
+
+    /*
+      Boys stay in Boys,
+      Girls stay in Girls.
+    */
+
+    if (
+      targetList &&
+      targetList.dataset
+        .danceDancerList !==
+        dragState.list.dataset
+          .danceDancerList
+    ) {
+      return;
+    }
+
+    selector =
+      "[data-dance-dancer-row]";
+  }
+
+  if (
+    !targetList ||
+    !selector
+  ) {
+    return;
+  }
 
   targetList
     .querySelector(
       ".dance-empty"
     )
     ?.remove();
-
-  const selector =
-    dragState.type === "dance"
-      ? "[data-dance-row]"
-      : "[data-dancer-row]";
 
   const rows =
     [
@@ -2699,23 +3719,29 @@ function moveReorder(event) {
     );
 
   const before =
-    rows.find(row => {
-      const rect =
-        row.getBoundingClientRect();
+    rows.find(
+      row => {
 
-      return (
-        event.clientY <
-        rect.top +
-          rect.height / 2
-      );
-    });
+        const rect =
+          row.getBoundingClientRect();
+
+        return (
+          event.clientY <
+          rect.top +
+            rect.height / 2
+        );
+      }
+    );
 
   if (before) {
+
     targetList.insertBefore(
       dragState.row,
       before
     );
+
   } else {
+
     targetList.appendChild(
       dragState.row
     );
@@ -2725,7 +3751,10 @@ function moveReorder(event) {
     targetList;
 }
 
-async function endReorder(event) {
+
+async function endReorder(
+  event
+) {
   if (
     !dragState ||
     event.pointerId !==
@@ -2734,10 +3763,13 @@ async function endReorder(event) {
     return;
   }
 
-  const wasActive =
-    dragState.active;
+  const state =
+    dragState;
 
-  dragState.row.classList.remove(
+  const wasActive =
+    state.active;
+
+  state.row.classList.remove(
     "dragging"
   );
 
@@ -2745,10 +3777,8 @@ async function endReorder(event) {
     "reordering"
   );
 
-  const type =
-    dragState.type;
-
-  dragState = null;
+  dragState =
+    null;
 
   if (!wasActive) {
     return;
@@ -2757,90 +3787,222 @@ async function endReorder(event) {
   suppressClickUntil =
     Date.now() + 350;
 
-  if (type === "dance") {
-    await saveDanceOrderFromDOM();
-  } else {
+  if (
+    state.type ===
+    "dancer"
+  ) {
     await saveDancerOrderFromDOM();
   }
+
+  if (
+    state.type ===
+    "dance"
+  ) {
+    await saveDanceOrderFromDOM();
+  }
+
+  if (
+    state.type ===
+    "danceDancer"
+  ) {
+    await saveDanceDancerOrderFromDOM(
+      state.dance
+    );
+  }
 }
+
+
+/* ============================================================
+   MAIN DANCER REORDERING
+   Drag begins ONLY on ≡ handle
+   ============================================================ */
 
 function setupDancerReordering() {
   dancerList
     ?.querySelectorAll(
-      "[data-dancer-row]"
+      "[data-dancer-drag]"
     )
-    .forEach(row => {
-      const list =
-        row.closest(
-          "[data-dancer-list]"
+    .forEach(
+      handle => {
+
+        const row =
+          handle.closest(
+            "[data-dancer-row]"
+          );
+
+        const list =
+          row?.closest(
+            "[data-dancer-list]"
+          );
+
+        if (
+          !row ||
+          !list
+        ) {
+          return;
+        }
+
+        handle.addEventListener(
+          "pointerdown",
+          event =>
+            beginReorder({
+              event,
+              row,
+              list,
+              type:
+                "dancer"
+            })
         );
 
-      row.addEventListener(
-        "pointerdown",
-        event =>
-          beginReorder({
-            event,
-            row,
-            list,
-            type: "dancer"
-          })
-      );
+        handle.addEventListener(
+          "pointermove",
+          moveReorder
+        );
 
-      row.addEventListener(
-        "pointermove",
-        moveReorder
-      );
+        handle.addEventListener(
+          "pointerup",
+          endReorder
+        );
 
-      row.addEventListener(
-        "pointerup",
-        endReorder
-      );
-
-      row.addEventListener(
-        "pointercancel",
-        endReorder
-      );
-    });
+        handle.addEventListener(
+          "pointercancel",
+          endReorder
+        );
+      }
+    );
 }
+
+
+/* ============================================================
+   MAIN DANCE REORDERING
+   Supports old rows and dedicated
+   handle when styles add it.
+   ============================================================ */
 
 function setupDanceReordering() {
   danceList
     ?.querySelectorAll(
       "[data-dance-row]"
     )
-    .forEach(row => {
-      const list =
-        row.closest(
-          "[data-dance-list]"
+    .forEach(
+      row => {
+
+        const list =
+          row.closest(
+            "[data-dance-list]"
+          );
+
+        if (!list) {
+          return;
+        }
+
+        const handle =
+          row.querySelector(
+            "[data-dance-drag]"
+          ) || row;
+
+        handle.addEventListener(
+          "pointerdown",
+          event =>
+            beginReorder({
+              event,
+              row,
+              list,
+              type:
+                "dance"
+            })
         );
 
-      row.addEventListener(
-        "pointerdown",
-        event =>
-          beginReorder({
-            event,
-            row,
-            list,
-            type: "dance"
-          })
-      );
+        handle.addEventListener(
+          "pointermove",
+          moveReorder
+        );
 
-      row.addEventListener(
-        "pointermove",
-        moveReorder
-      );
+        handle.addEventListener(
+          "pointerup",
+          endReorder
+        );
 
-      row.addEventListener(
-        "pointerup",
-        endReorder
-      );
-
-      row.addEventListener(
-        "pointercancel",
-        endReorder
-      );
-    });
+        handle.addEventListener(
+          "pointercancel",
+          endReorder
+        );
+      }
+    );
 }
+
+
+/* ============================================================
+   DANCERS INSIDE A DANCE
+   Dance-specific order
+   ============================================================ */
+
+function setupDanceDancerReordering(
+  dance
+) {
+  if (!dance) {
+    return;
+  }
+
+  modalBody
+    ?.querySelectorAll(
+      "[data-dance-dancer-drag]"
+    )
+    .forEach(
+      handle => {
+
+        const row =
+          handle.closest(
+            "[data-dance-dancer-row]"
+          );
+
+        const list =
+          row?.closest(
+            "[data-dance-dancer-list]"
+          );
+
+        if (
+          !row ||
+          !list
+        ) {
+          return;
+        }
+
+        handle.addEventListener(
+          "pointerdown",
+          event =>
+            beginReorder({
+              event,
+              row,
+              list,
+              type:
+                "danceDancer",
+              dance
+            })
+        );
+
+        handle.addEventListener(
+          "pointermove",
+          moveReorder
+        );
+
+        handle.addEventListener(
+          "pointerup",
+          endReorder
+        );
+
+        handle.addEventListener(
+          "pointercancel",
+          endReorder
+        );
+      }
+    );
+}
+
+
+/* ============================================================
+   SAVE MAIN DANCER ORDER
+   ============================================================ */
 
 async function saveDancerOrderFromDOM() {
   const ensemble =
@@ -2852,44 +4014,57 @@ async function saveDancerOrderFromDOM() {
     "Other"
   ];
 
-  const ordered = [];
+  const ordered =
+    [];
 
-  genders.forEach(gender => {
-    const list =
-      dancerList.querySelector(
-        `[data-dancer-list="${gender}"]`
-      );
+  genders.forEach(
+    gender => {
 
-    if (!list) return;
-
-    list
-      .querySelectorAll(
-        "[data-dancer-row]"
-      )
-      .forEach(row => {
-        const dancer =
-          findDancer(
-            row.dataset
-              .dancerRow
+      const list =
+        dancerList
+          ?.querySelector(
+            `[data-dancer-list="${gender}"]`
           );
 
-        if (dancer) {
-          ordered.push(dancer);
-        }
-      });
-  });
+      if (!list) {
+        return;
+      }
+
+      list
+        .querySelectorAll(
+          "[data-dancer-row]"
+        )
+        .forEach(
+          row => {
+
+            const dancer =
+              findDancer(
+                row.dataset
+                  .dancerRow
+              );
+
+            if (dancer) {
+              ordered.push(
+                dancer
+              );
+            }
+          }
+        );
+    }
+  );
 
   const remaining =
-    ensemble.dancers.filter(
-      dancer =>
-        !ordered.some(
-          item =>
-            sameId(
-              item.id,
-              dancer.id
-            )
-        )
-    );
+    ensemble.dancers
+      .filter(
+        dancer =>
+          !ordered.some(
+            item =>
+              sameId(
+                item.id,
+                dancer.id
+              )
+          )
+      );
 
   ensemble.dancers = [
     ...ordered,
@@ -2901,69 +4076,94 @@ async function saveDancerOrderFromDOM() {
   renderDancers();
 }
 
+
+/* ============================================================
+   SAVE MAIN DANCE ORDER
+   ============================================================ */
+
 async function saveDanceOrderFromDOM() {
   const ensemble =
     getSelectedEnsemble();
 
-  const ordered = [];
+  const ordered =
+    [];
 
   const inUseList =
-    danceList.querySelector(
-      '[data-dance-list="in-use"]'
-    );
+    danceList
+      ?.querySelector(
+        '[data-dance-list="in-use"]'
+      );
 
   const notInUseList =
-    danceList.querySelector(
-      '[data-dance-list="not-in-use"]'
-    );
+    danceList
+      ?.querySelector(
+        '[data-dance-list="not-in-use"]'
+      );
 
   inUseList
     ?.querySelectorAll(
       "[data-dance-row]"
     )
-    .forEach(row => {
-      const dance =
-        findDance(
-          row.dataset
-            .danceRow
+    .forEach(
+      row => {
+
+        const dance =
+          findDance(
+            row.dataset
+              .danceRow
+          );
+
+        if (!dance) {
+          return;
+        }
+
+        dance.inUse =
+          true;
+
+        ordered.push(
+          dance
         );
-
-      if (!dance) return;
-
-      dance.inUse = true;
-
-      ordered.push(dance);
-    });
+      }
+    );
 
   notInUseList
     ?.querySelectorAll(
       "[data-dance-row]"
     )
-    .forEach(row => {
-      const dance =
-        findDance(
-          row.dataset
-            .danceRow
+    .forEach(
+      row => {
+
+        const dance =
+          findDance(
+            row.dataset
+              .danceRow
+          );
+
+        if (!dance) {
+          return;
+        }
+
+        dance.inUse =
+          false;
+
+        ordered.push(
+          dance
         );
-
-      if (!dance) return;
-
-      dance.inUse = false;
-
-      ordered.push(dance);
-    });
+      }
+    );
 
   const remaining =
-    ensemble.dances.filter(
-      dance =>
-        !ordered.some(
-          item =>
-            sameId(
-              item.id,
-              dance.id
-            )
-        )
-    );
+    ensemble.dances
+      .filter(
+        dance =>
+          !ordered.some(
+            item =>
+              sameId(
+                item.id,
+                dance.id
+              )
+          )
+      );
 
   ensemble.dances = [
     ...ordered,
@@ -2977,6 +4177,131 @@ async function saveDanceOrderFromDOM() {
 
 
 /* ============================================================
+   SAVE DANCER ORDER INSIDE ONE DANCE
+   ============================================================ */
+
+async function saveDanceDancerOrderFromDOM(
+  dance
+) {
+  if (!dance) {
+    return;
+  }
+
+  const oldOrder =
+    Array.isArray(
+      dance.dancerOrder
+    )
+      ? [
+          ...dance.dancerOrder
+        ]
+      : [
+          ...(
+            dance.dancerIds ||
+            []
+          )
+        ];
+
+  const visibleOrder =
+    [];
+
+  modalBody
+    ?.querySelectorAll(
+      "[data-dance-dancer-list]"
+    )
+    .forEach(
+      list => {
+
+        list
+          .querySelectorAll(
+            "[data-dance-dancer-row]"
+          )
+          .forEach(
+            row => {
+
+              visibleOrder.push(
+                row.dataset
+                  .danceDancerRow
+              );
+            }
+          );
+      }
+    );
+
+  /*
+    Only assigned dancers are
+    allowed in the custom order.
+  */
+
+  const assigned =
+    dance.dancerIds ||
+    [];
+
+  const cleaned =
+    visibleOrder.filter(
+      dancerId =>
+        assigned.some(
+          id =>
+            sameId(
+              id,
+              dancerId
+            )
+        )
+    );
+
+  /*
+    Preserve any assigned dancer
+    not represented in the DOM.
+  */
+
+  oldOrder.forEach(
+    dancerId => {
+
+      const isAssigned =
+        assigned.some(
+          id =>
+            sameId(
+              id,
+              dancerId
+            )
+        );
+
+      const exists =
+        cleaned.some(
+          id =>
+            sameId(
+              id,
+              dancerId
+            )
+        );
+
+      if (
+        isAssigned &&
+        !exists
+      ) {
+        cleaned.push(
+          dancerId
+        );
+      }
+    }
+  );
+
+  dance.dancerOrder =
+    cleaned;
+
+  await saveData();
+
+  /*
+    Redraw so 01, 02, 03...
+    update immediately.
+  */
+
+  showDance(
+    dance.id
+  );
+}
+
+
+/* ============================================================
    CALENDAR
    ============================================================ */
 
@@ -2986,6 +4311,7 @@ let calendarDate =
 let selectedCalendarDate =
   new Date();
 
+
 function dateKey(date) {
   const year =
     date.getFullYear();
@@ -2993,15 +4319,24 @@ function dateKey(date) {
   const month =
     String(
       date.getMonth() + 1
-    ).padStart(2, "0");
+    ).padStart(
+      2,
+      "0"
+    );
 
   const day =
     String(
       date.getDate()
-    ).padStart(2, "0");
+    ).padStart(
+      2,
+      "0"
+    );
 
-  return `${year}-${month}-${day}`;
+  return (
+    `${year}-${month}-${day}`
+  );
 }
+
 
 function renderCalendar() {
   if (
@@ -3012,10 +4347,12 @@ function renderCalendar() {
   }
 
   const year =
-    calendarDate.getFullYear();
+    calendarDate
+      .getFullYear();
 
   const month =
-    calendarDate.getMonth();
+    calendarDate
+      .getMonth();
 
   calendarMonth.textContent =
     new Date(
@@ -3025,8 +4362,11 @@ function renderCalendar() {
     ).toLocaleDateString(
       "en-CA",
       {
-        month: "long",
-        year: "numeric"
+        month:
+          "long",
+
+        year:
+          "numeric"
       }
     );
 
@@ -3041,11 +4381,14 @@ function renderCalendar() {
     new Date(
       year,
       month,
-      1 - firstDay.getDay()
+      1 -
+        firstDay.getDay()
     );
 
   const todayKey =
-    dateKey(new Date());
+    dateKey(
+      new Date()
+    );
 
   const selectedKey =
     dateKey(
@@ -3056,7 +4399,8 @@ function renderCalendar() {
     getSelectedEnsemble()
       .practices;
 
-  let html = "";
+  let html =
+    "";
 
   for (
     let index = 0;
@@ -3064,19 +4408,25 @@ function renderCalendar() {
     index++
   ) {
     const day =
-      new Date(start);
+      new Date(
+        start
+      );
 
     day.setDate(
-      start.getDate() + index
+      start.getDate() +
+      index
     );
 
     const key =
-      dateKey(day);
+      dateKey(
+        day
+      );
 
     const eventCount =
       practices.filter(
         practice =>
-          practice.date === key
+          practice.date ===
+          key
       ).length;
 
     const otherMonth =
@@ -3104,21 +4454,27 @@ function renderCalendar() {
           }"
         data-calendar-date="${key}"
       >
-        <span class="day-number">
+
+        <span
+          class="day-number"
+        >
           ${day.getDate()}
         </span>
 
         ${
           eventCount
             ? `
-              <span class="event-dots">
-                ${Array.from({
-                  length:
-                    Math.min(
-                      eventCount,
-                      3
-                    )
-                })
+              <span
+                class="event-dots"
+              >
+                ${Array
+                  .from({
+                    length:
+                      Math.min(
+                        eventCount,
+                        3
+                      )
+                  })
                   .map(
                     () =>
                       `<i class="event-dot"></i>`
@@ -3128,41 +4484,50 @@ function renderCalendar() {
             `
             : ""
         }
+
       </button>
     `;
   }
 
-  calendarGrid.innerHTML = html;
+  calendarGrid.innerHTML =
+    html;
 
   calendarGrid
     .querySelectorAll(
       "[data-calendar-date]"
     )
-    .forEach(button => {
-      button.addEventListener(
-        "click",
-        () => {
-          selectedCalendarDate =
-            new Date(
-              button.dataset
-                .calendarDate +
-                "T12:00:00"
-            );
+    .forEach(
+      button => {
 
-          renderCalendar();
-          renderPractices();
-        }
-      );
-    });
+        button.addEventListener(
+          "click",
+          () => {
+
+            selectedCalendarDate =
+              new Date(
+                button.dataset
+                  .calendarDate +
+                "T12:00:00"
+              );
+
+            renderCalendar();
+
+            renderPractices();
+          }
+        );
+      }
+    );
 }
 
 
 /* ============================================================
-   PRACTICES
+   PRACTICE LIST
    ============================================================ */
 
 function renderPractices() {
-  if (!practiceList) return;
+  if (!practiceList) {
+    return;
+  }
 
   const selected =
     dateKey(
@@ -3177,19 +4542,26 @@ function renderPractices() {
           practice.date ===
           selected
       )
-      .sort((a, b) =>
-        String(
-          a.startTime || ""
-        ).localeCompare(
+      .sort(
+        (a, b) =>
           String(
-            b.startTime || ""
+            a.startTime ||
+            ""
+          ).localeCompare(
+            String(
+              b.startTime ||
+              ""
+            )
           )
-        )
       );
 
-  if (!practices.length) {
+  if (
+    !practices.length
+  ) {
     practiceList.innerHTML = `
-      <div class="empty">
+      <div
+        class="empty"
+      >
         No practices
       </div>
     `;
@@ -3208,13 +4580,18 @@ function renderPractices() {
               practice.id
             )}"
           >
-            <div class="practice-date">
+
+            <div
+              class="practice-date"
+            >
               ${formatTime(
                 practice.startTime
               )}
             </div>
 
-            <div class="item-main">
+            <div
+              class="item-main"
+            >
               <h3>
                 ${escapeHTML(
                   practice.name ||
@@ -3233,9 +4610,12 @@ function renderPractices() {
               </p>
             </div>
 
-            <span class="item-arrow">
+            <span
+              class="item-arrow"
+            >
               ›
             </span>
+
           </button>
         `
       )
@@ -3245,17 +4625,27 @@ function renderPractices() {
     .querySelectorAll(
       "[data-practice]"
     )
-    .forEach(button => {
-      button.addEventListener(
-        "click",
-        () =>
-          showPractice(
-            button.dataset
-              .practice
-          )
-      );
-    });
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+            showPractice(
+              button.dataset
+                .practice
+            );
+          }
+        );
+      }
+    );
 }
+
+
+/* ============================================================
+   ADD PRACTICE
+   ONE TIME OR WEEKLY
+   ============================================================ */
 
 function showPracticeForm() {
   const defaultDate =
@@ -3263,14 +4653,24 @@ function showPracticeForm() {
       selectedCalendarDate
     );
 
+  let repeatType =
+    "once";
+
   openModal({
-    eyebrow: "PRACTICE",
-    title: "Add Practice",
+    eyebrow:
+      "PRACTICE",
+
+    title:
+      "Add Practice",
 
     body: `
-      <form id="practiceForm">
+      <form
+        id="practiceForm"
+      >
 
-        <div class="form-group">
+        <div
+          class="form-group"
+        >
           <label>
             Name
           </label>
@@ -3281,8 +4681,42 @@ function showPracticeForm() {
           >
         </div>
 
-        <div class="form-group">
+        <div
+          class="form-group"
+        >
           <label>
+            Repeat
+          </label>
+
+          <div
+            class="practice-repeat-selector"
+          >
+
+            <button
+              type="button"
+              class="practice-repeat-option selected"
+              data-repeat-type="once"
+            >
+              One Time
+            </button>
+
+            <button
+              type="button"
+              class="practice-repeat-option"
+              data-repeat-type="weekly"
+            >
+              Weekly
+            </button>
+
+          </div>
+        </div>
+
+        <div
+          class="form-group"
+        >
+          <label
+            id="practiceDateLabel"
+          >
             Date
           </label>
 
@@ -3294,9 +4728,29 @@ function showPracticeForm() {
           >
         </div>
 
-        <div class="form-row">
+        <div
+          class="form-group practice-end-date-group"
+          id="practiceEndDateGroup"
+          hidden
+        >
+          <label>
+            End Date
+          </label>
 
-          <div class="form-group">
+          <input
+            type="date"
+            id="practiceEndDate"
+            value="${defaultDate}"
+          >
+        </div>
+
+        <div
+          class="form-row"
+        >
+
+          <div
+            class="form-group"
+          >
             <label>
               Start
             </label>
@@ -3308,7 +4762,9 @@ function showPracticeForm() {
             >
           </div>
 
-          <div class="form-group">
+          <div
+            class="form-group"
+          >
             <label>
               End
             </label>
@@ -3332,6 +4788,129 @@ function showPracticeForm() {
     `
   });
 
+  const repeatButtons =
+    document.querySelectorAll(
+      "[data-repeat-type]"
+    );
+
+  const endDateGroup =
+    document.getElementById(
+      "practiceEndDateGroup"
+    );
+
+  const endDateInput =
+    document.getElementById(
+      "practiceEndDate"
+    );
+
+  const startDateInput =
+    document.getElementById(
+      "practiceDate"
+    );
+
+  const dateLabel =
+    document.getElementById(
+      "practiceDateLabel"
+    );
+
+  function updateRepeatUI() {
+    repeatButtons.forEach(
+      button => {
+
+        button.classList.toggle(
+          "selected",
+          button.dataset
+            .repeatType ===
+            repeatType
+        );
+      }
+    );
+
+    if (
+      repeatType ===
+      "weekly"
+    ) {
+
+      endDateGroup.hidden =
+        false;
+
+      endDateInput.required =
+        true;
+
+      dateLabel.textContent =
+        "First Practice Date";
+
+      if (
+        !endDateInput.value ||
+        endDateInput.value <
+          startDateInput.value
+      ) {
+        endDateInput.value =
+          startDateInput.value;
+      }
+
+      endDateInput.min =
+        startDateInput.value;
+
+    } else {
+
+      endDateGroup.hidden =
+        true;
+
+      endDateInput.required =
+        false;
+
+      dateLabel.textContent =
+        "Date";
+    }
+  }
+
+  repeatButtons.forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        event => {
+
+          event.preventDefault();
+
+          repeatType =
+            button.dataset
+              .repeatType;
+
+          updateRepeatUI();
+        }
+      );
+    }
+  );
+
+  startDateInput
+    ?.addEventListener(
+      "change",
+      () => {
+
+        if (
+          repeatType !==
+          "weekly"
+        ) {
+          return;
+        }
+
+        endDateInput.min =
+          startDateInput.value;
+
+        if (
+          endDateInput.value <
+          startDateInput.value
+        ) {
+          endDateInput.value =
+            startDateInput.value;
+        }
+      }
+    );
+
+  updateRepeatUI();
+
   document
     .getElementById(
       "practiceForm"
@@ -3339,47 +4918,176 @@ function showPracticeForm() {
     ?.addEventListener(
       "submit",
       async event => {
+
         event.preventDefault();
 
-        const practice = {
-          id:
-            uid("practice"),
+        const name =
+          document
+            .getElementById(
+              "practiceName"
+            )
+            .value
+            .trim() ||
+          "Proba";
 
-          name:
-            document
-              .getElementById(
-                "practiceName"
-              )
-              .value
-              .trim() ||
-            "Proba",
+        const firstDate =
+          startDateInput.value;
 
-          date:
-            document.getElementById(
-              "practiceDate"
-            ).value,
-
-          startTime:
-            document.getElementById(
+        const startTime =
+          document
+            .getElementById(
               "practiceStart"
-            ).value,
+            )
+            .value;
 
-          endTime:
-            document.getElementById(
+        const endTime =
+          document
+            .getElementById(
               "practiceEnd"
-            ).value,
+            )
+            .value;
 
-          attendance: {}
-        };
+        if (
+          !firstDate ||
+          !startTime
+        ) {
+          return;
+        }
 
-        getSelectedEnsemble()
-          .practices
-          .push(practice);
+        const ensemble =
+          getSelectedEnsemble();
+
+        /*
+          ONE-TIME PRACTICE
+        */
+
+        if (
+          repeatType ===
+          "once"
+        ) {
+
+          ensemble.practices.push({
+            id:
+              uid("practice"),
+
+            name,
+
+            date:
+              firstDate,
+
+            startTime,
+
+            endTime,
+
+            attendance:
+              {},
+
+            recurrence:
+              "once"
+          });
+
+        } else {
+
+          /*
+            WEEKLY PRACTICE
+
+            Create one real practice
+            every 7 days from the
+            first date THROUGH the
+            selected end date.
+          */
+
+          const endDate =
+            endDateInput.value;
+
+          if (
+            !endDate
+          ) {
+            showToast(
+              "Choose an end date"
+            );
+
+            return;
+          }
+
+          if (
+            endDate <
+            firstDate
+          ) {
+            showToast(
+              "End date must be after the first practice"
+            );
+
+            return;
+          }
+
+          const seriesId =
+            uid(
+              "practice-series"
+            );
+
+          let currentDate =
+            firstDate;
+
+          let created =
+            0;
+
+          /*
+            Safety cap = 105 weeks,
+            which is just over
+            two years.
+          */
+
+          while (
+            currentDate <=
+              endDate &&
+            created < 105
+          ) {
+
+            ensemble.practices.push({
+              id:
+                uid(
+                  "practice"
+                ),
+
+              name,
+
+              date:
+                currentDate,
+
+              startTime,
+
+              endTime,
+
+              attendance:
+                {},
+
+              recurrence:
+                "weekly",
+
+              seriesId,
+
+              seriesStart:
+                firstDate,
+
+              seriesEnd:
+                endDate
+            });
+
+            created++;
+
+            currentDate =
+              addDaysToDateString(
+                currentDate,
+                7
+              );
+          }
+        }
 
         selectedCalendarDate =
           new Date(
-            practice.date +
-              "T12:00:00"
+            firstDate +
+            "T12:00:00"
           );
 
         calendarDate =
@@ -3392,10 +5100,14 @@ function showPracticeForm() {
         closeModal();
 
         renderCalendar();
+
         renderPractices();
 
         showToast(
-          "Practice added"
+          repeatType ===
+            "weekly"
+            ? "Weekly practices added"
+            : "Practice added"
         );
       }
     );
@@ -3410,7 +5122,9 @@ function showPractice(id) {
   const practice =
     findPractice(id);
 
-  if (!practice) return;
+  if (!practice) {
+    return;
+  }
 
   const dancers =
     getSelectedEnsemble()
@@ -3418,27 +5132,39 @@ function showPractice(id) {
 
   const attendance =
     practice.attendance ||
-    (practice.attendance = {});
+    (
+      practice.attendance =
+        {}
+    );
 
   openModal({
-    eyebrow: "PRACTICE",
+    eyebrow:
+      "PRACTICE",
 
     title:
       practice.name ||
       "Proba",
 
     body: `
-      <div class="detail-card">
-        <div class="detail-value">
+      <div
+        class="detail-card"
+      >
+
+        <div
+          class="detail-value"
+        >
           ${formatDate(
             practice.date
           )}
         </div>
 
-        <div class="practice-time">
+        <div
+          class="practice-time"
+        >
           ${formatTime(
             practice.startTime
           )}
+
           ${
             practice.endTime
               ? ` – ${formatTime(
@@ -3447,6 +5173,20 @@ function showPractice(id) {
               : ""
           }
         </div>
+
+        ${
+          practice.recurrence ===
+            "weekly"
+            ? `
+              <div
+                class="practice-repeat-badge"
+              >
+                Weekly
+              </div>
+            `
+            : ""
+        }
+
       </div>
 
       <button
@@ -3461,8 +5201,12 @@ function showPractice(id) {
         id="attendanceSummary"
       ></div>
 
-      <div class="search-box attendance-search">
-        <span>⌕</span>
+      <div
+        class="search-box attendance-search"
+      >
+        <span>
+          ⌕
+        </span>
 
         <input
           id="attendanceSearch"
@@ -3495,7 +5239,8 @@ function showPractice(id) {
   function drawAttendance() {
     const query =
       String(
-        search?.value || ""
+        search?.value ||
+        ""
       )
         .trim()
         .toLowerCase();
@@ -3503,130 +5248,148 @@ function showPractice(id) {
     const visible =
       dancers.filter(
         dancer =>
-          dancerName(dancer)
+          dancerName(
+            dancer
+          )
             .toLowerCase()
-            .includes(query)
+            .includes(
+              query
+            )
       );
 
     attendanceList.innerHTML =
       visible
-        .map(dancer => {
-          const current =
-            getAttendanceStatus(
-              attendance,
-              dancer.id
-            );
+        .map(
+          dancer => {
 
-          return `
-            <div
-              class="attendance-row"
-            >
-              <h4>
-                ${escapeHTML(
-                  dancerName(
-                    dancer
-                  )
-                )}
-              </h4>
+            const current =
+              getAttendanceStatus(
+                attendance,
+                dancer.id
+              );
 
+            return `
               <div
-                class="attendance-buttons four"
-                data-attendance-dancer="${escapeHTML(
-                  dancer.id
-                )}"
+                class="attendance-row"
               >
-                ${attendanceButton(
-                  "present",
-                  "Present",
-                  current
-                )}
 
-                ${attendanceButton(
-                  "late",
-                  "Late",
-                  current
-                )}
+                <h4>
+                  ${escapeHTML(
+                    dancerName(
+                      dancer
+                    )
+                  )}
+                </h4>
 
-                ${attendanceButton(
-                  "absent",
-                  "No Show",
-                  current
-                )}
+                <div
+                  class="attendance-buttons four"
+                  data-attendance-dancer="${escapeHTML(
+                    dancer.id
+                  )}"
+                >
 
-                ${attendanceButton(
-                  "excused",
-                  "Excused",
-                  current
-                )}
+                  ${attendanceButton(
+                    "present",
+                    "Present",
+                    current
+                  )}
+
+                  ${attendanceButton(
+                    "late",
+                    "Late",
+                    current
+                  )}
+
+                  ${attendanceButton(
+                    "absent",
+                    "No Show",
+                    current
+                  )}
+
+                  ${attendanceButton(
+                    "excused",
+                    "Excused",
+                    current
+                  )}
+
+                </div>
               </div>
-            </div>
-          `;
-        })
+            `;
+          }
+        )
         .join("");
 
     attendanceList
       .querySelectorAll(
         "[data-attendance-status]"
       )
-      .forEach(button => {
-        button.addEventListener(
-          "click",
-          async () => {
-            const group =
-              button.closest(
-                "[data-attendance-dancer]"
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            async () => {
+
+              const group =
+                button.closest(
+                  "[data-attendance-dancer]"
+                );
+
+              const dancerId =
+                group.dataset
+                  .attendanceDancer;
+
+              const status =
+                button.dataset
+                  .attendanceStatus;
+
+              setAttendanceStatus(
+                attendance,
+                dancerId,
+                status
               );
 
-            const dancerId =
-              group.dataset
-                .attendanceDancer;
+              /*
+                Instant visual update
+                before Firebase save.
+              */
 
-            const status =
-              button.dataset
-                .attendanceStatus;
+              group
+                .querySelectorAll(
+                  "[data-attendance-status]"
+                )
+                .forEach(
+                  option => {
 
-            setAttendanceStatus(
-              attendance,
-              dancerId,
-              status
-            );
-
-            /*
-               Instant visual update
-               before network save.
-            */
-
-            group
-              .querySelectorAll(
-                "[data-attendance-status]"
-              )
-              .forEach(option => {
-                option.classList.toggle(
-                  "selected",
-                  option.dataset
-                    .attendanceStatus ===
-                    status
+                    option.classList.toggle(
+                      "selected",
+                      option.dataset
+                        .attendanceStatus ===
+                        status
+                    );
+                  }
                 );
-              });
 
-            drawAttendanceSummary(
-              practice
-            );
+              drawAttendanceSummary(
+                practice
+              );
 
-            await saveData();
-          }
-        );
-      });
+              await saveData();
+            }
+          );
+        }
+      );
 
     drawAttendanceSummary(
       practice
     );
   }
 
-  search?.addEventListener(
-    "input",
-    drawAttendance
-  );
+  search
+    ?.addEventListener(
+      "input",
+      drawAttendance
+    );
 
   document
     .getElementById(
@@ -3635,8 +5398,10 @@ function showPractice(id) {
     ?.addEventListener(
       "click",
       async () => {
+
         dancers.forEach(
           dancer => {
+
             setAttendanceStatus(
               attendance,
               dancer.id,
@@ -3646,7 +5411,8 @@ function showPractice(id) {
         );
 
         /*
-           Update immediately.
+          Redraw immediately,
+          then save.
         */
 
         drawAttendance();
@@ -3661,6 +5427,18 @@ function showPractice(id) {
 
   drawAttendance();
 }
+
+
+/* ============================================================
+   END OF PART 3 OF 4
+
+   Part 4 goes DIRECTLY underneath this line.
+   Do not add a <script> tag.
+   Do not commit yet.
+   ============================================================ */
+/* ============================================================
+   ATTENDANCE HELPERS
+   ============================================================ */
 
 function attendanceButton(
   status,
@@ -3682,6 +5460,7 @@ function attendanceButton(
   `;
 }
 
+
 function getAttendanceStatus(
   attendance,
   dancerId
@@ -3689,17 +5468,19 @@ function getAttendanceStatus(
   const key =
     Object.keys(
       attendance || {}
-    ).find(key =>
-      sameId(
-        key,
-        dancerId
-      )
+    ).find(
+      key =>
+        sameId(
+          key,
+          dancerId
+        )
     );
 
   return key
     ? attendance[key]
     : null;
 }
+
 
 function setAttendanceStatus(
   attendance,
@@ -3709,57 +5490,71 @@ function setAttendanceStatus(
   const existing =
     Object.keys(
       attendance || {}
-    ).find(key =>
-      sameId(
-        key,
-        dancerId
-      )
+    ).find(
+      key =>
+        sameId(
+          key,
+          dancerId
+        )
     );
 
   if (existing) {
-    attendance[existing] =
-      status;
-  } else {
+
     attendance[
-      String(dancerId)
+      existing
+    ] = status;
+
+  } else {
+
+    attendance[
+      String(
+        dancerId
+      )
     ] = status;
   }
 }
+
 
 function practiceAttendanceCounts(
   practice
 ) {
   const values =
     Object.values(
-      practice.attendance || {}
+      practice.attendance ||
+      {}
     );
 
   return {
     present:
       values.filter(
         value =>
-          value === "present"
+          value ===
+          "present"
       ).length,
 
     late:
       values.filter(
         value =>
-          value === "late"
+          value ===
+          "late"
       ).length,
 
     absent:
       values.filter(
         value =>
-          value === "absent"
+          value ===
+          "absent"
       ).length,
 
     excused:
       values.filter(
         value =>
-          value === "excused"
+          value ===
+          "excused"
       ).length
   };
 }
+
 
 function drawAttendanceSummary(
   practice
@@ -3769,7 +5564,9 @@ function drawAttendanceSummary(
       "attendanceSummary"
     );
 
-  if (!container) return;
+  if (!container) {
+    return;
+  }
 
   const counts =
     practiceAttendanceCounts(
@@ -3780,6 +5577,7 @@ function drawAttendanceSummary(
     <div
       class="attendance-summary four"
     >
+
       ${summaryBox(
         "present",
         counts.present,
@@ -3803,9 +5601,11 @@ function drawAttendanceSummary(
         counts.excused,
         "EXCUSED"
       )}
+
     </div>
   `;
 }
+
 
 function summaryBox(
   className,
@@ -3816,6 +5616,7 @@ function summaryBox(
     <div
       class="summary-box ${className}"
     >
+
       <strong>
         ${number}
       </strong>
@@ -3823,6 +5624,7 @@ function summaryBox(
       <span>
         ${label}
       </span>
+
     </div>
   `;
 }
@@ -3830,9 +5632,12 @@ function summaryBox(
 
 /* ============================================================
    ATTENDANCE HISTORY
-   Only Present counts as Present.
-   Late, No Show and Excused count
-   as Not Present.
+
+   IMPORTANT:
+   ONLY "Present" counts as Present.
+
+   Late, No Show and Excused all count
+   as NOT PRESENT for the percentage.
    ============================================================ */
 
 function attendanceStatsForDancer(
@@ -3849,6 +5654,7 @@ function attendanceStatsForDancer(
 
   practices.forEach(
     practice => {
+
       const status =
         getAttendanceStatus(
           practice.attendance ||
@@ -3856,28 +5662,34 @@ function attendanceStatsForDancer(
           dancerId
         );
 
-      if (!status) return;
+      if (!status) {
+        return;
+      }
 
       if (
-        status === "present"
+        status ===
+        "present"
       ) {
         present++;
       }
 
       if (
-        status === "late"
+        status ===
+        "late"
       ) {
         late++;
       }
 
       if (
-        status === "absent"
+        status ===
+        "absent"
       ) {
         absent++;
       }
 
       if (
-        status === "excused"
+        status ===
+        "excused"
       ) {
         excused++;
       }
@@ -3893,8 +5705,10 @@ function attendanceStatsForDancer(
   const percent =
     total
       ? Math.round(
-          (present / total) *
-            100
+          (
+            present /
+            total
+          ) * 100
         )
       : 0;
 
@@ -3908,13 +5722,18 @@ function attendanceStatsForDancer(
   };
 }
 
+
 function showAttendanceHistory(
   dancerId
 ) {
   const dancer =
-    findDancer(dancerId);
+    findDancer(
+      dancerId
+    );
 
-  if (!dancer) return;
+  if (!dancer) {
+    return;
+  }
 
   const stats =
     attendanceStatsForDancer(
@@ -3924,17 +5743,21 @@ function showAttendanceHistory(
   const history =
     getSelectedEnsemble()
       .practices
-      .map(practice => ({
-        practice,
-        status:
-          getAttendanceStatus(
-            practice.attendance ||
-              {},
-            dancer.id
-          )
-      }))
+      .map(
+        practice => ({
+          practice,
+
+          status:
+            getAttendanceStatus(
+              practice.attendance ||
+                {},
+              dancer.id
+            )
+        })
+      )
       .filter(
-        item => item.status
+        item =>
+          item.status
       )
       .sort(
         (a, b) =>
@@ -3948,20 +5771,34 @@ function showAttendanceHistory(
       );
 
   openModal({
-    eyebrow: "ATTENDANCE",
-    title: dancerName(dancer),
+    eyebrow:
+      "ATTENDANCE",
+
+    title:
+      dancerName(
+        dancer
+      ),
 
     body: `
-      <div class="history-hero">
-        <div class="history-percent">
+      <div
+        class="history-hero"
+      >
+
+        <div
+          class="history-percent"
+        >
           ${stats.percent}%
         </div>
 
-        <div class="history-caption">
+        <div
+          class="history-caption"
+        >
           Present
         </div>
 
-        <div class="history-not-present">
+        <div
+          class="history-not-present"
+        >
           ${
             stats.total
               ? 100 -
@@ -3969,11 +5806,13 @@ function showAttendanceHistory(
               : 0
           }% Not Present
         </div>
+
       </div>
 
       <div
         class="attendance-summary four"
       >
+
         ${summaryBox(
           "present",
           stats.present,
@@ -3997,75 +5836,100 @@ function showAttendanceHistory(
           stats.excused,
           "EXCUSED"
         )}
+
       </div>
 
       ${
         history.length
           ? history
-              .map(item => `
-                <div
-                  class="history-row"
-                >
-                  <div>
-                    <strong>
-                      ${escapeHTML(
-                        item.practice
-                          .name ||
-                        "Proba"
-                      )}
-                    </strong>
-
-                    <p>
-                      ${formatDate(
-                        item.practice
-                          .date
-                      )}
-                    </p>
-                  </div>
-
-                  <span
-                    class="history-status ${
-                      item.status
-                    }"
+              .map(
+                item => `
+                  <div
+                    class="history-row"
                   >
-                    ${attendanceLabel(
-                      item.status
-                    )}
-                  </span>
-                </div>
-              `)
+
+                    <div>
+                      <strong>
+                        ${escapeHTML(
+                          item.practice
+                            .name ||
+                          "Proba"
+                        )}
+                      </strong>
+
+                      <p>
+                        ${formatDate(
+                          item.practice
+                            .date
+                        )}
+                      </p>
+                    </div>
+
+                    <span
+                      class="history-status ${
+                        item.status
+                      }"
+                    >
+                      ${attendanceLabel(
+                        item.status
+                      )}
+                    </span>
+
+                  </div>
+                `
+              )
               .join("")
           : `
-            <div class="empty">
+            <div
+              class="empty"
+            >
               No attendance recorded
             </div>
           `
       }
     `,
 
-    showBack: true,
+    showBack:
+      true,
 
-    onBack: () =>
-      showDancer(
-        dancer.id
-      )
+    onBack:
+      () => {
+        showDancer(
+          dancer.id
+        );
+      }
   });
 }
 
-function attendanceLabel(status) {
-  if (status === "present") {
+
+function attendanceLabel(
+  status
+) {
+  if (
+    status ===
+    "present"
+  ) {
     return "Present";
   }
 
-  if (status === "late") {
+  if (
+    status ===
+    "late"
+  ) {
     return "Late";
   }
 
-  if (status === "absent") {
+  if (
+    status ===
+    "absent"
+  ) {
     return "No Show";
   }
 
-  if (status === "excused") {
+  if (
+    status ===
+    "excused"
+  ) {
     return "Excused";
   }
 
@@ -4081,8 +5945,8 @@ function renderSettings() {
   updateEnsembleLabels();
 
   /*
-     Convert Instructor Notes into
-     one normal Settings row.
+    Instructor Notes remains
+    a normal Settings row.
   */
 
   const notesCard =
@@ -4091,12 +5955,14 @@ function renderSettings() {
     );
 
   if (notesCard) {
+
     notesCard.innerHTML = `
       <button
         type="button"
         class="settings-notes-row"
         id="openInstructorNotes"
       >
+
         <span>
           Instructor Notes
         </span>
@@ -4106,6 +5972,7 @@ function renderSettings() {
         >
           ›
         </span>
+
       </button>
     `;
 
@@ -4131,7 +5998,8 @@ function openInstructorNotes() {
 
   openModal({
     eyebrow:
-      ensemble.name.toUpperCase(),
+      ensemble.name
+        .toUpperCase(),
 
     title:
       "Instructor Notes",
@@ -4140,16 +6008,21 @@ function openInstructorNotes() {
       <div
         class="notes-full-page"
       >
+
         <div
           class="notes-save-line"
         >
+
           <span
             class="notes-live-dot"
           ></span>
 
-          <span id="notesSaveText">
+          <span
+            id="notesSaveText"
+          >
             Saved
           </span>
+
         </div>
 
         <textarea
@@ -4158,13 +6031,16 @@ function openInstructorNotes() {
           placeholder="Start typing..."
           spellcheck="true"
         >${escapeHTML(
-          ensemble.instructorNotes ||
+          ensemble
+            .instructorNotes ||
           ""
         )}</textarea>
+
       </div>
     `,
 
-    fullScreen: true
+    fullScreen:
+      true
   });
 
   const editor =
@@ -4182,6 +6058,7 @@ function openInstructorNotes() {
   editor?.addEventListener(
     "input",
     () => {
+
       ensemble.instructorNotes =
         editor.value;
 
@@ -4192,19 +6069,23 @@ function openInstructorNotes() {
           "Saving...";
       }
 
-      clearTimeout(timer);
-
-      timer = setTimeout(
-        async () => {
-          await saveData();
-
-          if (saveText) {
-            saveText.textContent =
-              "Saved";
-          }
-        },
-        500
+      clearTimeout(
+        timer
       );
+
+      timer =
+        setTimeout(
+          async () => {
+
+            await saveData();
+
+            if (saveText) {
+              saveText.textContent =
+                "Saved";
+            }
+          },
+          500
+        );
     }
   );
 }
@@ -4214,13 +6095,19 @@ function openInstructorNotes() {
    SETTINGS PLACEHOLDERS
    ============================================================ */
 
-function placeholderModal(title) {
+function placeholderModal(
+  title
+) {
   openModal({
-    eyebrow: "SETTINGS",
+    eyebrow:
+      "SETTINGS",
+
     title,
 
     body: `
-      <div class="empty">
+      <div
+        class="empty"
+      >
         This section will be available
         when instructor accounts and
         permissions are configured.
@@ -4234,7 +6121,9 @@ function placeholderModal(title) {
    MODAL
    ============================================================ */
 
-let modalBackAction = null;
+let modalBackAction =
+  null;
+
 
 function openModal({
   eyebrow = "",
@@ -4251,22 +6140,29 @@ function openModal({
     return;
   }
 
-  modalEyebrow.textContent =
-    eyebrow;
+  if (modalEyebrow) {
+    modalEyebrow.textContent =
+      eyebrow;
+  }
 
-  modalTitle.textContent =
-    title;
+  if (modalTitle) {
+    modalTitle.textContent =
+      title;
+  }
 
-  modalBody.innerHTML =
-    body;
+  if (modalBody) {
+    modalBody.innerHTML =
+      body;
+  }
 
   modalBackAction =
     onBack;
 
-  modalBack?.classList.toggle(
-    "hidden",
-    !showBack
-  );
+  modalBack
+    ?.classList.toggle(
+      "hidden",
+      !showBack
+    );
 
   modal.classList.toggle(
     "full-screen-modal",
@@ -4282,22 +6178,42 @@ function openModal({
     "open"
   );
 
+  modalOverlay.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
   document.body.classList.add(
     "modal-open"
   );
 
   /*
-     Always start modal at top.
+    Always start the newly
+    opened modal at the top.
   */
 
-  modalBody.scrollTop = 0;
+  if (modalBody) {
+    modalBody.scrollTop =
+      0;
+  }
+
+  modal.scrollTop =
+    0;
 }
 
+
 function closeModal() {
-  if (!modalOverlay) return;
+  if (!modalOverlay) {
+    return;
+  }
 
   modalOverlay.classList.remove(
     "open"
+  );
+
+  modalOverlay.setAttribute(
+    "aria-hidden",
+    "true"
   );
 
   modal?.classList.remove(
@@ -4309,140 +6225,247 @@ function closeModal() {
     "modal-open"
   );
 
-  modalBackAction = null;
+  modalBackAction =
+    null;
 }
 
-modalBack?.addEventListener(
-  "click",
-  () => {
-    if (modalBackAction) {
-      const action =
-        modalBackAction;
 
-      modalBackAction = null;
-
-      action();
-    } else {
-      closeModal();
-    }
-  }
-);
-
-closeModalButton?.addEventListener(
-  "click",
-  closeModal
-);
-
-
-/* ============================================================
-   EVENT LISTENERS
-   ============================================================ */
-
-navButtons.forEach(button => {
-  button.addEventListener(
+modalBack
+  ?.addEventListener(
     "click",
     () => {
-      const page =
-        button.dataset.page;
 
-      if (page) {
-        openPage(page);
+      if (
+        modalBackAction
+      ) {
+
+        const action =
+          modalBackAction;
+
+        modalBackAction =
+          null;
+
+        action();
+
+      } else {
+
+        closeModal();
       }
     }
   );
-});
 
-addDancerButton?.addEventListener(
-  "click",
-  () =>
-    showDancerForm()
-);
 
-addDanceButton?.addEventListener(
-  "click",
-  () =>
-    showDanceForm()
-);
+closeModalButton
+  ?.addEventListener(
+    "click",
+    closeModal
+  );
 
-addPracticeButton?.addEventListener(
-  "click",
-  showPracticeForm
-);
 
-dancerSearch?.addEventListener(
-  "input",
-  renderDancers
-);
+modalOverlay
+  ?.addEventListener(
+    "click",
+    event => {
 
-todayButton?.addEventListener(
-  "click",
-  () => {
-    calendarDate =
-      new Date();
+      /*
+        Only close when tapping
+        the dark area OUTSIDE
+        the modal itself.
+      */
 
-    selectedCalendarDate =
-      new Date();
+      if (
+        event.target ===
+        modalOverlay
+      ) {
+        closeModal();
+      }
+    }
+  );
 
-    renderCalendar();
-    renderPractices();
+
+/* ============================================================
+   UPLOAD OVERLAY CANCEL
+   ============================================================ */
+
+cancelUploadButton
+  ?.addEventListener(
+    "click",
+    () => {
+
+      hideUpload();
+
+      showToast(
+        "Upload screen closed"
+      );
+    }
+  );
+
+
+/* ============================================================
+   MAIN EVENT LISTENERS
+   ============================================================ */
+
+navButtons.forEach(
+  button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        const page =
+          button.dataset.page;
+
+        if (page) {
+          openPage(
+            page
+          );
+        }
+      }
+    );
   }
 );
+
+
+addDancerButton
+  ?.addEventListener(
+    "click",
+    () => {
+      showDancerForm();
+    }
+  );
+
+
+addDanceButton
+  ?.addEventListener(
+    "click",
+    () => {
+      showDanceForm();
+    }
+  );
+
+
+addPracticeButton
+  ?.addEventListener(
+    "click",
+    () => {
+      showPracticeForm();
+    }
+  );
+
+
+dancerSearch
+  ?.addEventListener(
+    "input",
+    () => {
+      renderDancers();
+    }
+  );
+
+
+todayButton
+  ?.addEventListener(
+    "click",
+    () => {
+
+      calendarDate =
+        new Date();
+
+      selectedCalendarDate =
+        new Date();
+
+      renderCalendar();
+
+      renderPractices();
+    }
+  );
+
+
+/* ============================================================
+   CALENDAR MONTH ARROWS
+   Supports either data attribute
+   used by the HTML versions.
+   ============================================================ */
 
 document
   .querySelectorAll(
     ".calendar-arrow"
   )
-  .forEach(button => {
-    button.addEventListener(
-      "click",
-      () => {
-        const direction =
-          button.dataset
-            .direction ||
-          button.dataset
-            .calendarDirection;
+  .forEach(
+    button => {
 
-        const amount =
-          direction === "prev" ||
-          direction === "-1"
-            ? -1
-            : 1;
+      button.addEventListener(
+        "click",
+        () => {
 
-        calendarDate =
-          new Date(
-            calendarDate.getFullYear(),
-            calendarDate.getMonth() +
-              amount,
-            1
-          );
+          const direction =
+            button.dataset
+              .direction ||
+            button.dataset
+              .calendarDirection;
 
-        renderCalendar();
-      }
-    );
-  });
+          const amount =
+            direction ===
+              "prev" ||
+            direction ===
+              "-1"
+              ? -1
+              : 1;
+
+          calendarDate =
+            new Date(
+              calendarDate
+                .getFullYear(),
+
+              calendarDate
+                .getMonth() +
+                amount,
+
+              1
+            );
+
+          renderCalendar();
+        }
+      );
+    }
+  );
+
+
+/* ============================================================
+   SETTINGS BUTTONS
+   ============================================================ */
 
 manageEnsemblesButton
   ?.addEventListener(
     "click",
-    () =>
-      openPage("homePage")
+    () => {
+      openPage(
+        "homePage"
+      );
+    }
   );
 
-accountsButton?.addEventListener(
-  "click",
-  () =>
-    placeholderModal(
-      "Instructor Accounts"
-    )
-);
+
+accountsButton
+  ?.addEventListener(
+    "click",
+    () => {
+
+      placeholderModal(
+        "Instructor Accounts"
+      );
+    }
+  );
+
 
 permissionsButton
   ?.addEventListener(
     "click",
-    () =>
+    () => {
+
       placeholderModal(
         "Permissions"
-      )
+      );
+    }
   );
 
 
@@ -4450,14 +6473,29 @@ permissionsButton
    FIREBASE SYNC
    ============================================================ */
 
+let firebaseListenerStarted =
+  false;
+
+
 function connectFirebase() {
-  const fb = getFirebase();
+  const fb =
+    getFirebase();
 
-  if (!fb) return;
+  if (
+    !fb ||
+    firebaseListenerStarted
+  ) {
+    return;
+  }
 
-  firebaseReady = true;
+  firebaseListenerStarted =
+    true;
+
+  firebaseReady =
+    true;
 
   try {
+
     fb.onValue(
       fb.dbRef(
         fb.database,
@@ -4465,8 +6503,15 @@ function connectFirebase() {
       ),
 
       snapshot => {
+
         const cloud =
           snapshot.val();
+
+        /*
+          If Firebase is empty,
+          upload the data already
+          stored on this device.
+        */
 
         if (!cloud) {
           saveData();
@@ -4477,18 +6522,22 @@ function connectFirebase() {
           true;
 
         /*
-           Preserve the ensemble currently
-           selected on THIS phone so another
-           instructor changing ensemble does
-           not jump this phone to a different
-           ensemble.
+          Keep the ensemble selected
+          on THIS device.
+
+          This prevents another
+          instructor selecting another
+          ensemble from suddenly
+          changing this phone's screen.
         */
 
         const localSelection =
           data.selectedEnsemble;
 
         data =
-          normalizeData(cloud);
+          normalizeData(
+            cloud
+          );
 
         data.selectedEnsemble =
           localSelection;
@@ -4502,13 +6551,23 @@ function connectFirebase() {
       },
 
       error => {
+
         console.error(
           "Firebase listener failed:",
           error
         );
+
+        showToast(
+          "Cloud connection problem"
+        );
       }
     );
+
   } catch (error) {
+
+    firebaseListenerStarted =
+      false;
+
     console.error(
       "Firebase setup failed:",
       error
@@ -4516,14 +6575,23 @@ function connectFirebase() {
   }
 }
 
+
+/*
+  index.html dispatches this
+  once the Firebase modules
+  have loaded.
+*/
+
 window.addEventListener(
   "vukFirebaseReady",
-  connectFirebase
+  () => {
+    connectFirebase();
+  }
 );
 
 
 /* ============================================================
-   RENDER ALL
+   RENDER EVERYTHING
    ============================================================ */
 
 function renderAll() {
@@ -4532,9 +6600,13 @@ function renderAll() {
   updateEnsembleLabels();
 
   renderEnsembles();
+
   renderDancers();
+
   renderDances();
+
   renderCalendar();
+
   renderPractices();
 
   const activePage =
@@ -4559,8 +6631,17 @@ removeHeaderEnsembleButton();
 
 renderAll();
 
-openPage("homePage");
+openPage(
+  "homePage"
+);
 
-if (window.vukFirebase) {
+if (
+  window.vukFirebase
+) {
   connectFirebase();
 }
+
+
+/* ============================================================
+   END OF SCRIPT.JS
+   ============================================================ */
