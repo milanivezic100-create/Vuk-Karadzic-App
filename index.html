@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
 
+  <!--
+    iPhone / Home Screen support.
+    viewport-fit=cover allows us to use the iPhone safe areas
+    correctly in styles.css without content hiding behind
+    the status bar or Home indicator.
+  -->
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
   >
 
-  <!-- APP / BROWSER COLOURS -->
-  <meta name="theme-color" content="#f4f0e7">
+  <meta name="theme-color" content="#f7f1e7">
 
-  <!-- iPHONE / iPAD WEB APP SETTINGS -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
 
   <meta
     name="apple-mobile-web-app-status-bar-style"
@@ -26,163 +31,138 @@
     content="VUK Probe"
   >
 
-  <!-- HOME SCREEN ICON -->
-  <link
-    rel="apple-touch-icon"
-    sizes="180x180"
-    href="./Vuk-app-icon.png"
-  >
-
-  <!-- BROWSER ICON -->
-  <link
-    rel="icon"
-    type="image/png"
-    href="./Vuk-app-icon.png"
-  >
-
   <title>VUK Karadžić Probe</title>
 
-  <!-- v5 added to help iPhone/iPad load the newest CSS -->
-  <link rel="stylesheet" href="./styles.css?v=5">
-</head>
+  <!-- Home Screen icon -->
+  <link
+    rel="apple-touch-icon"
+    href="Vuk-app-icon.png"
+  >
 
+  <!--
+    Version changed so the iPhone does not keep using
+    an older cached copy of styles.css.
+  -->
+  <link
+    rel="stylesheet"
+    href="styles.css?v=7"
+  >
+</head>
 
 <body>
 
-<div id="app">
+  <div id="app">
 
-  <!-- =========================
-       HEADER
-  ========================== -->
-  <header class="top-header">
+    <!-- ======================================================
+         HEADER
+         ====================================================== -->
 
-    <div class="brand">
+    <header class="top-header">
 
-      <img
-        src="./Vuk-logo.png"
-        alt="VUK Karadžić"
-        class="vuk-logo"
-      >
+      <div class="brand">
 
-      <div class="brand-title">
-        Probe
+        <img
+          src="Vuk-logo.png"
+          alt="VUK Karadžić"
+          class="vuk-logo"
+        >
+
+        <div class="brand-title">
+          Probe
+        </div>
+
       </div>
 
-    </div>
+      <!--
+        Kept in the HTML for compatibility with existing
+        JavaScript/data, but hidden by the app.
+        Ensemble changing will happen from Home only.
+      -->
+      <button
+        id="ensembleButton"
+        class="ensemble-pill"
+        type="button"
+        aria-hidden="true"
+      >
+        Ensemble
+      </button>
+
+    </header>
 
 
-    <button
-      id="ensembleButton"
-      class="ensemble-pill"
-      type="button"
-    >
-      <span id="currentEnsembleName">
-        Third
-      </span>
-
-      <span>›</span>
-    </button>
-
-  </header>
-
-
-  <!-- =========================
-       MAIN CONTENT
-  ========================== -->
-  <main>
-
-
-    <!-- =========================
+    <!-- ======================================================
          HOME
-    ========================== -->
-    <section
+         ====================================================== -->
+
+    <main
       id="homePage"
       class="page active"
     >
 
       <div class="page-intro">
 
-        <div class="eyebrow">
-          INSTRUCTOR WORKSPACE
-        </div>
-
-        <h1>
-          Choose an ensemble
+        <h1 class="section-heading">
+          Ensembles
         </h1>
 
-        <p>
-          Your calendar, dances, roster and
-          instructor notes follow this selection.
-        </p>
-
       </div>
-
 
       <div
         id="ensembleList"
         class="ensemble-list"
       ></div>
 
-    </section>
+    </main>
 
 
-    <!-- =========================
+    <!-- ======================================================
          CALENDAR
-    ========================== -->
-    <section
+         ====================================================== -->
+
+    <main
       id="calendarPage"
       class="page"
     >
 
-      <div class="section-heading">
+      <div class="page-intro">
 
-        <div>
+        <h1 class="section-heading">
+          Calendar
+        </h1>
 
-          <div class="eyebrow">
-            SCHEDULE
-          </div>
-
-          <h1>
-            Calendar
-          </h1>
-
-          <p id="calendarEnsemble"></p>
-
-        </div>
-
-
-        <button
-          id="todayButton"
-          class="today-button"
-          type="button"
-        >
-          Today
-        </button>
+        <p id="calendarEnsemble"></p>
 
       </div>
 
 
-      <div class="calendar-card">
+      <button
+        id="todayButton"
+        class="today-button"
+        type="button"
+      >
+        Today
+      </button>
+
+
+      <section class="calendar-card">
 
         <div class="calendar-header">
 
           <button
-            id="previousMonth"
             class="calendar-arrow"
             type="button"
+            data-direction="prev"
             aria-label="Previous month"
           >
             ‹
           </button>
 
-
           <h2 id="calendarMonth"></h2>
 
-
           <button
-            id="nextMonth"
             class="calendar-arrow"
             type="button"
+            data-direction="next"
             aria-label="Next month"
           >
             ›
@@ -192,7 +172,6 @@
 
 
         <div class="weekdays">
-
           <span>Sun</span>
           <span>Mon</span>
           <span>Tue</span>
@@ -200,7 +179,6 @@
           <span>Thu</span>
           <span>Fri</span>
           <span>Sat</span>
-
         </div>
 
 
@@ -209,12 +187,12 @@
           class="calendar-grid"
         ></div>
 
-      </div>
+      </section>
 
 
-      <div class="practice-heading">
+      <div class="practice-heading-row">
 
-        <h2>
+        <h2 class="practice-heading">
           Practices
         </h2>
 
@@ -235,50 +213,47 @@
         class="stack-list"
       ></div>
 
-    </section>
+    </main>
 
 
-    <!-- =========================
+    <!-- ======================================================
          DANCES
-    ========================== -->
-    <section
+         ====================================================== -->
+
+    <main
       id="dancesPage"
       class="page"
     >
 
-      <div class="section-heading">
+      <div class="page-intro">
 
-        <div>
+        <h1 class="section-heading">
+          Dances
+        </h1>
 
-          <div class="eyebrow">
-            REPERTOIRE
-          </div>
-
-          <h1>
-            Dances
-          </h1>
-
-          <p id="danceEnsemble"></p>
-
-        </div>
-
-
-        <button
-          id="addDanceButton"
-          class="round-add"
-          type="button"
-          aria-label="Add dance"
-        >
-          +
-        </button>
+        <p id="danceEnsemble"></p>
 
       </div>
 
 
-      <div class="reorder-hint">
-        Use the reorder controls to arrange dances
-        in the order you want.
-      </div>
+      <button
+        id="addDanceButton"
+        class="round-add"
+        type="button"
+        aria-label="Add dance"
+      >
+        +
+      </button>
+
+
+      <!--
+        Kept only for backwards compatibility.
+        It will stay hidden.
+      -->
+      <p
+        class="reorder-hint"
+        aria-hidden="true"
+      ></p>
 
 
       <div
@@ -286,49 +261,42 @@
         class="stack-list"
       ></div>
 
-    </section>
+    </main>
 
 
-    <!-- =========================
+    <!-- ======================================================
          DANCERS
-    ========================== -->
-    <section
+         ====================================================== -->
+
+    <main
       id="dancersPage"
       class="page"
     >
 
-      <div class="section-heading">
+      <div class="page-intro">
 
-        <div>
+        <h1 class="section-heading">
+          Dancers
+        </h1>
 
-          <div class="eyebrow">
-            ROSTER
-          </div>
-
-          <h1>
-            Dancers
-          </h1>
-
-          <p id="dancerEnsemble"></p>
-
-        </div>
-
-
-        <button
-          id="addDancerButton"
-          class="round-add"
-          type="button"
-          aria-label="Add dancer"
-        >
-          +
-        </button>
+        <p id="dancerEnsemble"></p>
 
       </div>
 
 
+      <button
+        id="addDancerButton"
+        class="round-add"
+        type="button"
+        aria-label="Add dancer"
+      >
+        +
+      </button>
+
+
       <div class="search-box">
 
-        <span>
+        <span aria-hidden="true">
           ⌕
         </span>
 
@@ -337,113 +305,75 @@
           type="search"
           placeholder="Search dancers..."
           autocomplete="off"
+          autocorrect="off"
         >
 
       </div>
 
 
-      <div class="roster-help">
-        Boys and girls stay separate. Use the
-        reorder controls to arrange names within
-        each group.
-      </div>
+      <!--
+        No instructional/helper writing.
+        Kept empty for backwards compatibility.
+      -->
+      <p
+        class="roster-help"
+        aria-hidden="true"
+      ></p>
 
 
       <div id="dancerList"></div>
 
-    </section>
+    </main>
 
 
-    <!-- =========================
+    <!-- ======================================================
          SETTINGS
-    ========================== -->
-    <section
+         ====================================================== -->
+
+    <main
       id="settingsPage"
       class="page"
     >
 
-      <div class="section-heading">
+      <div class="page-intro">
 
-        <div>
+        <h1 class="section-heading">
+          Settings
+        </h1>
 
-          <div class="eyebrow">
-            VUK PROBE
-          </div>
-
-          <h1>
-            Settings
-          </h1>
-
-          <p id="settingsEnsemble"></p>
-
-        </div>
+        <p id="settingsEnsemble"></p>
 
       </div>
 
 
-      <!-- =========================
-           SHARED INSTRUCTOR NOTES
-      ========================== -->
-      <div class="settings-section">
+      <!-- SHARED -->
 
-        <div class="settings-section-heading">
+      <section class="settings-section">
 
-          <div>
-
-            <div class="eyebrow">
-              SHARED
-            </div>
-
-            <h2>
-              Instructor Notes
-            </h2>
-
-          </div>
-
-        </div>
+        <h2 class="settings-section-heading">
+          SHARED
+        </h2>
 
 
         <div class="instructor-notes-card">
 
-          <p class="instructor-notes-description">
-            Notes for the currently selected ensemble.
-            These notes are shared with the other
-            instructors using VUK Probe.
-          </p>
-
-
-          <textarea
-            id="instructorNotes"
-            class="instructor-notes-input"
-            placeholder="Leave notes for the other instructors..."
-            aria-label="Instructor notes"
-          ></textarea>
-
-
-          <div
-            id="notesSaveStatus"
-            class="notes-save-status"
-          >
-            Changes save automatically.
-          </div>
+          <!--
+            JavaScript turns this into the
+            Instructor Notes settings row.
+          -->
 
         </div>
 
-      </div>
+      </section>
 
 
-      <!-- =========================
-           APP SETTINGS
-      ========================== -->
-      <div class="settings-section">
+      <!-- APP SETTINGS -->
 
-        <div class="settings-section-heading">
+      <section class="settings-section">
 
-          <div class="eyebrow">
-            APP SETTINGS
-          </div>
-
-        </div>
+        <h2 class="settings-section-heading">
+          APP SETTINGS
+        </h2>
 
 
         <div class="settings-card">
@@ -452,15 +382,13 @@
             id="manageEnsembles"
             type="button"
           >
-
             <span>
               Manage Ensembles
             </span>
 
-            <span>
+            <span class="settings-chevron">
               ›
             </span>
-
           </button>
 
 
@@ -468,15 +396,13 @@
             id="accountsButton"
             type="button"
           >
-
             <span>
               Instructor Accounts
             </span>
 
-            <span>
+            <span class="settings-chevron">
               ›
             </span>
-
           </button>
 
 
@@ -484,142 +410,149 @@
             id="permissionsButton"
             type="button"
           >
-
             <span>
               Permissions
             </span>
 
-            <span>
+            <span class="settings-chevron">
               ›
             </span>
-
           </button>
 
         </div>
 
-      </div>
+      </section>
 
 
-      <p class="settings-note">
-        Instructor notes belong to the selected
-        ensemble and sync with the shared database.
-      </p>
+      <!--
+        Existing element kept for compatibility,
+        but we no longer display helper writing.
+      -->
+      <p
+        class="settings-note"
+        aria-hidden="true"
+      ></p>
 
-    </section>
-
-  </main>
-
-
-  <!-- =========================
-       BOTTOM NAVIGATION
-  ========================== -->
-  <nav class="bottom-nav">
+    </main>
 
 
-    <button
-      class="nav-button"
-      data-page="calendarPage"
-      type="button"
-    >
+    <!-- ======================================================
+         BOTTOM NAVIGATION
+         ====================================================== -->
 
-      <span class="nav-icon">
-        ▣
-      </span>
+    <nav class="bottom-nav">
 
-      <small>
-        Calendar
-      </small>
+      <button
+        class="nav-button"
+        type="button"
+        data-page="calendarPage"
+        aria-label="Calendar"
+      >
 
-    </button>
+        <span class="nav-icon">
+          ▣
+        </span>
 
+        <span>
+          Calendar
+        </span>
 
-    <button
-      class="nav-button"
-      data-page="dancesPage"
-      type="button"
-    >
-
-      <span class="nav-icon">
-        ♪
-      </span>
-
-      <small>
-        Dances
-      </small>
-
-    </button>
+      </button>
 
 
-    <button
-      class="nav-button home-nav active"
-      data-page="homePage"
-      type="button"
-    >
+      <button
+        class="nav-button"
+        type="button"
+        data-page="dancesPage"
+        aria-label="Dances"
+      >
 
-      <span class="home-circle">
-        ⌂
-      </span>
+        <span class="nav-icon">
+          ♪
+        </span>
 
-      <small>
-        Home
-      </small>
+        <span>
+          Dances
+        </span>
 
-    </button>
-
-
-    <button
-      class="nav-button"
-      data-page="dancersPage"
-      type="button"
-    >
-
-      <span class="nav-icon">
-        ♙
-      </span>
-
-      <small>
-        Dancers
-      </small>
-
-    </button>
+      </button>
 
 
-    <button
-      class="nav-button"
-      data-page="settingsPage"
-      type="button"
-    >
+      <button
+        class="nav-button home-nav active"
+        type="button"
+        data-page="homePage"
+        aria-label="Home"
+      >
 
-      <span class="nav-icon">
-        ⚙
-      </span>
+        <span class="nav-icon home-circle">
+          ⌂
+        </span>
 
-      <small>
-        Settings
-      </small>
+        <span>
+          Home
+        </span>
 
-    </button>
-
-  </nav>
+      </button>
 
 
-  <!-- =========================
+      <button
+        class="nav-button"
+        type="button"
+        data-page="dancersPage"
+        aria-label="Dancers"
+      >
+
+        <span class="nav-icon">
+          ♙
+        </span>
+
+        <span>
+          Dancers
+        </span>
+
+      </button>
+
+
+      <button
+        class="nav-button"
+        type="button"
+        data-page="settingsPage"
+        aria-label="Settings"
+      >
+
+        <span class="nav-icon">
+          ⚙️
+        </span>
+
+        <span>
+          Settings
+        </span>
+
+      </button>
+
+    </nav>
+
+  </div>
+
+
+  <!-- ========================================================
        MODAL
-  ========================== -->
+       ======================================================== -->
+
   <div
     id="modalOverlay"
     class="modal-overlay"
+    aria-hidden="true"
   >
 
-    <div
+    <section
       class="modal"
       role="dialog"
       aria-modal="true"
     >
 
-
-      <div class="modal-header">
-
+      <header class="modal-header">
 
         <button
           id="modalBack"
@@ -632,12 +565,7 @@
 
         <div class="modal-title-area">
 
-          <div
-            id="modalEyebrow"
-            class="eyebrow"
-          >
-            VUK
-          </div>
+          <div id="modalEyebrow"></div>
 
           <h2 id="modalTitle"></h2>
 
@@ -653,29 +581,32 @@
           ×
         </button>
 
-      </div>
+      </header>
 
 
       <div id="modalBody"></div>
 
-    </div>
+    </section>
 
   </div>
 
 
-  <!-- =========================
-       SMALL APP MESSAGE
-  ========================== -->
+  <!-- ========================================================
+       TOAST
+       ======================================================== -->
+
   <div
     id="appToast"
     class="app-toast"
+    role="status"
     aria-live="polite"
   ></div>
 
 
-  <!-- =========================
-       LOADING OVERLAY FOR MEDIA
-  ========================== -->
+  <!-- ========================================================
+       UPLOAD OVERLAY
+       ======================================================== -->
+
   <div
     id="uploadOverlay"
     class="upload-overlay"
@@ -684,129 +615,156 @@
 
     <div class="upload-box">
 
-      <div class="upload-spinner"></div>
+      <div
+        class="upload-spinner"
+        aria-hidden="true"
+      ></div>
 
       <strong id="uploadMessage">
         Uploading...
       </strong>
 
+      <!--
+        We'll wire this up in the new script.js.
+        It gives us a way out instead of trapping
+        the app forever if Firebase Storage hangs.
+      -->
+      <button
+        id="cancelUploadButton"
+        class="upload-cancel-button"
+        type="button"
+      >
+        Cancel
+      </button>
+
     </div>
 
   </div>
 
-</div>
+
+  <!-- ========================================================
+       FIREBASE
+       ======================================================== -->
+
+  <script type="module">
+
+    import {
+      initializeApp
+    } from
+      "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 
 
-<!-- =========================
-     FIREBASE
-========================== -->
-<script type="module">
-
-  import {
-    initializeApp
-  } from
-    "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-
-
-  import {
-    getDatabase,
-    ref as dbRef,
-    set,
-    update,
-    remove,
-    push,
-    onValue
-  } from
-    "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+    import {
+      getDatabase,
+      ref as dbRef,
+      set,
+      update,
+      remove,
+      push,
+      onValue
+    } from
+      "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 
-  import {
-    getStorage,
-    ref as storageRef,
-    uploadBytes,
-    getDownloadURL,
-    deleteObject
-  } from
-    "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
+    import {
+      getStorage,
+      ref as storageRef,
+      uploadBytes,
+      getDownloadURL,
+      deleteObject
+    } from
+      "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
 
 
-  const firebaseConfig = {
+    const firebaseConfig = {
 
-    apiKey:
-      "AIzaSyBHpQLmdhBoImJorhBrQhSHHwml1XEEuso",
+      apiKey:
+        "AIzaSyBHpQLmdhBoImJorhBrQhSHHwml1XEEuso",
 
-    authDomain:
-      "vuk-probe.firebaseapp.com",
+      authDomain:
+        "vuk-probe.firebaseapp.com",
 
-    databaseURL:
-      "https://vuk-probe-default-rtdb.firebaseio.com",
+      databaseURL:
+        "https://vuk-probe-default-rtdb.firebaseio.com",
 
-    projectId:
-      "vuk-probe",
+      projectId:
+        "vuk-probe",
 
-    storageBucket:
-      "vuk-probe.firebasestorage.app",
+      storageBucket:
+        "vuk-probe.firebasestorage.app",
 
-    messagingSenderId:
-      "895894448380",
+      messagingSenderId:
+        "895894448380",
 
-    appId:
-      "1:895894448380:web:7f576b91e7da1da562cf79"
-
-  };
-
-
-  const firebaseApp =
-    initializeApp(firebaseConfig);
+      appId:
+        "1:895894448380:web:7f576b91e7da1da562cf79"
+    };
 
 
-  const database =
-    getDatabase(firebaseApp);
+    const firebaseApp =
+      initializeApp(
+        firebaseConfig
+      );
 
 
-  const storage =
-    getStorage(firebaseApp);
+    const database =
+      getDatabase(
+        firebaseApp
+      );
 
 
-  /*
-    Make Firebase available to script.js.
-
-    Database and Storage refs have different names
-    so they cannot conflict with one another.
-  */
-  window.vukFirebase = {
-
-    database,
-    dbRef,
-    set,
-    update,
-    remove,
-    push,
-    onValue,
-
-    storage,
-    storageRef,
-    uploadBytes,
-    getDownloadURL,
-    deleteObject
-
-  };
+    const storage =
+      getStorage(
+        firebaseApp
+      );
 
 
-  window.dispatchEvent(
-    new Event("vukFirebaseReady")
-  );
+    window.vukFirebase = {
 
-</script>
+      database,
+
+      dbRef,
+
+      set,
+
+      update,
+
+      remove,
+
+      push,
+
+      onValue,
+
+      storage,
+
+      storageRef,
+
+      uploadBytes,
+
+      getDownloadURL,
+
+      deleteObject
+
+    };
 
 
-<!-- =========================
-     MAIN APP JAVASCRIPT
-========================== -->
+    window.dispatchEvent(
+      new Event(
+        "vukFirebaseReady"
+      )
+    );
 
-<!-- v5 helps prevent iPhone/iPad from using old cached JS -->
-<script src="./script.js?v=5"></script>
+  </script>
 
+
+  <!--
+    Version changed so your iPhone loads the new
+    JavaScript instead of an older cached copy.
+  -->
+  <script
+    src="script.js?v=7"
+    defer
+  ></script>
 
 </body>
 </html>
