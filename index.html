@@ -3,18 +3,15 @@
 <head>
   <meta charset="UTF-8">
 
-  <!--
-    iPhone / Home Screen support.
-    viewport-fit=cover allows us to use the iPhone safe areas
-    correctly in styles.css without content hiding behind
-    the status bar or Home indicator.
-  -->
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
   >
 
-  <meta name="theme-color" content="#f7f1e7">
+  <meta
+    name="theme-color"
+    content="#f7f1e7"
+  >
 
   <meta
     name="apple-mobile-web-app-capable"
@@ -33,19 +30,15 @@
 
   <title>VUK Karadžić Probe</title>
 
-  <!-- Home Screen icon -->
   <link
     rel="apple-touch-icon"
     href="Vuk-app-icon.png"
   >
 
-  <!--
-    Version changed so the iPhone does not keep using
-    an older cached copy of styles.css.
-  -->
+  <!-- v8 forces iPhone to load the newest CSS -->
   <link
     rel="stylesheet"
-    href="styles.css?v=7"
+    href="styles.css?v=8"
   >
 </head>
 
@@ -63,7 +56,7 @@
 
         <img
           src="Vuk-logo.png"
-          alt="VUK Karadžić"
+          alt="VUK"
           class="vuk-logo"
         >
 
@@ -74,14 +67,15 @@
       </div>
 
       <!--
-        Kept in the HTML for compatibility with existing
-        JavaScript/data, but hidden by the app.
-        Ensemble changing will happen from Home only.
+        Kept for JavaScript compatibility.
+        Hidden visually.
+        Ensemble switching happens from Home.
       -->
+
       <button
+        type="button"
         id="ensembleButton"
         class="ensemble-pill"
-        type="button"
         aria-hidden="true"
       >
         Ensemble
@@ -104,6 +98,10 @@
         <h1 class="section-heading">
           Ensembles
         </h1>
+
+        <p>
+          Choose an ensemble
+        </p>
 
       </div>
 
@@ -136,32 +134,34 @@
 
 
       <button
+        type="button"
         id="todayButton"
         class="today-button"
-        type="button"
       >
         Today
       </button>
 
 
-      <section class="calendar-card">
+      <div class="calendar-card">
 
         <div class="calendar-header">
 
           <button
-            class="calendar-arrow"
             type="button"
+            class="calendar-arrow"
             data-direction="prev"
             aria-label="Previous month"
           >
             ‹
           </button>
 
+
           <h2 id="calendarMonth"></h2>
 
+
           <button
-            class="calendar-arrow"
             type="button"
+            class="calendar-arrow"
             data-direction="next"
             aria-label="Next month"
           >
@@ -172,6 +172,7 @@
 
 
         <div class="weekdays">
+
           <span>Sun</span>
           <span>Mon</span>
           <span>Tue</span>
@@ -179,6 +180,7 @@
           <span>Thu</span>
           <span>Fri</span>
           <span>Sat</span>
+
         </div>
 
 
@@ -187,7 +189,7 @@
           class="calendar-grid"
         ></div>
 
-      </section>
+      </div>
 
 
       <div class="practice-heading-row">
@@ -196,10 +198,11 @@
           Practices
         </h2>
 
+
         <button
+          type="button"
           id="addPracticeButton"
           class="round-add"
-          type="button"
           aria-label="Add practice"
         >
           +
@@ -237,9 +240,9 @@
 
 
       <button
+        type="button"
         id="addDanceButton"
         class="round-add"
-        type="button"
         aria-label="Add dance"
       >
         +
@@ -247,19 +250,17 @@
 
 
       <!--
-        Kept only for backwards compatibility.
-        It will stay hidden.
+        Kept for JavaScript compatibility.
+        No helper text is displayed.
       -->
+
       <p
         class="reorder-hint"
         aria-hidden="true"
       ></p>
 
 
-      <div
-        id="danceList"
-        class="stack-list"
-      ></div>
+      <div id="danceList"></div>
 
     </main>
 
@@ -285,9 +286,9 @@
 
 
       <button
+        type="button"
         id="addDancerButton"
         class="round-add"
-        type="button"
         aria-label="Add dancer"
       >
         +
@@ -296,25 +297,23 @@
 
       <div class="search-box">
 
-        <span aria-hidden="true">
-          ⌕
-        </span>
+        <span>⌕</span>
 
         <input
-          id="dancerSearch"
           type="search"
+          id="dancerSearch"
           placeholder="Search dancers..."
           autocomplete="off"
-          autocorrect="off"
         >
 
       </div>
 
 
       <!--
-        No instructional/helper writing.
-        Kept empty for backwards compatibility.
+        Kept for JavaScript compatibility.
+        No helper text is displayed.
       -->
+
       <p
         class="roster-help"
         aria-hidden="true"
@@ -346,42 +345,37 @@
       </div>
 
 
-      <!-- SHARED -->
-
       <section class="settings-section">
 
         <h2 class="settings-section-heading">
-          SHARED
+          INSTRUCTOR
         </h2>
 
 
-        <div class="instructor-notes-card">
+        <!--
+          JavaScript turns this into the
+          Instructor Notes settings row.
+        -->
 
-          <!--
-            JavaScript turns this into the
-            Instructor Notes settings row.
-          -->
-
-        </div>
+        <div class="instructor-notes-card"></div>
 
       </section>
 
 
-      <!-- APP SETTINGS -->
-
       <section class="settings-section">
 
         <h2 class="settings-section-heading">
-          APP SETTINGS
+          ENSEMBLE
         </h2>
 
 
         <div class="settings-card">
 
           <button
-            id="manageEnsembles"
             type="button"
+            id="manageEnsembles"
           >
+
             <span>
               Manage Ensembles
             </span>
@@ -389,13 +383,15 @@
             <span class="settings-chevron">
               ›
             </span>
+
           </button>
 
 
           <button
-            id="accountsButton"
             type="button"
+            id="accountsButton"
           >
+
             <span>
               Instructor Accounts
             </span>
@@ -403,13 +399,15 @@
             <span class="settings-chevron">
               ›
             </span>
+
           </button>
 
 
           <button
-            id="permissionsButton"
             type="button"
+            id="permissionsButton"
           >
+
             <span>
               Permissions
             </span>
@@ -417,6 +415,7 @@
             <span class="settings-chevron">
               ›
             </span>
+
           </button>
 
         </div>
@@ -424,10 +423,6 @@
       </section>
 
 
-      <!--
-        Existing element kept for compatibility,
-        but we no longer display helper writing.
-      -->
       <p
         class="settings-note"
         aria-hidden="true"
@@ -443,10 +438,9 @@
     <nav class="bottom-nav">
 
       <button
-        class="nav-button"
         type="button"
-        data-page="calendarPage"
-        aria-label="Calendar"
+        class="nav-button"
+        data-page="calendar"
       >
 
         <span class="nav-icon">
@@ -461,10 +455,9 @@
 
 
       <button
-        class="nav-button"
         type="button"
-        data-page="dancesPage"
-        aria-label="Dances"
+        class="nav-button"
+        data-page="dances"
       >
 
         <span class="nav-icon">
@@ -479,10 +472,9 @@
 
 
       <button
-        class="nav-button home-nav active"
         type="button"
-        data-page="homePage"
-        aria-label="Home"
+        class="nav-button home-nav active"
+        data-page="home"
       >
 
         <span class="nav-icon home-circle">
@@ -497,10 +489,9 @@
 
 
       <button
-        class="nav-button"
         type="button"
-        data-page="dancersPage"
-        aria-label="Dancers"
+        class="nav-button"
+        data-page="dancers"
       >
 
         <span class="nav-icon">
@@ -515,10 +506,9 @@
 
 
       <button
-        class="nav-button"
         type="button"
-        data-page="settingsPage"
-        aria-label="Settings"
+        class="nav-button"
+        data-page="settings"
       >
 
         <span class="nav-icon">
@@ -546,18 +536,14 @@
     aria-hidden="true"
   >
 
-    <section
-      class="modal"
-      role="dialog"
-      aria-modal="true"
-    >
+    <div class="modal">
 
-      <header class="modal-header">
+      <div class="modal-header">
 
         <button
+          type="button"
           id="modalBack"
           class="modal-back hidden"
-          type="button"
         >
           ‹ Back
         </button>
@@ -573,20 +559,20 @@
 
 
         <button
+          type="button"
           id="closeModal"
           class="close-button"
-          type="button"
           aria-label="Close"
         >
           ×
         </button>
 
-      </header>
+      </div>
 
 
       <div id="modalBody"></div>
 
-    </section>
+    </div>
 
   </div>
 
@@ -598,8 +584,6 @@
   <div
     id="appToast"
     class="app-toast"
-    role="status"
-    aria-live="polite"
   ></div>
 
 
@@ -615,24 +599,17 @@
 
     <div class="upload-box">
 
-      <div
-        class="upload-spinner"
-        aria-hidden="true"
-      ></div>
+      <div class="upload-spinner"></div>
 
       <strong id="uploadMessage">
         Uploading...
       </strong>
 
-      <!--
-        We'll wire this up in the new script.js.
-        It gives us a way out instead of trapping
-        the app forever if Firebase Storage hangs.
-      -->
+
       <button
+        type="button"
         id="cancelUploadButton"
         class="upload-cancel-button"
-        type="button"
       >
         Cancel
       </button>
@@ -698,6 +675,7 @@
 
       appId:
         "1:895894448380:web:7f576b91e7da1da562cf79"
+
     };
 
 
@@ -722,27 +700,17 @@
     window.vukFirebase = {
 
       database,
-
       dbRef,
-
       set,
-
       update,
-
       remove,
-
       push,
-
       onValue,
 
       storage,
-
       storageRef,
-
       uploadBytes,
-
       getDownloadURL,
-
       deleteObject
 
     };
@@ -758,13 +726,10 @@
 
 
   <!--
-    Version changed so your iPhone loads the new
-    JavaScript instead of an older cached copy.
+    v8 forces iPhone to load the newest JavaScript
   -->
-  <script
-    src="script.js?v=7"
-    defer
-  ></script>
+
+  <script src="script.js?v=8"></script>
 
 </body>
 </html>
