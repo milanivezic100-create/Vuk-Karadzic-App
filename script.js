@@ -1,7 +1,10 @@
 // ==========================================
 // VUK KARADZIC PROBE
-// V4
+// V5
 // ==========================================
+
+const STORAGE_KEY = "vukProbeV4";
+const CLOUD_ROOT = "vukProbeV4";
 
 
 // ==========================================
@@ -9,153 +12,102 @@
 // ==========================================
 
 function createEnsemble(name, shortName) {
-
   return {
     name,
     shortName,
     dancers: [],
     dances: [],
-    practices: []
+    practices: [],
+    instructorNotes: ""
   };
-
 }
 
 
 const defaultData = {
-
   selectedEnsemble: 2,
 
   ensembles: [
-
-    createEnsemble(
-      "First Ensemble",
-      "First"
-    ),
-
-    createEnsemble(
-      "Second Ensemble",
-      "Second"
-    ),
-
-    {
-      name: "Third Ensemble",
-      shortName: "Third",
-
-      dancers: [
-        {
-          id: 101,
-          name: "Marko Petrović",
-          gender: "Male",
-          height: 188,
-          shoeSize: "44",
-          notes: ""
-        },
-
-        {
-          id: 102,
-          name: "Nikola Jovanović",
-          gender: "Male",
-          height: 181,
-          shoeSize: "43",
-          notes: ""
-        },
-
-        {
-          id: 103,
-          name: "Stefan Ilić",
-          gender: "Male",
-          height: 176,
-          shoeSize: "42",
-          notes: ""
-        },
-
-        {
-          id: 104,
-          name: "Ana Petrović",
-          gender: "Female",
-          height: 173,
-          shoeSize: "38",
-          notes: ""
-        },
-
-        {
-          id: 105,
-          name: "Mila Marković",
-          gender: "Female",
-          height: 169,
-          shoeSize: "39",
-          notes: ""
-        }
-      ],
-
-      dances: [],
-
-      practices: []
-    },
-
-    createEnsemble(
-      "Fourth Ensemble",
-      "Fourth"
-    ),
-
-    createEnsemble(
-      "Fifth Ensemble",
-      "Fifth"
-    )
-
+    createEnsemble("First Ensemble", "First"),
+    createEnsemble("Second Ensemble", "Second"),
+    createEnsemble("Third Ensemble", "Third"),
+    createEnsemble("Fourth Ensemble", "Fourth"),
+    createEnsemble("Fifth Ensemble", "Fifth")
   ]
-
 };
 
 
 // ==========================================
-// STORAGE
+// LOAD EXISTING DATA
 // ==========================================
 
 let data;
 
-
 try {
-
   const saved =
-    localStorage.getItem(
-      "vukProbeV4"
-    );
+    localStorage.getItem(STORAGE_KEY) ||
+    localStorage.getItem("vukProbeV3");
 
-
-  if (saved) {
-
-    data =
-      JSON.parse(saved);
-
-  } else {
-
-    // Try importing V3 automatically
-
-    const oldData =
-      localStorage.getItem(
-        "vukProbeV3"
-      );
-
-
-    data =
-      oldData
-        ? JSON.parse(oldData)
-        : defaultData;
-
-  }
+  data = saved
+    ? JSON.parse(saved)
+    : JSON.parse(JSON.stringify(defaultData));
 
 } catch (error) {
+  console.error("Local data could not be loaded:", error);
 
-  data = defaultData;
+  data =
+    JSON.parse(
+      JSON.stringify(defaultData)
+    );
+}
 
+
+let cloudReady = false;
+let applyingCloud = false;
+
+let selectedCalendarDate = null;
+
+let calendarDate =
+  new Date();
+
+let notesTimer = null;
+
+
+// ==========================================
+// GENERAL HELPERS
+// ==========================================
+
+function uid() {
+  return (
+    Date.now() +
+    Math.floor(
+      Math.random() * 1000000
+    )
+  );
 }
 
 
 function normalizeData() {
 
-  if (!data.ensembles) {
-    data = defaultData;
+  if (
+    !data ||
+    !Array.isArray(data.ensembles)
+  ) {
+    data =
+      JSON.parse(
+        JSON.stringify(defaultData)
+      );
+  }
+
+
+  if (
+    !Number.isInteger(
+      data.selectedEnsemble
+    ) ||
+    !data.ensembles[
+      data.selectedEnsemble
+    ]
+  ) {
+    data.selectedEnsemble = 2;
   }
 
 
@@ -163,22 +115,46 @@ function normalizeData() {
     ensembleItem => {
 
       ensembleItem.dancers =
-        ensembleItem.dancers || [];
+        Array.isArray(
+          ensembleItem.dancers
+        )
+          ? ensembleItem.dancers
+          : [];
+
 
       ensembleItem.dances =
-        ensembleItem.dances || [];
+        Array.isArray(
+          ensembleItem.dances
+        )
+          ? ensembleItem.dances
+          : [];
+
 
       ensembleItem.practices =
-        ensembleItem.practices || [];
+        Array.isArray(
+          ensembleItem.practices
+        )
+          ? ensembleItem.practices
+          : [];
+
+
+      ensembleItem.instructorNotes =
+        ensembleItem.instructorNotes ||
+        "";
 
 
       ensembleItem.dancers.forEach(
-        dancer => {
+        (dancer, index) => {
+
+          dancer.notes =
+            dancer.notes || "";
+
 
           if (
-            dancer.notes === undefined
+            dancer.order === undefined ||
+            dancer.order === null
           ) {
-            dancer.notes = "";
+            dancer.order = index;
           }
 
         }
@@ -186,16 +162,51 @@ function normalizeData() {
 
 
       ensembleItem.dances.forEach(
-        dance => {
+        (dance, index) => {
 
           dance.dancerIds =
-            dance.dancerIds || [];
+            Array.isArray(
+              dance.dancerIds
+            )
+              ? dance.dancerIds
+              : [];
+
+
+          dance.images =
+            Array.isArray(
+              dance.images
+            )
+              ? dance.images
+              : [];
+
 
           dance.imageNames =
-            dance.imageNames || [];
+            Array.isArray(
+              dance.imageNames
+            )
+              ? dance.imageNames
+              : [];
+
 
           dance.musicName =
             dance.musicName || "";
+
+
+          dance.music =
+            dance.music &&
+            typeof dance.music ===
+              "object"
+
+              ? dance.music
+              : null;
+
+
+          if (
+            dance.order === undefined ||
+            dance.order === null
+          ) {
+            dance.order = index;
+          }
 
         }
       );
@@ -205,7 +216,12 @@ function normalizeData() {
         practice => {
 
           practice.attendance =
-            practice.attendance || {};
+            practice.attendance &&
+            typeof practice.attendance ===
+              "object"
+
+              ? practice.attendance
+              : {};
 
         }
       );
@@ -219,27 +235,6 @@ function normalizeData() {
 normalizeData();
 
 
-function saveData() {
-  // Keep a local backup on this device
-  localStorage.setItem(
-    "vukProbeV4",
-    JSON.stringify(data)
-  );
-
-  // Also save to the shared Firebase database
-  if (window.vukFirebase) {
-    const { database, ref, set } = window.vukFirebase;
-
-    set(
-      ref(database, "vukProbeV4"),
-      data
-    ).catch((error) => {
-      console.error("Firebase save failed:", error);
-    });
-  }
-}
-
-
 function ensemble() {
 
   return data.ensembles[
@@ -249,18 +244,83 @@ function ensemble() {
 }
 
 
-// ==========================================
-// HELPERS
-// ==========================================
+function localBackup() {
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(data)
+  );
+
+}
+
+
+function saveData() {
+
+  normalizeData();
+
+  localBackup();
+
+
+  if (
+    !cloudReady ||
+    applyingCloud ||
+    !window.vukFirebase
+  ) {
+    return;
+  }
+
+
+  const {
+    database,
+    dbRef,
+    set
+  } = window.vukFirebase;
+
+
+  set(
+    dbRef(
+      database,
+      CLOUD_ROOT
+    ),
+    data
+  )
+  .catch(
+    error => {
+
+      console.error(
+        "Firebase save failed:",
+        error
+      );
+
+      showToast(
+        "Saved on this device. Cloud sync failed."
+      );
+
+    }
+  );
+
+}
+
 
 function escapeHTML(value = "") {
 
   return String(value)
 
     .replaceAll("&", "&amp;")
+
     .replaceAll("<", "&lt;")
+
     .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
+
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
 
 }
 
@@ -280,15 +340,23 @@ function dateKey(date) {
   const year =
     date.getFullYear();
 
+
   const month =
     String(
       date.getMonth() + 1
-    ).padStart(2, "0");
+    ).padStart(
+      2,
+      "0"
+    );
+
 
   const day =
     String(
       date.getDate()
-    ).padStart(2, "0");
+    ).padStart(
+      2,
+      "0"
+    );
 
 
   return (
@@ -300,31 +368,35 @@ function dateKey(date) {
 
 function formatDate(dateString) {
 
-  return localDate(dateString)
-    .toLocaleDateString(
-      [],
-      {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-      }
-    );
+  return localDate(
+    dateString
+  )
+  .toLocaleDateString(
+    [],
+    {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    }
+  );
 
 }
 
 
 function shortDate(dateString) {
 
-  return localDate(dateString)
-    .toLocaleDateString(
-      [],
-      {
-        weekday: "short",
-        month: "short",
-        day: "numeric"
-      }
-    );
+  return localDate(
+    dateString
+  )
+  .toLocaleDateString(
+    [],
+    {
+      weekday: "short",
+      month: "short",
+      day: "numeric"
+    }
+  );
 
 }
 
@@ -336,8 +408,10 @@ function formatTime(time) {
   }
 
 
-  const [hours, minutes] =
-    time.split(":");
+  const [
+    hours,
+    minutes
+  ] = time.split(":");
 
 
   const date =
@@ -350,34 +424,100 @@ function formatTime(time) {
   );
 
 
-  return date.toLocaleTimeString(
-    [],
-    {
-      hour: "numeric",
-      minute: "2-digit"
-    }
-  );
+  return date
+    .toLocaleTimeString(
+      [],
+      {
+        hour: "numeric",
+        minute: "2-digit"
+      }
+    );
 
 }
 
 
-function getHeight(dancer) {
+function showToast(message) {
 
-  const number =
-    Number(
-      String(
-        dancer.height || 0
-      )
-      .replace(
-        /[^\d.]/g,
-        ""
-      )
+  const toast =
+    document.getElementById(
+      "appToast"
     );
 
 
-  return Number.isFinite(number)
-    ? number
-    : 0;
+  if (!toast) {
+    return;
+  }
+
+
+  toast.textContent =
+    message;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    showToast.timer
+  );
+
+
+  showToast.timer =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      1800
+    );
+
+}
+
+
+function showUploading(
+  visible,
+  message = "Uploading..."
+) {
+
+  const overlay =
+    document.getElementById(
+      "uploadOverlay"
+    );
+
+
+  const label =
+    document.getElementById(
+      "uploadMessage"
+    );
+
+
+  if (!overlay) {
+    return;
+  }
+
+
+  if (label) {
+    label.textContent =
+      message;
+  }
+
+
+  overlay.classList.toggle(
+    "open",
+    Boolean(visible)
+  );
+
+
+  overlay.setAttribute(
+    "aria-hidden",
+    visible
+      ? "false"
+      : "true"
+  );
 
 }
 
@@ -401,26 +541,15 @@ const navButtons =
 function openPage(pageId) {
 
   pages.forEach(
-    page =>
-      page.classList.remove(
-        "active"
-      )
+    page => {
+
+      page.classList.toggle(
+        "active",
+        page.id === pageId
+      );
+
+    }
   );
-
-
-  const page =
-    document.getElementById(
-      pageId
-    );
-
-
-  if (page) {
-
-    page.classList.add(
-      "active"
-    );
-
-  }
 
 
   navButtons.forEach(
@@ -428,7 +557,8 @@ function openPage(pageId) {
 
       button.classList.toggle(
         "active",
-        button.dataset.page === pageId
+        button.dataset.page ===
+          pageId
       );
 
     }
@@ -437,7 +567,10 @@ function openPage(pageId) {
 
   renderAll();
 
-  window.scrollTo(0, 0);
+  window.scrollTo(
+    0,
+    0
+  );
 
 }
 
@@ -447,10 +580,13 @@ navButtons.forEach(
 
     button.addEventListener(
       "click",
-      () =>
+      () => {
+
         openPage(
           button.dataset.page
-        )
+        );
+
+      }
     );
 
   }
@@ -458,7 +594,7 @@ navButtons.forEach(
 
 
 // ==========================================
-// MODAL NAVIGATION
+// MODAL
 // ==========================================
 
 const modalOverlay =
@@ -491,10 +627,7 @@ const modalBack =
   );
 
 
-let modalHistory = [];
-
-
-function renderModalScreen(
+function openModal(
   title,
   eyebrow,
   html,
@@ -504,8 +637,10 @@ function renderModalScreen(
   modalTitle.textContent =
     title;
 
+
   modalEyebrow.textContent =
     eyebrow || "VUK";
+
 
   modalBody.innerHTML =
     html;
@@ -539,50 +674,15 @@ function renderModalScreen(
 }
 
 
-function openRootModal(
-  title,
-  eyebrow,
-  html
-) {
-
-  modalHistory = [];
-
-  renderModalScreen(
-    title,
-    eyebrow,
-    html,
-    null
-  );
-
-}
-
-
-function openChildModal(
-  title,
-  eyebrow,
-  html,
-  backAction
-) {
-
-  renderModalScreen(
-    title,
-    eyebrow,
-    html,
-    backAction
-  );
-
-}
-
-
 function closeModal() {
 
   modalOverlay.classList.remove(
     "open"
   );
 
-  modalBody.innerHTML = "";
 
-  modalHistory = [];
+  modalBody.innerHTML =
+    "";
 
 }
 
@@ -605,9 +705,7 @@ modalOverlay.addEventListener(
       event.target ===
       modalOverlay
     ) {
-
       closeModal();
-
     }
 
   }
@@ -638,7 +736,8 @@ function renderEnsembles() {
     );
 
 
-  container.innerHTML = "";
+  container.innerHTML =
+    "";
 
 
   data.ensembles.forEach(
@@ -648,6 +747,10 @@ function renderEnsembles() {
         document.createElement(
           "button"
         );
+
+
+      button.type =
+        "button";
 
 
       button.className =
@@ -672,7 +775,10 @@ function renderEnsembles() {
 
           ${
             String(index + 1)
-              .padStart(2, "0")
+              .padStart(
+                2,
+                "0"
+              )
           }
 
         </div>
@@ -685,10 +791,12 @@ function renderEnsembles() {
           </h3>
 
           <p>
+
             ${item.dancers.length}
             dancers ·
             ${item.dances.length}
             dances
+
           </p>
 
         </div>
@@ -699,22 +807,22 @@ function renderEnsembles() {
       `;
 
 
-      button.addEventListener(
-        "click",
+      button.onclick =
         () => {
 
           data.selectedEnsemble =
             index;
 
+
           selectedCalendarDate =
             null;
+
 
           saveData();
 
           renderAll();
 
-        }
-      );
+        };
 
 
       container.appendChild(
@@ -731,15 +839,141 @@ document
   .getElementById(
     "ensembleButton"
   )
-  .addEventListener(
-    "click",
-    () =>
-      openPage("homePage")
-  );
+  .onclick =
+    () => {
+
+      openPage(
+        "homePage"
+      );
+
+    };
 
 
 // ==========================================
-// DANCER ATTENDANCE CALCULATIONS
+// DANCER ORDERING
+// ==========================================
+
+function groupDancers(
+  gender,
+  search = ""
+) {
+
+  const query =
+    search
+      .trim()
+      .toLowerCase();
+
+
+  return ensemble()
+    .dancers
+
+    .filter(
+      dancer =>
+        dancer.gender ===
+          gender
+    )
+
+    .filter(
+      dancer =>
+        !query ||
+        dancer.name
+          .toLowerCase()
+          .includes(query)
+    )
+
+    .sort(
+      (a, b) =>
+        (a.order || 0) -
+        (b.order || 0)
+    );
+
+}
+
+
+function moveDancer(
+  dancerId,
+  direction
+) {
+
+  const dancer =
+    ensemble()
+      .dancers
+      .find(
+        item =>
+          item.id ===
+            dancerId
+      );
+
+
+  if (!dancer) {
+    return;
+  }
+
+
+  const group =
+    ensemble()
+      .dancers
+
+      .filter(
+        item =>
+          item.gender ===
+            dancer.gender
+      )
+
+      .sort(
+        (a, b) =>
+          (a.order || 0) -
+          (b.order || 0)
+      );
+
+
+  const currentIndex =
+    group.findIndex(
+      item =>
+        item.id ===
+          dancerId
+    );
+
+
+  const newIndex =
+    currentIndex +
+    direction;
+
+
+  if (
+    newIndex < 0 ||
+    newIndex >=
+      group.length
+  ) {
+    return;
+  }
+
+
+  const other =
+    group[newIndex];
+
+
+  const oldOrder =
+    dancer.order;
+
+
+  dancer.order =
+    other.order;
+
+
+  other.order =
+    oldOrder;
+
+
+  saveData();
+
+  renderDancers();
+
+}
+
+
+// ==========================================
+// ATTENDANCE CALCULATIONS
 // ==========================================
 
 function dancerAttendanceStats(
@@ -747,8 +981,13 @@ function dancerAttendanceStats(
 ) {
 
   let present = 0;
+
   let late = 0;
+
   let absent = 0;
+
+  let excused = 0;
+
   let recorded = 0;
 
 
@@ -772,23 +1011,33 @@ function dancerAttendanceStats(
 
 
         if (
-          status === "present"
+          status ===
+          "present"
         ) {
+
           present++;
-        }
 
-
-        if (
-          status === "late"
+        } else if (
+          status ===
+          "late"
         ) {
+
           late++;
-        }
 
-
-        if (
-          status === "absent"
+        } else if (
+          status ===
+          "absent"
         ) {
+
           absent++;
+
+        } else if (
+          status ===
+          "excused"
+        ) {
+
+          excused++;
+
         }
 
       }
@@ -796,13 +1045,27 @@ function dancerAttendanceStats(
 
 
   /*
-    Present counts as 100%.
-    Late counts as attended,
-    but at 50% for the percentage.
-    No Show counts as 0%.
+    IMPORTANT:
 
-    You can change this later if
-    you want late to count as 100%.
+    For the attendance circle:
+
+    Present = Present
+
+    Late,
+    No Show,
+    and Excused
+
+    all count as NOT PRESENT.
+
+    Example:
+
+    Present
+    Present
+    Present
+    Late
+
+    = 75% Present
+    = 25% Not Present
   */
 
   const percentage =
@@ -812,12 +1075,28 @@ function dancerAttendanceStats(
 
       : Math.round(
           (
-            present +
-            late * 0.5
-          )
-          /
-          recorded
-          *
+            present /
+            recorded
+          ) *
+          100
+        );
+
+
+  const notPresent =
+    recorded -
+    present;
+
+
+  const notPresentPercentage =
+    recorded === 0
+
+      ? null
+
+      : Math.round(
+          (
+            notPresent /
+            recorded
+          ) *
           100
         );
 
@@ -826,52 +1105,19 @@ function dancerAttendanceStats(
     present,
     late,
     absent,
+    excused,
     recorded,
-    percentage
+    percentage,
+    notPresent,
+    notPresentPercentage
   };
 
 }
 
 
 // ==========================================
-// DANCERS
+// DANCER LIST
 // ==========================================
-
-function sortedGender(
-  gender,
-  search = ""
-) {
-
-  const query =
-    search
-      .trim()
-      .toLowerCase();
-
-
-  return ensemble()
-    .dancers
-
-    .filter(
-      dancer =>
-        dancer.gender === gender
-    )
-
-    .filter(
-      dancer =>
-        !query ||
-        dancer.name
-          .toLowerCase()
-          .includes(query)
-    )
-
-    .sort(
-      (a, b) =>
-        getHeight(b) -
-        getHeight(a)
-    );
-
-}
-
 
 function renderDancers() {
 
@@ -890,12 +1136,15 @@ function renderDancers() {
 
 
   const search =
-    document.getElementById(
-      "dancerSearch"
-    ).value;
+    document
+      .getElementById(
+        "dancerSearch"
+      )
+      .value;
 
 
-  container.innerHTML = "";
+  container.innerHTML =
+    "";
 
 
   const groups = [
@@ -924,25 +1173,29 @@ function renderDancers() {
   ];
 
 
-  let hasDancers = false;
+  let hasDancers =
+    false;
 
 
   groups.forEach(
     group => {
 
       const dancers =
-        sortedGender(
+        groupDancers(
           group.gender,
           search
         );
 
 
-      if (!dancers.length) {
+      if (
+        !dancers.length
+      ) {
         return;
       }
 
 
-      hasDancers = true;
+      hasDancers =
+        true;
 
 
       const section =
@@ -963,8 +1216,11 @@ function renderDancers() {
             ${group.css}
           "
         >
+
           ${group.title}
+
         </div>
+
 
         <div
           class="roster-list"
@@ -984,63 +1240,142 @@ function renderDancers() {
 
           const row =
             document.createElement(
-              "button"
+              "div"
             );
 
 
           row.className =
-            "dancer-row";
+            "dancer-row reorderable-row";
 
 
           row.innerHTML = `
 
-            <span
-              class="
-                dancer-number
-                ${group.numberCSS}
-              "
+            <button
+              class="dancer-open"
+              type="button"
             >
 
-              ${
-                String(index + 1)
-                  .padStart(2, "0")
-              }
+              <span
+                class="
+                  dancer-number
+                  ${group.numberCSS}
+                "
+              >
 
-            </span>
+                ${
+                  String(index + 1)
+                    .padStart(
+                      2,
+                      "0"
+                    )
+                }
+
+              </span>
 
 
-            <strong>
-              ${escapeHTML(dancer.name)}
-            </strong>
+              <strong>
+
+                ${
+                  escapeHTML(
+                    dancer.name
+                  )
+                }
+
+              </strong>
 
 
-            <span
-              class="dancer-height"
+              <span
+                class="dancer-height"
+              >
+
+                ${
+                  dancer.height
+                    ? escapeHTML(
+                        dancer.height
+                      ) +
+                      " cm"
+
+                    : "—"
+                }
+
+              </span>
+
+
+              <span class="chevron">
+                ›
+              </span>
+
+            </button>
+
+
+            <div
+              class="reorder-controls"
             >
 
-              ${
-                dancer.height
-                  ? dancer.height + " cm"
-                  : "—"
-              }
+              <button
+                type="button"
+                class="move-up"
+                aria-label="Move dancer up"
+              >
+                ↑
+              </button>
 
-            </span>
 
+              <button
+                type="button"
+                class="move-down"
+                aria-label="Move dancer down"
+              >
+                ↓
+              </button>
 
-            <span class="chevron">
-              ›
-            </span>
+            </div>
 
           `;
 
 
-          row.addEventListener(
-            "click",
-            () =>
-              showDancer(
-                dancer.id
-              )
-          );
+          row
+            .querySelector(
+              ".dancer-open"
+            )
+            .onclick =
+              () => {
+
+                showDancer(
+                  dancer.id
+                );
+
+              };
+
+
+          row
+            .querySelector(
+              ".move-up"
+            )
+            .onclick =
+              () => {
+
+                moveDancer(
+                  dancer.id,
+                  -1
+                );
+
+              };
+
+
+          row
+            .querySelector(
+              ".move-down"
+            )
+            .onclick =
+              () => {
+
+                moveDancer(
+                  dancer.id,
+                  1
+                );
+
+              };
 
 
           list.appendChild(
@@ -1059,7 +1394,9 @@ function renderDancers() {
   );
 
 
-  if (!hasDancers) {
+  if (
+    !hasDancers
+  ) {
 
     container.innerHTML = `
 
@@ -1067,7 +1404,9 @@ function renderDancers() {
 
         ${
           search
+
             ? "No dancers match your search."
+
             : "No dancers yet.<br>Tap + to add your first dancer."
         }
 
@@ -1090,14 +1429,21 @@ document
   );
 
 
-function showDancer(id) {
+// ==========================================
+// DANCER PROFILE
+// ==========================================
+
+function showDancer(
+  dancerId
+) {
 
   const dancer =
     ensemble()
       .dancers
       .find(
-        dancer =>
-          dancer.id === id
+        item =>
+          item.id ===
+            dancerId
       );
 
 
@@ -1114,11 +1460,25 @@ function showDancer(id) {
 
   const percentText =
     stats.percentage === null
+
       ? "—"
-      : stats.percentage + "%";
+
+      : stats.percentage +
+        "%";
 
 
-  openRootModal(
+  const notPresentText =
+    stats.notPresentPercentage ===
+      null
+
+      ? "—"
+
+      : stats
+          .notPresentPercentage +
+        "%";
+
+
+  openModal(
 
     dancer.name,
 
@@ -1130,7 +1490,11 @@ function showDancer(id) {
 
         <div class="profile-name">
 
-          ${escapeHTML(dancer.name)}
+          ${
+            escapeHTML(
+              dancer.name
+            )
+          }
 
         </div>
 
@@ -1139,10 +1503,19 @@ function showDancer(id) {
 
           <div class="profile-stat">
 
-            <span>Gender</span>
+            <span>
+              Gender
+            </span>
 
             <strong>
-              ${dancer.gender || "—"}
+
+              ${
+                escapeHTML(
+                  dancer.gender ||
+                  "—"
+                )
+              }
+
             </strong>
 
           </div>
@@ -1150,13 +1523,20 @@ function showDancer(id) {
 
           <div class="profile-stat">
 
-            <span>Height</span>
+            <span>
+              Height
+            </span>
 
             <strong>
 
               ${
                 dancer.height
-                  ? dancer.height + " cm"
+
+                  ? escapeHTML(
+                      dancer.height
+                    ) +
+                    " cm"
+
                   : "—"
               }
 
@@ -1167,7 +1547,9 @@ function showDancer(id) {
 
           <div class="profile-stat">
 
-            <span>Shoe Size</span>
+            <span>
+              Shoe Size
+            </span>
 
             <strong>
 
@@ -1185,10 +1567,19 @@ function showDancer(id) {
 
           <div class="profile-stat">
 
-            <span>Ensemble</span>
+            <span>
+              Ensemble
+            </span>
 
             <strong>
-              ${ensemble().shortName}
+
+              ${
+                escapeHTML(
+                  ensemble()
+                    .shortName
+                )
+              }
+
             </strong>
 
           </div>
@@ -1199,6 +1590,7 @@ function showDancer(id) {
         <button
           id="attendanceProfile"
           class="attendance-profile-card"
+          type="button"
         >
 
           <div>
@@ -1207,42 +1599,79 @@ function showDancer(id) {
               Attendance
             </div>
 
-            <div class="attendance-percent">
+
+            <div
+              class="attendance-percent"
+            >
 
               <strong>
                 ${percentText}
               </strong>
 
               <span>
-                ${stats.recorded}
-                recorded
+                Present
               </span>
+
+            </div>
+
+
+            <div
+              class="not-present-percent"
+            >
+
+              ${notPresentText}
+              Not Present
 
             </div>
 
           </div>
 
 
-          <div class="attendance-mini">
+          <div
+            class="attendance-mini"
+          >
 
-            <span>Present</span>
+            <span>
+              Present
+            </span>
 
-            <strong class="present">
+            <strong
+              class="present"
+            >
               ${stats.present}
             </strong>
 
 
-            <span>Late</span>
+            <span>
+              Late
+            </span>
 
-            <strong class="late">
+            <strong
+              class="late"
+            >
               ${stats.late}
             </strong>
 
 
-            <span>No Show</span>
+            <span>
+              No Show
+            </span>
 
-            <strong class="absent">
+            <strong
+              class="absent"
+            >
               ${stats.absent}
+            </strong>
+
+
+            <span>
+              Excused
+            </span>
+
+            <strong
+              class="excused"
+            >
+              ${stats.excused}
             </strong>
 
           </div>
@@ -1254,15 +1683,19 @@ function showDancer(id) {
 
       <div class="notes-card">
 
-        <h3>Notes</h3>
+        <h3>
+          Notes
+        </h3>
 
         <p>
 
           ${
             dancer.notes
+
               ? escapeHTML(
                   dancer.notes
                 )
+
               : "No notes added."
           }
 
@@ -1274,17 +1707,23 @@ function showDancer(id) {
       <button
         id="editDancer"
         class="primary-button"
+        type="button"
         style="margin-top:15px"
       >
+
         Edit Dancer
+
       </button>
 
 
       <button
         id="deleteDancer"
         class="danger-button"
+        type="button"
       >
+
         Delete Dancer
+
       </button>
 
     `
@@ -1297,10 +1736,13 @@ function showDancer(id) {
       "attendanceProfile"
     )
     .onclick =
-      () =>
+      () => {
+
         showDancerAttendance(
           dancer.id
         );
+
+      };
 
 
   document
@@ -1308,11 +1750,14 @@ function showDancer(id) {
       "editDancer"
     )
     .onclick =
-      () =>
+      () => {
+
         dancerForm(
           dancer,
           true
         );
+
+      };
 
 
   document
@@ -1336,14 +1781,10 @@ function showDancer(id) {
             .dancers
             .filter(
               item =>
-                item.id !== id
+                item.id !==
+                  dancer.id
             );
 
-
-        /*
-          Remove deleted dancer
-          from dances too.
-        */
 
         ensemble()
           .dances
@@ -1353,9 +1794,24 @@ function showDancer(id) {
               dance.dancerIds =
                 dance.dancerIds
                   .filter(
-                    dancerId =>
-                      dancerId !== id
+                    id =>
+                      id !==
+                        dancer.id
                   );
+
+            }
+          );
+
+
+        ensemble()
+          .practices
+          .forEach(
+            practice => {
+
+              delete practice
+                .attendance[
+                  dancer.id
+                ];
 
             }
           );
@@ -1372,6 +1828,337 @@ function showDancer(id) {
 }
 
 
+// ==========================================
+// DANCER ATTENDANCE HISTORY
+// ==========================================
+
+function showDancerAttendance(
+  dancerId
+) {
+
+  const dancer =
+    ensemble()
+      .dancers
+      .find(
+        item =>
+          item.id ===
+            dancerId
+      );
+
+
+  if (!dancer) {
+    return;
+  }
+
+
+  const stats =
+    dancerAttendanceStats(
+      dancerId
+    );
+
+
+  const history =
+    [...ensemble().practices]
+
+      .filter(
+        practice =>
+          practice.attendance[
+            dancerId
+          ]
+      )
+
+      .sort(
+        (a, b) =>
+          localDate(b.date) -
+          localDate(a.date)
+      );
+
+
+  const percentage =
+    stats.percentage === null
+
+      ? "—"
+
+      : stats.percentage +
+        "%";
+
+
+  const notPresent =
+    stats.notPresentPercentage ===
+      null
+
+      ? "—"
+
+      : stats
+          .notPresentPercentage +
+        "%";
+
+
+  openModal(
+
+    "Attendance",
+
+    "DANCER HISTORY",
+
+    `
+
+      <div class="history-hero">
+
+        <div
+          class="history-percent"
+        >
+
+          ${percentage}
+
+        </div>
+
+
+        <div
+          class="history-caption"
+        >
+
+          Present
+
+        </div>
+
+
+        <div
+          class="history-not-present"
+        >
+
+          ${notPresent}
+          Not Present
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="
+          attendance-summary
+          four
+        "
+      >
+
+        <div
+          class="
+            summary-box
+            present
+          "
+        >
+
+          <strong>
+            ${stats.present}
+          </strong>
+
+          <span>
+            PRESENT
+          </span>
+
+        </div>
+
+
+        <div
+          class="
+            summary-box
+            late
+          "
+        >
+
+          <strong>
+            ${stats.late}
+          </strong>
+
+          <span>
+            LATE
+          </span>
+
+        </div>
+
+
+        <div
+          class="
+            summary-box
+            absent
+          "
+        >
+
+          <strong>
+            ${stats.absent}
+          </strong>
+
+          <span>
+            NO SHOW
+          </span>
+
+        </div>
+
+
+        <div
+          class="
+            summary-box
+            excused
+          "
+        >
+
+          <strong>
+            ${stats.excused}
+          </strong>
+
+          <span>
+            EXCUSED
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <h3
+        class="detail-heading"
+      >
+
+        Individual History
+
+      </h3>
+
+
+      ${
+        history.length
+
+          ? history
+              .map(
+                practice => {
+
+                  const status =
+                    practice
+                      .attendance[
+                        dancerId
+                      ];
+
+
+                  let label =
+                    status;
+
+
+                  if (
+                    status ===
+                    "present"
+                  ) {
+                    label =
+                      "Present";
+                  }
+
+
+                  if (
+                    status ===
+                    "late"
+                  ) {
+                    label =
+                      "Late";
+                  }
+
+
+                  if (
+                    status ===
+                    "absent"
+                  ) {
+                    label =
+                      "No Show";
+                  }
+
+
+                  if (
+                    status ===
+                    "excused"
+                  ) {
+                    label =
+                      "Excused";
+                  }
+
+
+                  return `
+
+                    <div
+                      class="history-row"
+                    >
+
+                      <div>
+
+                        <strong>
+
+                          ${
+                            escapeHTML(
+                              practice.name
+                            )
+                          }
+
+                        </strong>
+
+                        <p>
+
+                          ${
+                            formatDate(
+                              practice.date
+                            )
+                          }
+
+                        </p>
+
+                      </div>
+
+
+                      <span
+                        class="
+                          history-status
+                          ${status}
+                        "
+                      >
+
+                        ${label}
+
+                      </span>
+
+                    </div>
+
+                  `;
+
+                }
+              )
+              .join("")
+
+          : `
+
+              <div class="empty">
+
+                No attendance
+                recorded yet.
+
+              </div>
+
+            `
+      }
+
+    `,
+
+    () => {
+
+      showDancer(
+        dancerId
+      );
+
+    }
+
+  );
+
+}
+
+
+// ==========================================
+// ADD / EDIT DANCER
+// ==========================================
+
 function dancerForm(
   dancer = null,
   fromProfile = false
@@ -1381,199 +2168,192 @@ function dancerForm(
     Boolean(dancer);
 
 
-  const html = `
+  openModal(
 
-    <div class="form-group">
+    editing
+      ? "Edit Dancer"
+      : "Add Dancer",
 
-      <label>Full Name</label>
+    "ROSTER",
 
-      <input
-        id="dName"
-        value="${
-          editing
-            ? escapeHTML(
-                dancer.name
-              )
-            : ""
-        }"
-        placeholder="Full name"
-      >
-
-    </div>
-
-
-    <div class="form-group">
-
-      <label>Gender</label>
-
-      <select id="dGender">
-
-        <option value="">
-          Select
-        </option>
-
-
-        <option
-          value="Male"
-          ${
-            dancer?.gender ===
-            "Male"
-              ? "selected"
-              : ""
-          }
-        >
-          Male
-        </option>
-
-
-        <option
-          value="Female"
-          ${
-            dancer?.gender ===
-            "Female"
-              ? "selected"
-              : ""
-          }
-        >
-          Female
-        </option>
-
-
-        <option
-          value="Other"
-          ${
-            dancer?.gender ===
-            "Other"
-              ? "selected"
-              : ""
-          }
-        >
-          Other
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <div class="form-row">
+    `
 
       <div class="form-group">
 
         <label>
-          Height (cm)
+          Full Name
         </label>
 
         <input
-          id="dHeight"
-          type="number"
-          inputmode="decimal"
-          value="${
-            editing
-              ? dancer.height || ""
-              : ""
-          }"
-          placeholder="173"
-        >
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label>
-          Shoe Size
-        </label>
-
-        <input
-          id="dShoe"
+          id="dName"
           value="${
             editing
               ? escapeHTML(
-                  dancer.shoeSize ||
-                  ""
+                  dancer.name
                 )
               : ""
           }"
-          placeholder="38"
+          placeholder="Full name"
         >
 
       </div>
 
-    </div>
+
+      <div class="form-group">
+
+        <label>
+          Gender
+        </label>
+
+        <select id="dGender">
+
+          <option value="">
+            Select
+          </option>
 
 
-    <div class="form-group">
-
-      <label>
-        Notes
-      </label>
-
-      <textarea
-        id="dNotes"
-        placeholder="Costume, positioning, rehearsal notes..."
-      >${
-        editing
-          ? escapeHTML(
-              dancer.notes || ""
-            )
-          : ""
-      }</textarea>
-
-    </div>
+          <option
+            value="Male"
+            ${
+              dancer?.gender ===
+                "Male"
+                ? "selected"
+                : ""
+            }
+          >
+            Male
+          </option>
 
 
-    <button
-      id="saveDancer"
-      class="primary-button"
-    >
-
-      ${
-        editing
-          ? "Save Changes"
-          : "Add Dancer"
-      }
-
-    </button>
-
-  `;
+          <option
+            value="Female"
+            ${
+              dancer?.gender ===
+                "Female"
+                ? "selected"
+                : ""
+            }
+          >
+            Female
+          </option>
 
 
-  if (
-    editing &&
-    fromProfile
-  ) {
+          <option
+            value="Other"
+            ${
+              dancer?.gender ===
+                "Other"
+                ? "selected"
+                : ""
+            }
+          >
+            Other
+          </option>
 
-    openChildModal(
+        </select>
 
-      "Edit Dancer",
+      </div>
 
-      "ROSTER",
 
-      html,
+      <div class="form-row">
 
-      () =>
-        showDancer(
-          dancer.id
-        )
+        <div class="form-group">
 
-    );
+          <label>
+            Height (cm)
+          </label>
 
-  } else {
+          <input
+            id="dHeight"
+            type="number"
+            inputmode="decimal"
+            value="${
+              editing
+                ? escapeHTML(
+                    dancer.height ||
+                    ""
+                  )
+                : ""
+            }"
+          >
 
-    openRootModal(
+        </div>
 
-      editing
-        ? "Edit Dancer"
-        : "Add Dancer",
 
-      "ROSTER",
+        <div class="form-group">
 
-      html
+          <label>
+            Shoe Size
+          </label>
 
-    );
+          <input
+            id="dShoe"
+            value="${
+              editing
+                ? escapeHTML(
+                    dancer.shoeSize ||
+                    ""
+                  )
+                : ""
+            }"
+          >
 
-  }
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Notes
+        </label>
+
+        <textarea
+          id="dNotes"
+          placeholder="Notes about this dancer..."
+        >${
+          editing
+            ? escapeHTML(
+                dancer.notes ||
+                ""
+              )
+            : ""
+        }</textarea>
+
+      </div>
+
+
+      <button
+        id="saveDancer"
+        class="primary-button"
+        type="button"
+      >
+
+        ${
+          editing
+            ? "Save Changes"
+            : "Add Dancer"
+        }
+
+      </button>
+
+    `,
+
+    fromProfile &&
+    dancer
+
+      ? () => {
+
+          showDancer(
+            dancer.id
+          );
+
+        }
+
+      : null
+
+  );
 
 
   document
@@ -1600,14 +2380,26 @@ function dancerForm(
             .value;
 
 
+        if (
+          !name ||
+          !gender
+        ) {
+
+          alert(
+            "Please enter the dancer's name and gender."
+          );
+
+          return;
+
+        }
+
+
         const height =
-          Number(
-            document
-              .getElementById(
-                "dHeight"
-              )
-              .value
-          ) || "";
+          document
+            .getElementById(
+              "dHeight"
+            )
+            .value;
 
 
         const shoeSize =
@@ -1628,48 +2420,93 @@ function dancerForm(
             .trim();
 
 
-        if (
-          !name ||
-          !gender
-        ) {
-
-          alert(
-            "Please enter a name and gender."
-          );
-
-          return;
-
-        }
-
-
         if (editing) {
 
-          Object.assign(
-            dancer,
-            {
-              name,
-              gender,
-              height,
-              shoeSize,
-              notes
-            }
-          );
+          const oldGender =
+            dancer.gender;
+
+
+          dancer.name =
+            name;
+
+          dancer.gender =
+            gender;
+
+          dancer.height =
+            height;
+
+          dancer.shoeSize =
+            shoeSize;
+
+          dancer.notes =
+            notes;
+
+
+          if (
+            oldGender !==
+            gender
+          ) {
+
+            const newGroup =
+              ensemble()
+                .dancers
+                .filter(
+                  item =>
+                    item.gender ===
+                      gender
+                );
+
+
+            dancer.order =
+              Math.max(
+                -1,
+                ...newGroup.map(
+                  item =>
+                    item.order || 0
+                )
+              ) + 1;
+
+          }
 
         } else {
+
+          const sameGender =
+            ensemble()
+              .dancers
+              .filter(
+                item =>
+                  item.gender ===
+                    gender
+              );
+
+
+          const order =
+            Math.max(
+              -1,
+              ...sameGender.map(
+                item =>
+                  item.order || 0
+              )
+            ) + 1;
+
 
           ensemble()
             .dancers
             .push({
 
-              id:
-                Date.now() +
-                Math.random(),
+              id: uid(),
 
               name,
+
               gender,
+
               height,
+
               shoeSize,
-              notes
+
+              notes,
+
+              order
 
             });
 
@@ -1703,246 +2540,91 @@ document
     "addDancerButton"
   )
   .onclick =
-    () =>
+    () => {
+
       dancerForm();
 
-
-// ==========================================
-// DANCER ATTENDANCE HISTORY
-// ==========================================
-
-function showDancerAttendance(
-  dancerId
-) {
-
-  const dancer =
-    ensemble()
-      .dancers
-      .find(
-        item =>
-          item.id === dancerId
-      );
-
-
-  if (!dancer) {
-    return;
-  }
-
-
-  const stats =
-    dancerAttendanceStats(
-      dancerId
-    );
-
-
-  const percentage =
-    stats.percentage === null
-      ? "—"
-      : stats.percentage + "%";
-
-
-  const history =
-    [...ensemble().practices]
-
-      .filter(
-        practice =>
-          practice.attendance[
-            dancerId
-          ]
-      )
-
-      .sort(
-        (a, b) =>
-          localDate(b.date) -
-          localDate(a.date)
-      );
-
-
-  const historyHTML =
-    history.length
-
-      ? history
-          .map(
-            practice => {
-
-              const status =
-                practice.attendance[
-                  dancerId
-                ];
-
-
-              const label =
-                status === "absent"
-                  ? "No Show"
-                  : status
-                      .charAt(0)
-                      .toUpperCase()
-                    +
-                    status.slice(1);
-
-
-              return `
-
-                <div class="history-row">
-
-                  <div>
-
-                    <strong>
-                      ${
-                        escapeHTML(
-                          practice.name
-                        )
-                      }
-                    </strong>
-
-                    <p>
-                      ${
-                        formatDate(
-                          practice.date
-                        )
-                      }
-                    </p>
-
-                  </div>
-
-
-                  <span
-                    class="
-                      history-status
-                      ${status}
-                    "
-                  >
-
-                    ${label}
-
-                  </span>
-
-                </div>
-
-              `;
-
-            }
-          )
-          .join("")
-
-      : `
-
-          <div class="empty">
-
-            No attendance has been
-            recorded for this dancer yet.
-
-          </div>
-
-        `;
-
-
-  openChildModal(
-
-    "Attendance",
-
-    dancer.name,
-
-    `
-
-      <div class="history-hero">
-
-        <div class="history-percent">
-
-          ${percentage}
-
-        </div>
-
-        <div class="history-caption">
-
-          Attendance across
-          ${stats.recorded}
-          recorded practices
-
-        </div>
-
-      </div>
-
-
-      <div
-        class="attendance-summary"
-        style="margin-top:12px"
-      >
-
-        <div
-          class="
-            summary-box
-            present
-          "
-        >
-
-          <strong>
-            ${stats.present}
-          </strong>
-
-          <span>PRESENT</span>
-
-        </div>
-
-
-        <div
-          class="
-            summary-box
-            late
-          "
-        >
-
-          <strong>
-            ${stats.late}
-          </strong>
-
-          <span>LATE</span>
-
-        </div>
-
-
-        <div
-          class="
-            summary-box
-            absent
-          "
-        >
-
-          <strong>
-            ${stats.absent}
-          </strong>
-
-          <span>NO SHOW</span>
-
-        </div>
-
-      </div>
-
-
-      <h3 class="detail-heading">
-
-        Recent Practices
-
-      </h3>
-
-
-      ${historyHTML}
-
-    `,
-
-    () =>
-      showDancer(
-        dancerId
-      )
-
-  );
-
-}
+    };
 
 
 // ==========================================
 // DANCES
 // ==========================================
+
+function orderedDances() {
+
+  return [...ensemble().dances]
+    .sort(
+      (a, b) =>
+        (a.order || 0) -
+        (b.order || 0)
+    );
+
+}
+
+
+function moveDance(
+  danceId,
+  direction
+) {
+
+  const dances =
+    orderedDances();
+
+
+  const currentIndex =
+    dances.findIndex(
+      dance =>
+        dance.id ===
+          danceId
+    );
+
+
+  const newIndex =
+    currentIndex +
+    direction;
+
+
+  if (
+    currentIndex < 0 ||
+    newIndex < 0 ||
+    newIndex >=
+      dances.length
+  ) {
+    return;
+  }
+
+
+  const first =
+    dances[
+      currentIndex
+    ];
+
+
+  const second =
+    dances[
+      newIndex
+    ];
+
+
+  const oldOrder =
+    first.order;
+
+
+  first.order =
+    second.order;
+
+
+  second.order =
+    oldOrder;
+
+
+  saveData();
+
+  renderDances();
+
+}
+
 
 function renderDances() {
 
@@ -1954,25 +2636,31 @@ function renderDances() {
       ensemble().name;
 
 
-  const list =
+  const container =
     document.getElementById(
       "danceList"
     );
 
 
-  list.innerHTML = "";
+  container.innerHTML =
+    "";
+
+
+  const dances =
+    orderedDances();
 
 
   if (
-    !ensemble().dances.length
+    !dances.length
   ) {
 
-    list.innerHTML = `
+    container.innerHTML = `
 
       <div class="empty">
 
-        No dances yet.<br>
-        Tap + to add a dance.
+        No dances yet.
+        <br>
+        Tap + to add your first dance.
 
       </div>
 
@@ -1983,61 +2671,56 @@ function renderDances() {
   }
 
 
-  ensemble()
-    .dances
-    .forEach(
-      (dance, index) => {
+  dances.forEach(
+    dance => {
 
-        const button =
-          document.createElement(
-            "button"
-          );
+      const row =
+        document.createElement(
+          "div"
+        );
 
 
-        button.className =
-          "item-card";
+      row.className =
+        "item-card dance-list-row";
 
 
-        button.innerHTML = `
+      row.innerHTML = `
 
-          <div
-            style="
-              width:42px;
-              color:var(--burgundy);
-              font-family:Georgia,serif;
-            "
-          >
-
-            ${
-              String(index + 1)
-                .padStart(2, "0")
-            }
-
-          </div>
-
+        <button
+          class="dance-open"
+          type="button"
+        >
 
           <div class="item-main">
 
             <h3>
-              ${escapeHTML(dance.name)}
+
+              ${
+                escapeHTML(
+                  dance.name
+                )
+              }
+
             </h3>
+
 
             <p>
 
               ${
-                dance.choreographer
-                  ? "Choreographer: " +
-                    escapeHTML(
-                      dance.choreographer
-                    )
-                  : "No choreographer"
+                escapeHTML(
+                  dance.choreographer ||
+                  "No choreographer"
+                )
               }
 
               ·
 
               ${
-                dance.dancerIds.length
+                dance
+                  .dancerIds
+                  .length
               }
+
               dancers
 
             </p>
@@ -2045,35 +2728,110 @@ function renderDances() {
           </div>
 
 
-          <span class="item-arrow">
+          <span
+            class="item-arrow"
+          >
             ›
           </span>
 
-        `;
+        </button>
 
 
-        button.onclick =
-          () =>
+        <div
+          class="reorder-controls"
+        >
+
+          <button
+            class="dance-up"
+            type="button"
+          >
+            ↑
+          </button>
+
+
+          <button
+            class="dance-down"
+            type="button"
+          >
+            ↓
+          </button>
+
+        </div>
+
+      `;
+
+
+      row
+        .querySelector(
+          ".dance-open"
+        )
+        .onclick =
+          () => {
+
             showDance(
               dance.id
             );
 
+          };
 
-        list.appendChild(
-          button
-        );
 
-      }
-    );
+      row
+        .querySelector(
+          ".dance-up"
+        )
+        .onclick =
+          () => {
+
+            moveDance(
+              dance.id,
+              -1
+            );
+
+          };
+
+
+      row
+        .querySelector(
+          ".dance-down"
+        )
+        .onclick =
+          () => {
+
+            moveDance(
+              dance.id,
+              1
+            );
+
+          };
+
+
+      container.appendChild(
+        row
+      );
+
+    }
+  );
 
 }
 
 
-function newDance() {
+// ==========================================
+// ADD / EDIT DANCE
+// ==========================================
 
-  openRootModal(
+function danceForm(
+  dance = null
+) {
 
-    "Add Dance",
+  const editing =
+    Boolean(dance);
+
+
+  openModal(
+
+    editing
+      ? "Edit Dance"
+      : "Add Dance",
 
     "REPERTOIRE",
 
@@ -2086,7 +2844,15 @@ function newDance() {
         </label>
 
         <input
-          id="newDanceName"
+          id="danceName"
+          value="${
+            editing
+              ? escapeHTML(
+                  dance.name
+                )
+              : ""
+          }"
+          placeholder="Dance name"
         >
 
       </div>
@@ -2099,29 +2865,55 @@ function newDance() {
         </label>
 
         <input
-          id="newChoreographer"
+          id="danceChoreographer"
+          value="${
+            editing
+              ? escapeHTML(
+                  dance.choreographer ||
+                  ""
+                )
+              : ""
+          }"
+          placeholder="Choreographer"
         >
 
       </div>
 
 
       <button
-        id="createDance"
+        id="saveDance"
         class="primary-button"
+        type="button"
       >
 
-        Add Dance
+        ${
+          editing
+            ? "Save Changes"
+            : "Add Dance"
+        }
 
       </button>
 
-    `
+    `,
+
+    editing
+
+      ? () => {
+
+          showDance(
+            dance.id
+          );
+
+        }
+
+      : null
 
   );
 
 
   document
     .getElementById(
-      "createDance"
+      "saveDance"
     )
     .onclick =
       () => {
@@ -2129,7 +2921,7 @@ function newDance() {
         const name =
           document
             .getElementById(
-              "newDanceName"
+              "danceName"
             )
             .value
             .trim();
@@ -2146,57 +2938,131 @@ function newDance() {
         }
 
 
-        const dance = {
-
-          id:
-            Date.now() +
-            Math.random(),
-
-          name,
-
-          choreographer:
-            document
-              .getElementById(
-                "newChoreographer"
-              )
-              .value
-              .trim(),
-
-          dancerIds: [],
-
-          imageNames: [],
-
-          musicName: ""
-
-        };
+        const choreographer =
+          document
+            .getElementById(
+              "danceChoreographer"
+            )
+            .value
+            .trim();
 
 
-        ensemble()
-          .dances
-          .push(dance);
+        if (editing) {
+
+          dance.name =
+            name;
+
+          dance.choreographer =
+            choreographer;
+
+        } else {
+
+          ensemble()
+            .dances
+            .push({
+
+              id: uid(),
+
+              name,
+
+              choreographer,
+
+              dancerIds: [],
+
+              images: [],
+
+              music: null,
+
+              imageNames: [],
+
+              musicName: "",
+
+              order:
+                ensemble()
+                  .dances
+                  .length
+
+            });
+
+        }
 
 
         saveData();
 
         renderAll();
 
-        showDance(
-          dance.id
-        );
+
+        if (editing) {
+
+          showDance(
+            dance.id
+          );
+
+        } else {
+
+          closeModal();
+
+        }
 
       };
 
 }
 
 
-function showDance(id) {
+document
+  .getElementById(
+    "addDanceButton"
+  )
+  .onclick =
+    () => {
+
+      danceForm();
+
+    };
+
+
+// ==========================================
+// DANCE DANCERS
+// ==========================================
+
+function danceDancers(
+  dance
+) {
+
+  return dance
+    .dancerIds
+
+    .map(
+      dancerId =>
+        ensemble()
+          .dancers
+          .find(
+            dancer =>
+              dancer.id ===
+                dancerId
+          )
+    )
+
+    .filter(Boolean);
+
+}
+
+
+// ==========================================
+// DANCE PROFILE
+// ==========================================
+
+function showDance(
+  danceId
+) {
 
   const dance =
     ensemble()
       .dances
       .find(
         item =>
-          item.id === id
+          item.id ===
+            danceId
       );
 
 
@@ -2205,33 +3071,54 @@ function showDance(id) {
   }
 
 
-  const assigned =
-    dance.dancerIds
-
-      .map(
-        dancerId =>
-          ensemble()
-            .dancers
-            .find(
-              dancer =>
-                dancer.id ===
-                dancerId
-            )
-      )
-
-      .filter(Boolean);
+  const selectedDancers =
+    danceDancers(
+      dance
+    );
 
 
-  const dancerHTML =
-    assigned.length
+  function dancerGroupHTML(
+    gender,
+    title
+  ) {
 
-      ? assigned
+    const group =
+      selectedDancers
+        .filter(
+          dancer =>
+            dancer.gender ===
+              gender
+        );
+
+
+    if (
+      !group.length
+    ) {
+      return "";
+    }
+
+
+    return `
+
+      <div
+        class="mini-group-title"
+      >
+
+        ${title}
+
+      </div>
+
+
+      ${
+        group
           .map(
-            dancer => `
+            (dancer, index) => `
 
               <div
                 class="selected-dancer"
               >
+
+                ${index + 1}.
 
                 ${
                   escapeHTML(
@@ -2244,36 +3131,158 @@ function showDance(id) {
             `
           )
           .join("")
+      }
+
+    `;
+
+  }
+
+
+  const dancerHTML =
+
+    dancerGroupHTML(
+      "Male",
+      "BOYS"
+    ) +
+
+    dancerGroupHTML(
+      "Female",
+      "GIRLS"
+    ) +
+
+    dancerGroupHTML(
+      "Other",
+      "OTHER"
+    );
+
+
+  const photoHTML =
+    dance.images.length
+
+      ? `
+
+          <div
+            class="media-grid"
+          >
+
+            ${
+              dance.images
+                .map(
+                  (
+                    image,
+                    index
+                  ) => `
+
+                    <div
+                      class="media-tile"
+                    >
+
+                      <img
+                        src="${
+                          escapeHTML(
+                            image.url
+                          )
+                        }"
+                        alt="Dance photo"
+                      >
+
+
+                      <button
+                        class="media-delete"
+                        type="button"
+                        data-image-index="${index}"
+                        aria-label="Delete photo"
+                      >
+
+                        ×
+
+                      </button>
+
+                    </div>
+
+                  `
+                )
+                .join("")
+            }
+
+          </div>
+
+        `
 
       : `
 
-          <div class="empty">
-            No dancers assigned.
+          <div class="file-box">
+
+            No photos uploaded yet.
+
           </div>
 
         `;
 
 
-  openRootModal(
+  const musicHTML =
+    dance.music &&
+    dance.music.url
+
+      ? `
+
+          <div class="audio-card">
+
+            <strong>
+
+              ${
+                escapeHTML(
+                  dance.music.name ||
+                  "Dance music"
+                )
+              }
+
+            </strong>
+
+
+            <audio
+              controls
+              preload="metadata"
+              src="${
+                escapeHTML(
+                  dance.music.url
+                )
+              }"
+            ></audio>
+
+
+            <button
+              id="deleteMusic"
+              class="danger-button"
+              type="button"
+            >
+
+              Delete Music
+
+            </button>
+
+          </div>
+
+        `
+
+      : `
+
+          <div class="file-box">
+
+            No music uploaded yet.
+
+          </div>
+
+        `;
+
+
+  openModal(
 
     dance.name,
 
-    "DANCE DETAILS",
+    "DANCE",
 
     `
-
-      <div class="detail-card">
-
-        <div class="detail-label">
-          Dance Name
-        </div>
-
-        <div class="detail-value">
-          ${escapeHTML(dance.name)}
-        </div>
-
-      </div>
-
 
       <div class="detail-card">
 
@@ -2281,12 +3290,14 @@ function showDance(id) {
           Choreographer
         </div>
 
+
         <div class="detail-value">
 
           ${
             escapeHTML(
-              dance.choreographer
-            ) || "—"
+              dance.choreographer ||
+              "—"
+            )
           }
 
         </div>
@@ -2295,37 +3306,59 @@ function showDance(id) {
 
 
       <h3 class="detail-heading">
-
         Dancers
-        (${assigned.length})
-
       </h3>
 
 
-      <div>
-        ${dancerHTML}
-      </div>
+      ${
+        dancerHTML ||
+
+        `
+
+          <div class="empty">
+
+            No dancers selected.
+
+          </div>
+
+        `
+      }
+
+
+      <button
+        id="editDanceDancers"
+        class="secondary-button"
+        type="button"
+      >
+
+        Select / Order Dancers
+
+      </button>
 
 
       <h3 class="detail-heading">
-        Images
+        Photos
       </h3>
 
 
-      <div class="file-box">
+      ${photoHTML}
 
-        ${
-          dance.imageNames.length
 
-            ? escapeHTML(
-                dance.imageNames
-                  .join(", ")
-              )
+      <label
+        class="upload-button"
+      >
 
-            : "No images added."
-        }
+        + Upload Photo
 
-      </div>
+        <input
+          id="photoUpload"
+          type="file"
+          accept="image/*"
+          multiple
+          hidden
+        >
+
+      </label>
 
 
       <h3 class="detail-heading">
@@ -2333,29 +3366,48 @@ function showDance(id) {
       </h3>
 
 
-      <div class="file-box">
+      ${musicHTML}
+
+
+      <label
+        class="upload-button"
+      >
 
         ${
-          dance.musicName
-
-            ? "♫ " +
-              escapeHTML(
-                dance.musicName
-              )
-
-            : "No music added."
+          dance.music?.url
+            ? "Replace Music"
+            : "+ Upload Music"
         }
 
-      </div>
+        <input
+          id="musicUpload"
+          type="file"
+          accept="audio/*"
+          hidden
+        >
+
+      </label>
 
 
       <button
         id="editDance"
         class="primary-button"
-        style="margin-top:22px"
+        type="button"
+        style="margin-top:18px"
       >
 
-        Edit Dance
+        Edit Dance Details
+
+      </button>
+
+
+      <button
+        id="deleteDance"
+        class="danger-button"
+        type="button"
+      >
+
+        Delete Dance
 
       </button>
 
@@ -2366,289 +3418,49 @@ function showDance(id) {
 
   document
     .getElementById(
-      "editDance"
+      "editDanceDancers"
     )
     .onclick =
-      () =>
-        editDance(
+      () => {
+
+        editDanceDancers(
           dance.id
         );
 
-}
+      };
 
 
-function editDance(id) {
+  document
+    .getElementById(
+      "editDance"
+    )
+    .onclick =
+      () => {
 
-  const dance =
-    ensemble()
-      .dances
-      .find(
-        item =>
-          item.id === id
-      );
+        danceForm(
+          dance
+        );
 
-
-  if (!dance) {
-    return;
-  }
-
-
-  let selectedIds =
-    [...dance.dancerIds];
-
-
-  const roster =
-    [...ensemble().dancers]
-      .sort(
-        (a, b) =>
-          a.name.localeCompare(
-            b.name
-          )
-      );
-
-
-  const rows =
-    roster
-      .map(
-        dancer => `
-
-          <button
-            type="button"
-
-            class="
-              edit-dancer-row
-
-              ${
-                selectedIds.includes(
-                  dancer.id
-                )
-                  ? "selected"
-                  : ""
-              }
-            "
-
-            data-id="${dancer.id}"
-          >
-
-            <span>
-              ${escapeHTML(dancer.name)}
-            </span>
-
-            <span class="checkmark">
-              ✓
-            </span>
-
-          </button>
-
-        `
-      )
-      .join("");
-
-
-  openChildModal(
-
-    "Edit Dance",
-
-    "REPERTOIRE",
-
-    `
-
-      <div class="form-group">
-
-        <label>
-          Dance Name
-        </label>
-
-        <input
-          id="editDanceName"
-          value="${
-            escapeHTML(
-              dance.name
-            )
-          }"
-        >
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label>
-          Choreographer
-        </label>
-
-        <input
-          id="editDanceChoreographer"
-          value="${
-            escapeHTML(
-              dance.choreographer ||
-              ""
-            )
-          }"
-        >
-
-      </div>
-
-
-      <h3 class="detail-heading">
-        Dancers
-      </h3>
-
-
-      <div id="danceRoster">
-
-        ${
-          rows ||
-          `
-            <div class="empty">
-              Add dancers to this
-              ensemble first.
-            </div>
-          `
-        }
-
-      </div>
-
-
-      <h3 class="detail-heading">
-        Images
-      </h3>
-
-
-      <div class="form-group">
-
-        <input
-          id="danceImages"
-          type="file"
-          accept="image/*"
-          multiple
-        >
-
-      </div>
-
-
-      <div class="file-box">
-
-        ${
-          dance.imageNames.length
-
-            ? escapeHTML(
-                dance.imageNames
-                  .join(", ")
-              )
-
-            : "No images selected."
-        }
-
-      </div>
-
-
-      <h3 class="detail-heading">
-        Music
-      </h3>
-
-
-      <div class="form-group">
-
-        <input
-          id="danceMusic"
-          type="file"
-          accept="audio/*"
-        >
-
-      </div>
-
-
-      <div class="file-box">
-
-        ${
-          dance.musicName
-
-            ? escapeHTML(
-                dance.musicName
-              )
-
-            : "No music selected."
-        }
-
-      </div>
-
-
-      <button
-        id="saveDance"
-        class="primary-button"
-        style="margin-top:22px"
-      >
-
-        Save Changes
-
-      </button>
-
-
-      <button
-        id="deleteDance"
-        class="danger-button"
-      >
-
-        Delete Dance
-
-      </button>
-
-    `,
-
-    () =>
-      showDance(
-        dance.id
-      )
-
-  );
+      };
 
 
   document
     .querySelectorAll(
-      ".edit-dancer-row"
+      "[data-image-index]"
     )
     .forEach(
-      row => {
+      button => {
 
-        row.onclick =
+        button.onclick =
           () => {
 
-            const dancerId =
+            deleteDanceImage(
+              dance,
               Number(
-                row.dataset.id
-              );
-
-
-            if (
-              selectedIds.includes(
-                dancerId
+                button.dataset
+                  .imageIndex
               )
-            ) {
-
-              selectedIds =
-                selectedIds.filter(
-                  id =>
-                    id !== dancerId
-                );
-
-
-              row.classList.remove(
-                "selected"
-              );
-
-            } else {
-
-              selectedIds.push(
-                dancerId
-              );
-
-
-              row.classList.add(
-                "selected"
-              );
-
-            }
+            );
 
           };
 
@@ -2658,94 +3470,18 @@ function editDance(id) {
 
   document
     .getElementById(
-      "saveDance"
+      "photoUpload"
     )
-    .onclick =
-      () => {
+    .onchange =
+      event => {
 
-        const name =
-          document
-            .getElementById(
-              "editDanceName"
-            )
-            .value
-            .trim();
-
-
-        if (!name) {
-
-          alert(
-            "Dance name cannot be blank."
-          );
-
-          return;
-
-        }
-
-
-        dance.name =
-          name;
-
-
-        dance.choreographer =
-          document
-            .getElementById(
-              "editDanceChoreographer"
-            )
-            .value
-            .trim();
-
-
-        dance.dancerIds =
-          selectedIds;
-
-
-        const imageFiles =
-          document
-            .getElementById(
-              "danceImages"
-            )
-            .files;
-
-
-        if (
-          imageFiles.length
-        ) {
-
-          dance.imageNames =
-            Array.from(
-              imageFiles
-            )
-            .map(
-              file =>
-                file.name
-            );
-
-        }
-
-
-        const musicFile =
-          document
-            .getElementById(
-              "danceMusic"
-            )
-            .files[0];
-
-
-        if (musicFile) {
-
-          dance.musicName =
-            musicFile.name;
-
-        }
-
-
-        saveData();
-
-        renderAll();
-
-        showDance(
-          dance.id
+        uploadDancePhotos(
+          dance,
+          [
+            ...event
+              .target
+              .files
+          ]
         );
 
       };
@@ -2753,10 +3489,57 @@ function editDance(id) {
 
   document
     .getElementById(
+      "musicUpload"
+    )
+    .onchange =
+      event => {
+
+        const file =
+          event
+            .target
+            .files[0];
+
+
+        if (file) {
+
+          uploadDanceMusic(
+            dance,
+            file
+          );
+
+        }
+
+      };
+
+
+  const deleteMusicButton =
+    document.getElementById(
+      "deleteMusic"
+    );
+
+
+  if (
+    deleteMusicButton
+  ) {
+
+    deleteMusicButton.onclick =
+      () => {
+
+        deleteDanceMusic(
+          dance
+        );
+
+      };
+
+  }
+
+
+  document
+    .getElementById(
       "deleteDance"
     )
     .onclick =
-      () => {
+      async () => {
 
         if (
           !confirm(
@@ -2767,17 +3550,66 @@ function editDance(id) {
         }
 
 
+        showUploading(
+          true,
+          "Deleting dance..."
+        );
+
+
+        try {
+
+          for (
+            const image
+            of dance.images
+          ) {
+
+            if (
+              image.path
+            ) {
+
+              await deleteStoragePath(
+                image.path
+              );
+
+            }
+
+          }
+
+
+          if (
+            dance.music?.path
+          ) {
+
+            await deleteStoragePath(
+              dance.music.path
+            );
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            error
+          );
+
+        }
+
+
         ensemble().dances =
           ensemble()
             .dances
             .filter(
               item =>
                 item.id !==
-                dance.id
+                  dance.id
             );
 
 
         saveData();
+
+        showUploading(
+          false
+        );
 
         closeModal();
 
@@ -2788,16 +3620,866 @@ function editDance(id) {
 }
 
 
-document
-  .getElementById(
-    "addDanceButton"
-  )
-  .onclick =
-    newDance;
+// ==========================================
+// SELECT + ORDER DANCERS FOR DANCE
+// ==========================================
+
+function editDanceDancers(
+  danceId
+) {
+
+  const dance =
+    ensemble()
+      .dances
+      .find(
+        item =>
+          item.id ===
+            danceId
+      );
+
+
+  if (!dance) {
+    return;
+  }
+
+
+  function pickerGroup(
+    gender,
+    title
+  ) {
+
+    const dancers =
+      groupDancers(
+        gender
+      );
+
+
+    if (
+      !dancers.length
+    ) {
+      return "";
+    }
+
+
+    return `
+
+      <h3
+        class="detail-heading"
+      >
+
+        ${title}
+
+      </h3>
+
+
+      <div
+        class="dance-picker"
+      >
+
+        ${
+          dancers
+            .map(
+              dancer => `
+
+                <button
+                  type="button"
+                  class="
+                    edit-dancer-row
+
+                    ${
+                      dance
+                        .dancerIds
+                        .includes(
+                          dancer.id
+                        )
+
+                        ? "selected"
+                        : ""
+                    }
+                  "
+                  data-pick-dancer="${
+                    dancer.id
+                  }"
+                >
+
+                  <span>
+
+                    ${
+                      escapeHTML(
+                        dancer.name
+                      )
+                    }
+
+                  </span>
+
+
+                  <span
+                    class="checkmark"
+                  >
+                    ✓
+                  </span>
+
+                </button>
+
+              `
+            )
+            .join("")
+        }
+
+      </div>
+
+    `;
+
+  }
+
+
+  const ordered =
+    danceDancers(
+      dance
+    );
+
+
+  const orderHTML =
+    ordered.length
+
+      ? ordered
+          .map(
+            (dancer, index) => `
+
+              <div
+                class="order-row"
+              >
+
+                <span>
+
+                  ${index + 1}.
+
+                  ${
+                    escapeHTML(
+                      dancer.name
+                    )
+                  }
+
+                </span>
+
+
+                <div
+                  class="reorder-controls"
+                >
+
+                  <button
+                    type="button"
+                    data-order-dancer="${
+                      dancer.id
+                    }"
+                    data-direction="-1"
+                  >
+                    ↑
+                  </button>
+
+
+                  <button
+                    type="button"
+                    data-order-dancer="${
+                      dancer.id
+                    }"
+                    data-direction="1"
+                  >
+                    ↓
+                  </button>
+
+                </div>
+
+              </div>
+
+            `
+          )
+          .join("")
+
+      : `
+
+          <div class="empty">
+
+            No dancers selected.
+
+          </div>
+
+        `;
+
+
+  openModal(
+
+    "Select Dancers",
+
+    "DANCE ROSTER",
+
+    `
+
+      <div class="file-box">
+
+        Boys and girls stay
+        separated.
+
+        Select the dancers first,
+        then arrange their order
+        below.
+
+      </div>
+
+
+      ${
+        pickerGroup(
+          "Male",
+          "BOYS"
+        )
+      }
+
+
+      ${
+        pickerGroup(
+          "Female",
+          "GIRLS"
+        )
+      }
+
+
+      ${
+        pickerGroup(
+          "Other",
+          "OTHER"
+        )
+      }
+
+
+      <h3
+        class="detail-heading"
+      >
+
+        Selected Order
+
+      </h3>
+
+
+      ${orderHTML}
+
+
+      <button
+        id="doneDanceDancers"
+        class="primary-button"
+        type="button"
+        style="margin-top:18px"
+      >
+
+        Done
+
+      </button>
+
+    `,
+
+    () => {
+
+      showDance(
+        dance.id
+      );
+
+    }
+
+  );
+
+
+  document
+    .querySelectorAll(
+      "[data-pick-dancer]"
+    )
+    .forEach(
+      button => {
+
+        button.onclick =
+          () => {
+
+            const dancerId =
+              Number(
+                button.dataset
+                  .pickDancer
+              );
+
+
+            if (
+              dance
+                .dancerIds
+                .includes(
+                  dancerId
+                )
+            ) {
+
+              dance.dancerIds =
+                dance
+                  .dancerIds
+                  .filter(
+                    id =>
+                      id !==
+                        dancerId
+                  );
+
+            } else {
+
+              dance
+                .dancerIds
+                .push(
+                  dancerId
+                );
+
+            }
+
+
+            saveData();
+
+            editDanceDancers(
+              dance.id
+            );
+
+          };
+
+      }
+    );
+
+
+  document
+    .querySelectorAll(
+      "[data-order-dancer]"
+    )
+    .forEach(
+      button => {
+
+        button.onclick =
+          () => {
+
+            const dancerId =
+              Number(
+                button.dataset
+                  .orderDancer
+              );
+
+
+            const direction =
+              Number(
+                button.dataset
+                  .direction
+              );
+
+
+            const currentIndex =
+              dance
+                .dancerIds
+                .indexOf(
+                  dancerId
+                );
+
+
+            const newIndex =
+              currentIndex +
+              direction;
+
+
+            if (
+              currentIndex < 0 ||
+              newIndex < 0 ||
+              newIndex >=
+                dance
+                  .dancerIds
+                  .length
+            ) {
+              return;
+            }
+
+
+            const temp =
+              dance
+                .dancerIds[
+                  currentIndex
+                ];
+
+
+            dance
+              .dancerIds[
+                currentIndex
+              ] =
+                dance
+                  .dancerIds[
+                    newIndex
+                  ];
+
+
+            dance
+              .dancerIds[
+                newIndex
+              ] =
+                temp;
+
+
+            saveData();
+
+            editDanceDancers(
+              dance.id
+            );
+
+          };
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "doneDanceDancers"
+    )
+    .onclick =
+      () => {
+
+        showDance(
+          dance.id
+        );
+
+      };
+
+}
 
 
 // ==========================================
-// PRACTICES
+// FIREBASE STORAGE HELPERS
+// ==========================================
+
+function safeFileName(
+  name
+) {
+
+  return name.replace(
+    /[^a-zA-Z0-9._-]/g,
+    "_"
+  );
+
+}
+
+
+async function uploadFile(
+  file,
+  path
+) {
+
+  if (
+    !window.vukFirebase ||
+    !window.vukFirebase.storage
+  ) {
+
+    throw new Error(
+      "Firebase Storage is not available."
+    );
+
+  }
+
+
+  const {
+    storage,
+    storageRef,
+    uploadBytes,
+    getDownloadURL
+  } = window.vukFirebase;
+
+
+  const fileReference =
+    storageRef(
+      storage,
+      path
+    );
+
+
+  await uploadBytes(
+    fileReference,
+    file,
+    {
+      contentType:
+        file.type ||
+        undefined
+    }
+  );
+
+
+  return await getDownloadURL(
+    fileReference
+  );
+
+}
+
+
+async function deleteStoragePath(
+  path
+) {
+
+  if (
+    !path ||
+    !window.vukFirebase ||
+    !window.vukFirebase.storage
+  ) {
+    return;
+  }
+
+
+  const {
+    storage,
+    storageRef,
+    deleteObject
+  } = window.vukFirebase;
+
+
+  try {
+
+    await deleteObject(
+      storageRef(
+        storage,
+        path
+      )
+    );
+
+  } catch (error) {
+
+    console.warn(
+      "Storage delete failed:",
+      error
+    );
+
+  }
+
+}
+
+
+// ==========================================
+// PHOTO UPLOAD
+// ==========================================
+
+async function uploadDancePhotos(
+  dance,
+  files
+) {
+
+  if (
+    !files.length
+  ) {
+    return;
+  }
+
+
+  showUploading(
+    true,
+    files.length > 1
+      ? "Uploading photos..."
+      : "Uploading photo..."
+  );
+
+
+  try {
+
+    for (
+      const file
+      of files
+    ) {
+
+      const path =
+
+        `dance-media/ensemble-${data.selectedEnsemble}` +
+
+        `/dance-${dance.id}` +
+
+        `/photos/${uid()}-${safeFileName(file.name)}`;
+
+
+      const url =
+        await uploadFile(
+          file,
+          path
+        );
+
+
+      dance.images.push({
+
+        url,
+
+        path,
+
+        name:
+          file.name,
+
+        type:
+          file.type ||
+          "image"
+
+      });
+
+    }
+
+
+    saveData();
+
+    showToast(
+      files.length > 1
+        ? "Photos uploaded."
+        : "Photo uploaded."
+    );
+
+
+    showDance(
+      dance.id
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Photo upload failed:",
+      error
+    );
+
+
+    alert(
+      "The photo could not be uploaded. Firebase Storage may need to be enabled first."
+    );
+
+  } finally {
+
+    showUploading(
+      false
+    );
+
+  }
+
+}
+
+
+// ==========================================
+// DELETE PHOTO
+// ==========================================
+
+async function deleteDanceImage(
+  dance,
+  imageIndex
+) {
+
+  const image =
+    dance.images[
+      imageIndex
+    ];
+
+
+  if (!image) {
+    return;
+  }
+
+
+  if (
+    !confirm(
+      "Delete this photo?"
+    )
+  ) {
+    return;
+  }
+
+
+  showUploading(
+    true,
+    "Deleting photo..."
+  );
+
+
+  try {
+
+    if (
+      image.path
+    ) {
+
+      await deleteStoragePath(
+        image.path
+      );
+
+    }
+
+
+    dance.images.splice(
+      imageIndex,
+      1
+    );
+
+
+    saveData();
+
+
+    showDance(
+      dance.id
+    );
+
+  } finally {
+
+    showUploading(
+      false
+    );
+
+  }
+
+}
+
+
+// ==========================================
+// MUSIC UPLOAD
+// ==========================================
+
+async function uploadDanceMusic(
+  dance,
+  file
+) {
+
+  showUploading(
+    true,
+    "Uploading music..."
+  );
+
+
+  try {
+
+    if (
+      dance.music?.path
+    ) {
+
+      await deleteStoragePath(
+        dance.music.path
+      );
+
+    }
+
+
+    const path =
+
+      `dance-media/ensemble-${data.selectedEnsemble}` +
+
+      `/dance-${dance.id}` +
+
+      `/music/${uid()}-${safeFileName(file.name)}`;
+
+
+    const url =
+      await uploadFile(
+        file,
+        path
+      );
+
+
+    dance.music = {
+
+      url,
+
+      path,
+
+      name:
+        file.name,
+
+      type:
+        file.type ||
+        "audio"
+
+    };
+
+
+    saveData();
+
+
+    showToast(
+      "Music uploaded."
+    );
+
+
+    showDance(
+      dance.id
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Music upload failed:",
+      error
+    );
+
+
+    alert(
+      "The music could not be uploaded. Firebase Storage may need to be enabled first."
+    );
+
+  } finally {
+
+    showUploading(
+      false
+    );
+
+  }
+
+}
+
+
+// ==========================================
+// DELETE MUSIC
+// ==========================================
+
+async function deleteDanceMusic(
+  dance
+) {
+
+  if (
+    !confirm(
+      "Delete this music file?"
+    )
+  ) {
+    return;
+  }
+
+
+  showUploading(
+    true,
+    "Deleting music..."
+  );
+
+
+  try {
+
+    if (
+      dance.music?.path
+    ) {
+
+      await deleteStoragePath(
+        dance.music.path
+      );
+
+    }
+
+
+    dance.music =
+      null;
+
+
+    saveData();
+
+
+    showDance(
+      dance.id
+    );
+
+  } finally {
+
+    showUploading(
+      false
+    );
+
+  }
+
+}
+
+
+// ==========================================
+// CREATE WEEKLY PRACTICES
 // ==========================================
 
 function createWeeklyPractices(
@@ -2821,28 +4503,28 @@ function createWeeklyPractices(
 
 
   const seriesId =
-    Date.now() +
-    Math.random();
+    uid();
 
 
   while (
-    current <= finalDate
+    current <=
+    finalDate
   ) {
 
     ensemble()
       .practices
       .push({
 
-        id:
-          Date.now() +
-          Math.random(),
+        id: uid(),
 
         seriesId,
 
         name,
 
         date:
-          dateKey(current),
+          dateKey(
+            current
+          ),
 
         startTime,
 
@@ -2854,7 +4536,8 @@ function createWeeklyPractices(
 
 
     current.setDate(
-      current.getDate() + 7
+      current.getDate() +
+      7
     );
 
   }
@@ -2862,9 +4545,13 @@ function createWeeklyPractices(
 }
 
 
+// ==========================================
+// ADD PRACTICE
+// ==========================================
+
 function practiceForm() {
 
-  openRootModal(
+  openModal(
 
     "Add Practice",
 
@@ -2946,26 +4633,10 @@ function practiceForm() {
       </div>
 
 
-      <div class="form-group">
-
-        <label>Repeat</label>
-
-        <select id="practiceRepeat">
-
-          <option value="weekly">
-            Every week
-          </option>
-
-        </select>
-
-      </div>
-
-
       <div class="file-box">
 
-        Choose the first practice date.
-        The practice will repeat on the
-        same weekday every week until
+        The practice repeats
+        every week through
         the end date.
 
       </div>
@@ -2974,6 +4645,7 @@ function practiceForm() {
       <button
         id="savePractice"
         class="primary-button"
+        type="button"
         style="margin-top:18px"
       >
 
@@ -3095,14 +4767,6 @@ document
 // CALENDAR
 // ==========================================
 
-let calendarDate =
-  new Date();
-
-
-let selectedCalendarDate =
-  null;
-
-
 function renderCalendar() {
 
   document
@@ -3114,11 +4778,13 @@ function renderCalendar() {
 
 
   const year =
-    calendarDate.getFullYear();
+    calendarDate
+      .getFullYear();
 
 
   const month =
-    calendarDate.getMonth();
+    calendarDate
+      .getMonth();
 
 
   document
@@ -3142,7 +4808,8 @@ function renderCalendar() {
     );
 
 
-  grid.innerHTML = "";
+  grid.innerHTML =
+    "";
 
 
   const firstDay =
@@ -3165,7 +4832,7 @@ function renderCalendar() {
   );
 
 
-  const todayKey =
+  const today =
     dateKey(
       new Date()
     );
@@ -3178,7 +4845,9 @@ function renderCalendar() {
   ) {
 
     const date =
-      new Date(start);
+      new Date(
+        start
+      );
 
 
     date.setDate(
@@ -3188,7 +4857,9 @@ function renderCalendar() {
 
 
     const key =
-      dateKey(date);
+      dateKey(
+        date
+      );
 
 
     const practices =
@@ -3196,7 +4867,8 @@ function renderCalendar() {
         .practices
         .filter(
           practice =>
-            practice.date === key
+            practice.date ===
+              key
         );
 
 
@@ -3204,6 +4876,10 @@ function renderCalendar() {
       document.createElement(
         "button"
       );
+
+
+    button.type =
+      "button";
 
 
     button.className =
@@ -3223,8 +4899,8 @@ function renderCalendar() {
 
 
     if (
-      selectedCalendarDate ===
-      key
+      key ===
+      selectedCalendarDate
     ) {
 
       button.classList.add(
@@ -3235,7 +4911,8 @@ function renderCalendar() {
 
 
     if (
-      key === todayKey
+      key ===
+      today
     ) {
 
       button.classList.add(
@@ -3243,16 +4920,6 @@ function renderCalendar() {
       );
 
     }
-
-
-    const dots =
-      practices
-        .slice(0, 3)
-        .map(
-          () =>
-            `<span class="event-dot"></span>`
-        )
-        .join("");
 
 
     button.innerHTML = `
@@ -3266,7 +4933,18 @@ function renderCalendar() {
 
       <div class="event-dots">
 
-        ${dots}
+        ${
+          practices
+            .slice(
+              0,
+              3
+            )
+            .map(
+              () =>
+                `<span class="event-dot"></span>`
+            )
+            .join("")
+        }
 
       </div>
 
@@ -3281,7 +4959,9 @@ function renderCalendar() {
 
 
         calendarDate =
-          new Date(date);
+          new Date(
+            date
+          );
 
 
         renderCalendar();
@@ -3309,8 +4989,13 @@ document
 
       calendarDate =
         new Date(
-          calendarDate.getFullYear(),
-          calendarDate.getMonth() - 1,
+          calendarDate
+            .getFullYear(),
+
+          calendarDate
+            .getMonth() -
+            1,
+
           1
         );
 
@@ -3335,8 +5020,13 @@ document
 
       calendarDate =
         new Date(
-          calendarDate.getFullYear(),
-          calendarDate.getMonth() + 1,
+          calendarDate
+            .getFullYear(),
+
+          calendarDate
+            .getMonth() +
+            1,
+
           1
         );
 
@@ -3359,16 +5049,14 @@ document
   .onclick =
     () => {
 
-      const today =
+      calendarDate =
         new Date();
 
 
-      calendarDate =
-        new Date(today);
-
-
       selectedCalendarDate =
-        dateKey(today);
+        dateKey(
+          new Date()
+        );
 
 
       renderCalendar();
@@ -3392,6 +5080,7 @@ function renderPractices() {
 
   let practices =
     [...ensemble().practices]
+
       .sort(
         (a, b) =>
           localDate(a.date) -
@@ -3407,16 +5096,19 @@ function renderPractices() {
       practices.filter(
         practice =>
           practice.date ===
-          selectedCalendarDate
+            selectedCalendarDate
       );
 
   }
 
 
-  container.innerHTML = "";
+  container.innerHTML =
+    "";
 
 
-  if (!practices.length) {
+  if (
+    !practices.length
+  ) {
 
     container.innerHTML = `
 
@@ -3448,6 +5140,10 @@ function renderPractices() {
         );
 
 
+      button.type =
+        "button";
+
+
       button.className =
         "item-card";
 
@@ -3476,6 +5172,7 @@ function renderPractices() {
             }
 
           </h3>
+
 
           <p>
 
@@ -3506,10 +5203,13 @@ function renderPractices() {
 
 
       button.onclick =
-        () =>
+        () => {
+
           showPractice(
             practice.id
           );
+
+        };
 
 
       container.appendChild(
@@ -3527,7 +5227,7 @@ function renderPractices() {
 // ==========================================
 
 function showPractice(
-  id,
+  practiceId,
   search = ""
 ) {
 
@@ -3536,7 +5236,8 @@ function showPractice(
       .practices
       .find(
         item =>
-          item.id === id
+          item.id ===
+            practiceId
       );
 
 
@@ -3572,9 +5273,15 @@ function showPractice(
 
 
   const counts = {
+
     present: 0,
+
     late: 0,
-    absent: 0
+
+    absent: 0,
+
+    excused: 0
+
   };
 
 
@@ -3606,9 +5313,10 @@ function showPractice(
             dancer => {
 
               const status =
-                practice.attendance[
-                  dancer.id
-                ] || "";
+                practice
+                  .attendance[
+                    dancer.id
+                  ] || "";
 
 
               return `
@@ -3629,26 +5337,26 @@ function showPractice(
 
 
                   <div
-                    class="attendance-buttons"
-
+                    class="
+                      attendance-buttons
+                      four
+                    "
                     data-dancer="${
                       dancer.id
                     }"
                   >
 
                     <button
+                      type="button"
                       class="
                         present
-
                         ${
                           status ===
-                          "present"
-
+                            "present"
                             ? "selected"
                             : ""
                         }
                       "
-
                       data-status="present"
                     >
 
@@ -3658,18 +5366,16 @@ function showPractice(
 
 
                     <button
+                      type="button"
                       class="
                         late
-
                         ${
                           status ===
-                          "late"
-
+                            "late"
                             ? "selected"
                             : ""
                         }
                       "
-
                       data-status="late"
                     >
 
@@ -3679,22 +5385,39 @@ function showPractice(
 
 
                     <button
+                      type="button"
                       class="
                         absent
-
                         ${
                           status ===
-                          "absent"
-
+                            "absent"
                             ? "selected"
                             : ""
                         }
                       "
-
                       data-status="absent"
                     >
 
                       No Show
+
+                    </button>
+
+
+                    <button
+                      type="button"
+                      class="
+                        excused
+                        ${
+                          status ===
+                            "excused"
+                            ? "selected"
+                            : ""
+                        }
+                      "
+                      data-status="excused"
+                    >
+
+                      Excused
 
                     </button>
 
@@ -3717,7 +5440,7 @@ function showPractice(
 
                 ? "No dancers match your search."
 
-                : "Add dancers to this ensemble before taking attendance."
+                : "Add dancers before taking attendance."
             }
 
           </div>
@@ -3725,7 +5448,7 @@ function showPractice(
         `;
 
 
-  openRootModal(
+  openModal(
 
     practice.name,
 
@@ -3747,10 +5470,7 @@ function showPractice(
 
 
         <div
-          style="
-            margin-top:7px;
-            color:var(--grey);
-          "
+          class="practice-time"
         >
 
           ${
@@ -3775,6 +5495,7 @@ function showPractice(
       <button
         id="markAllPresent"
         class="mark-all-button"
+        type="button"
       >
 
         ✓ Mark All Present
@@ -3782,7 +5503,12 @@ function showPractice(
       </button>
 
 
-      <div class="attendance-summary">
+      <div
+        class="
+          attendance-summary
+          four
+        "
+      >
 
         <div
           class="
@@ -3791,11 +5517,15 @@ function showPractice(
           "
         >
 
-          <strong>
+          <strong
+            id="countPresent"
+          >
             ${counts.present}
           </strong>
 
-          <span>PRESENT</span>
+          <span>
+            PRESENT
+          </span>
 
         </div>
 
@@ -3807,11 +5537,15 @@ function showPractice(
           "
         >
 
-          <strong>
+          <strong
+            id="countLate"
+          >
             ${counts.late}
           </strong>
 
-          <span>LATE</span>
+          <span>
+            LATE
+          </span>
 
         </div>
 
@@ -3823,11 +5557,35 @@ function showPractice(
           "
         >
 
-          <strong>
+          <strong
+            id="countAbsent"
+          >
             ${counts.absent}
           </strong>
 
-          <span>NO SHOW</span>
+          <span>
+            NO SHOW
+          </span>
+
+        </div>
+
+
+        <div
+          class="
+            summary-box
+            excused
+          "
+        >
+
+          <strong
+            id="countExcused"
+          >
+            ${counts.excused}
+          </strong>
+
+          <span>
+            EXCUSED
+          </span>
 
         </div>
 
@@ -3836,26 +5594,36 @@ function showPractice(
 
       <div class="search-box">
 
-        <span>⌕</span>
+        <span>
+          ⌕
+        </span>
 
         <input
           id="attendanceSearch"
           type="search"
           placeholder="Search dancers..."
           value="${
-            escapeHTML(search)
+            escapeHTML(
+              search
+            )
           }"
         >
 
       </div>
 
 
-      <h3 class="detail-heading">
+      <h3
+        class="detail-heading"
+      >
+
         Attendance
+
       </h3>
 
 
-      <div id="attendanceRows">
+      <div
+        id="attendanceRows"
+      >
 
         ${rows}
 
@@ -3865,6 +5633,7 @@ function showPractice(
       <button
         id="deletePractice"
         class="danger-button"
+        type="button"
       >
 
         Delete This Practice
@@ -3876,16 +5645,249 @@ function showPractice(
   );
 
 
+  function refreshCounts() {
+
+    const newCounts = {
+
+      present: 0,
+
+      late: 0,
+
+      absent: 0,
+
+      excused: 0
+
+    };
+
+
+    Object
+      .values(
+        practice.attendance
+      )
+      .forEach(
+        status => {
+
+          if (
+            newCounts[
+              status
+            ] !==
+            undefined
+          ) {
+
+            newCounts[
+              status
+            ]++;
+
+          }
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "countPresent"
+      )
+      .textContent =
+        newCounts.present;
+
+
+    document
+      .getElementById(
+        "countLate"
+      )
+      .textContent =
+        newCounts.late;
+
+
+    document
+      .getElementById(
+        "countAbsent"
+      )
+      .textContent =
+        newCounts.absent;
+
+
+    document
+      .getElementById(
+        "countExcused"
+      )
+      .textContent =
+        newCounts.excused;
+
+  }
+
+
+  /*
+    IMPORTANT:
+
+    Attendance buttons update
+    immediately on screen.
+
+    Firebase saving happens
+    AFTER the local visual
+    update.
+
+    The user does not need
+    to wait for Firebase.
+  */
+
+  document
+    .querySelectorAll(
+      ".attendance-buttons button"
+    )
+    .forEach(
+      button => {
+
+        button.onclick =
+          () => {
+
+            const group =
+              button.closest(
+                ".attendance-buttons"
+              );
+
+
+            const dancerId =
+              Number(
+                group.dataset
+                  .dancer
+              );
+
+
+            const status =
+              button.dataset
+                .status;
+
+
+            practice
+              .attendance[
+                dancerId
+              ] =
+                status;
+
+
+            group
+              .querySelectorAll(
+                "button"
+              )
+              .forEach(
+                statusButton => {
+
+                  statusButton
+                    .classList
+                    .toggle(
+                      "selected",
+                      statusButton ===
+                        button
+                    );
+
+                }
+              );
+
+
+            refreshCounts();
+
+
+            /*
+              Save AFTER the UI
+              already changed.
+            */
+
+            saveData();
+
+          };
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "markAllPresent"
+    )
+    .onclick =
+      () => {
+
+        if (
+          !allDancers.length
+        ) {
+
+          alert(
+            "There are no dancers in this ensemble yet."
+          );
+
+          return;
+
+        }
+
+
+        allDancers.forEach(
+          dancer => {
+
+            practice
+              .attendance[
+                dancer.id
+              ] =
+                "present";
+
+          }
+        );
+
+
+        /*
+          Immediately update all
+          visible buttons.
+        */
+
+        document
+          .querySelectorAll(
+            ".attendance-buttons"
+          )
+          .forEach(
+            group => {
+
+              group
+                .querySelectorAll(
+                  "button"
+                )
+                .forEach(
+                  button => {
+
+                    button
+                      .classList
+                      .toggle(
+                        "selected",
+                        button
+                          .dataset
+                          .status ===
+                          "present"
+                      );
+
+                  }
+                );
+
+            }
+          );
+
+
+        refreshCounts();
+
+        saveData();
+
+
+        showToast(
+          "Everyone marked Present."
+        );
+
+      };
+
+
   const searchInput =
     document.getElementById(
       "attendanceSearch"
     );
 
-
-  /*
-    Keep cursor in search box
-    while filtering.
-  */
 
   searchInput.addEventListener(
     "input",
@@ -3914,6 +5916,7 @@ function showPractice(
 
             input.focus();
 
+
             input.setSelectionRange(
               value.length,
               value.length
@@ -3927,109 +5930,6 @@ function showPractice(
 
     }
   );
-
-
-  document
-    .getElementById(
-      "markAllPresent"
-    )
-    .onclick =
-      () => {
-
-        if (
-          !allDancers.length
-        ) {
-
-          alert(
-            "There are no dancers in this ensemble yet."
-          );
-
-          return;
-
-        }
-
-
-        allDancers.forEach(
-          dancer => {
-
-            practice.attendance[
-              dancer.id
-            ] =
-              "present";
-
-          }
-        );
-
-
-        saveData();
-
-        showPractice(
-          practice.id,
-          search
-        );
-
-      };
-
-
-  document
-    .querySelectorAll(
-      ".attendance-buttons button"
-    )
-    .forEach(
-      button => {
-
-        button.onclick =
-          () => {
-
-            const group =
-              button.closest(
-                ".attendance-buttons"
-              );
-
-
-            const dancerId =
-              Number(
-                group.dataset.dancer
-              );
-
-
-            const status =
-              button.dataset.status;
-
-
-            if (
-              practice.attendance[
-                dancerId
-              ] === status
-            ) {
-
-              delete practice
-                .attendance[
-                  dancerId
-                ];
-
-            } else {
-
-              practice.attendance[
-                dancerId
-              ] =
-                status;
-
-            }
-
-
-            saveData();
-
-
-            showPractice(
-              practice.id,
-              search
-            );
-
-          };
-
-      }
-    );
 
 
   document
@@ -4054,7 +5954,7 @@ function showPractice(
             .filter(
               item =>
                 item.id !==
-                practice.id
+                  practice.id
             );
 
 
@@ -4070,7 +5970,114 @@ function showPractice(
 
 
 // ==========================================
-// SETTINGS
+// SETTINGS / INSTRUCTOR NOTES
+// ==========================================
+
+function renderSettings() {
+
+  const ensembleLabel =
+    document.getElementById(
+      "settingsEnsemble"
+    );
+
+
+  if (
+    ensembleLabel
+  ) {
+
+    ensembleLabel.textContent =
+      ensemble().name;
+
+  }
+
+
+  const notes =
+    document.getElementById(
+      "instructorNotes"
+    );
+
+
+  if (
+    notes &&
+    document.activeElement !==
+      notes
+  ) {
+
+    notes.value =
+      ensemble()
+        .instructorNotes ||
+      "";
+
+  }
+
+}
+
+
+const instructorNotes =
+  document.getElementById(
+    "instructorNotes"
+  );
+
+
+instructorNotes.addEventListener(
+  "input",
+  () => {
+
+    ensemble().instructorNotes =
+      instructorNotes.value;
+
+
+    /*
+      Immediately save locally
+      while the instructor types.
+    */
+
+    localBackup();
+
+
+    const status =
+      document.getElementById(
+        "notesSaveStatus"
+      );
+
+
+    if (status) {
+
+      status.textContent =
+        "Saving...";
+
+    }
+
+
+    clearTimeout(
+      notesTimer
+    );
+
+
+    notesTimer =
+      setTimeout(
+        () => {
+
+          saveData();
+
+
+          if (status) {
+
+            status.textContent =
+              "Saved.";
+
+          }
+
+        },
+        300
+      );
+
+  }
+);
+
+
+// ==========================================
+// SETTINGS BUTTONS
 // ==========================================
 
 document
@@ -4078,10 +6085,13 @@ document
     "manageEnsembles"
   )
   .onclick =
-    () =>
+    () => {
+
       openPage(
         "homePage"
       );
+
+    };
 
 
 document
@@ -4089,10 +6099,13 @@ document
     "accountsButton"
   )
   .onclick =
-    () =>
+    () => {
+
       alert(
-        "Instructor accounts will be enabled when the shared database is connected."
+        "Instructor Accounts are the next security step. Shared data is already connected."
       );
+
+    };
 
 
 document
@@ -4100,17 +6113,22 @@ document
     "permissionsButton"
   )
   .onclick =
-    () =>
+    () => {
+
       alert(
-        "Permissions will be enabled with instructor accounts."
+        "Permissions will be available when instructor sign-in is enabled."
       );
+
+    };
 
 
 // ==========================================
-// RENDER
+// RENDER EVERYTHING
 // ==========================================
 
 function renderAll() {
+
+  normalizeData();
 
   renderHeader();
 
@@ -4124,74 +6142,191 @@ function renderAll() {
 
   renderPractices();
 
+  renderSettings();
+
 }
 
 
 renderAll();
 
+
 openPage(
   "homePage"
 );
+
+
 // ==========================================
 // FIREBASE SHARED DATA SYNC
 // ==========================================
 
-let firebaseSyncStarted = false;
+let firebaseSyncStarted =
+  false;
+
 
 function startFirebaseSync() {
-  if (firebaseSyncStarted || !window.vukFirebase) {
+
+  if (
+    firebaseSyncStarted ||
+    !window.vukFirebase
+  ) {
     return;
   }
 
-  firebaseSyncStarted = true;
 
-  const { database, ref, set, onValue } = window.vukFirebase;
-  const sharedDataRef = ref(database, "vukProbeV4");
+  firebaseSyncStarted =
+    true;
 
-  let firstFirebaseLoad = true;
 
-  onValue(sharedDataRef, (snapshot) => {
-    const cloudData = snapshot.val();
+  const {
+    database,
+    dbRef,
+    set,
+    onValue
+  } = window.vukFirebase;
 
-    // Firebase is empty the first time:
-    // upload this device's existing VUK data.
-    if (firstFirebaseLoad && cloudData === null) {
-      firstFirebaseLoad = false;
 
-      set(sharedDataRef, data).catch((error) => {
-        console.error("Initial Firebase upload failed:", error);
-      });
+  const sharedDataRef =
+    dbRef(
+      database,
+      CLOUD_ROOT
+    );
 
-      return;
-    }
 
-    firstFirebaseLoad = false;
+  let firstFirebaseLoad =
+    true;
 
-    // Firebase has shared data:
-    // use it on this device.
-    if (cloudData) {
-      data = cloudData;
 
-      normalizeData();
+  onValue(
 
-      localStorage.setItem(
-        "vukProbeV4",
-        JSON.stringify(data)
+    sharedDataRef,
+
+    snapshot => {
+
+      const cloudData =
+        snapshot.val();
+
+
+      /*
+        If Firebase is empty,
+        upload the data already
+        on this device.
+
+        This protects existing
+        local VUK data.
+      */
+
+      if (
+        firstFirebaseLoad &&
+        cloudData === null
+      ) {
+
+        firstFirebaseLoad =
+          false;
+
+
+        cloudReady =
+          true;
+
+
+        set(
+          sharedDataRef,
+          data
+        )
+        .catch(
+          error => {
+
+            console.error(
+              "Initial Firebase upload failed:",
+              error
+            );
+
+          }
+        );
+
+
+        return;
+
+      }
+
+
+      firstFirebaseLoad =
+        false;
+
+
+      cloudReady =
+        true;
+
+
+      /*
+        Firebase already contains
+        the shared VUK data.
+
+        Use it without resetting
+        or recreating ensembles.
+      */
+
+      if (
+        cloudData
+      ) {
+
+        applyingCloud =
+          true;
+
+
+        data =
+          cloudData;
+
+
+        normalizeData();
+
+
+        localBackup();
+
+
+        applyingCloud =
+          false;
+
+
+        renderAll();
+
+      }
+
+    },
+
+    error => {
+
+      console.error(
+        "Firebase sync failed:",
+        error
       );
 
-      renderAll();
+
+      cloudReady =
+        false;
+
     }
-  }, (error) => {
-    console.error("Firebase sync failed:", error);
-  });
+
+  );
+
 }
 
-// Firebase may already be ready...
-if (window.vukFirebase) {
+
+// Firebase might already
+// be initialized.
+
+if (
+  window.vukFirebase
+) {
+
   startFirebaseSync();
+
 }
 
-// ...or it may finish loading just after script.js.
+
+// Or Firebase may finish
+// loading immediately after
+// script.js starts.
+
 window.addEventListener(
   "vukFirebaseReady",
   startFirebaseSync
