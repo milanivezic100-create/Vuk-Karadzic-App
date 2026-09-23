@@ -3727,3 +3727,209 @@ button:last-child {
     height: 38px;
   }
 }
+
+
+/* ============================================================
+   FIX — DANCE DANCER ROW LAYOUT
+   ============================================================ */
+
+.dance-dancer-groups .dance-dancer-section {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 0 24px 0 !important;
+}
+
+.dance-dancer-groups .dance-dancer-group-title {
+  display: block !important;
+  width: 100% !important;
+
+  margin: 0 0 9px 0 !important;
+
+  font-size: 18px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.04em !important;
+}
+
+.dance-dancer-groups .dance-dancer-group-title.boys {
+  color: var(--blue) !important;
+}
+
+.dance-dancer-groups .dance-dancer-group-title.girls {
+  color: var(--pink) !important;
+}
+
+.dance-dancer-groups .dance-dancer-order-list {
+  display: flex !important;
+  flex-direction: column !important;
+
+  width: 100% !important;
+
+  gap: 8px !important;
+}
+
+.dance-dancer-groups .dance-dancer-order-row {
+  width: 100% !important;
+  min-height: 58px !important;
+
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+
+  gap: 10px !important;
+
+  padding: 7px 7px 7px 11px !important;
+
+  border: 1px solid var(--line) !important;
+  border-radius: 14px !important;
+
+  background: #ffffff !important;
+
+  box-sizing: border-box !important;
+}
+
+
+/* NUMBER CIRCLE */
+
+.dance-dancer-groups .dance-dancer-number {
+  width: 34px !important;
+  height: 34px !important;
+
+  min-width: 34px !important;
+  flex: 0 0 34px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  border-radius: 50% !important;
+
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+}
+
+.dance-dancer-groups .dance-dancer-number.boys {
+  background: var(--blue-soft) !important;
+  color: var(--blue) !important;
+}
+
+.dance-dancer-groups .dance-dancer-number.girls {
+  background: var(--pink-soft) !important;
+  color: var(--pink) !important;
+}
+
+.dance-dancer-groups .dance-dancer-number.other {
+  background: #f0ece7 !important;
+  color: #71665f !important;
+}
+
+
+/* DANCER NAME */
+
+.dance-dancer-groups .dance-dancer-name {
+  flex: 1 1 auto !important;
+
+  min-width: 0 !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  overflow: hidden !important;
+
+  color: var(--text) !important;
+
+  font-size: 15px !important;
+  font-weight: 720 !important;
+  line-height: 1.2 !important;
+
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+
+/* SMALL DRAG BOX ON RIGHT */
+
+.dance-dancer-groups .dance-dancer-drag-handle {
+  width: 40px !important;
+  height: 40px !important;
+
+  min-width: 40px !important;
+  flex: 0 0 40px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border: 1px solid #ddd1c5 !important;
+  border-radius: 9px !important;
+
+  background: #f4ede4 !important;
+
+  color: #897b72 !important;
+
+  font-size: 23px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+
+  touch-action: none !important;
+}
+
+
+/* DRAGGING */
+
+.dance-dancer-groups .dance-dancer-order-row.dragging {
+  position: relative !important;
+  z-index: 100 !important;
+
+  opacity: 0.94 !important;
+
+  transform: scale(1.02) !important;
+
+  box-shadow:
+    0 10px 28px
+    rgba(48, 30, 25, 0.16) !important;
+}
+
+
+/* IPHONE 14 PRO */
+
+@media (max-width: 430px) {
+
+  .dance-dancer-groups .dance-dancer-order-row {
+    min-height: 57px !important;
+
+    padding:
+      7px
+      6px
+      7px
+      10px !important;
+  }
+
+  .dance-dancer-groups .dance-dancer-number {
+    width: 32px !important;
+    height: 32px !important;
+
+    min-width: 32px !important;
+    flex-basis: 32px !important;
+
+    font-size: 10px !important;
+  }
+
+  .dance-dancer-groups .dance-dancer-name {
+    font-size: 14px !important;
+  }
+
+  .dance-dancer-groups .dance-dancer-drag-handle {
+    width: 38px !important;
+    height: 38px !important;
+
+    min-width: 38px !important;
+    flex-basis: 38px !important;
+  }
+}
