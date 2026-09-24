@@ -1,6 +1,6 @@
 /* ============================================================
    VUK KARADZIC PROBE
-   STYLES.CSS — V10 CLEAN
+   STYLES.CSS — V11 CLEAN
    ============================================================ */
 
 :root {
@@ -53,6 +53,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+
   background: var(--cream);
   color: var(--text);
 
@@ -113,26 +114,19 @@ body.modal-open {
 #app {
   width: 100%;
   max-width: 520px;
+
   min-height: 100vh;
+
   margin: 0 auto;
+
   position: relative;
+
   background: var(--cream);
-}
-
-main {
-  min-height: 100vh;
-
-  padding-bottom:
-    calc(
-      var(--nav-height) +
-      env(safe-area-inset-bottom) +
-      24px
-    );
 }
 
 
 /* ============================================================
-   TOP HEADER — V10 FIX
+   TOP HEADER
    ============================================================ */
 
 .top-header {
@@ -201,16 +195,28 @@ main {
 
 
 /* ============================================================
-   PAGE
+   PAGES
+
+   IMPORTANT V11 FIX:
+   Large bottom padding gives long lists real scroll room above
+   the fixed navigation bar.
    ============================================================ */
 
 .page {
   display: none;
 
   width: 100%;
+
   min-height: calc(100vh - 72px);
 
-  padding: 18px 18px 28px;
+  padding:
+    18px
+    18px
+    calc(
+      var(--nav-height) +
+      env(safe-area-inset-bottom) +
+      115px
+    );
 }
 
 .page.active {
@@ -219,7 +225,7 @@ main {
 
 
 /* ============================================================
-   PAGE INTRO — CURRENT HTML
+   PAGE INTRO
    ============================================================ */
 
 .page-intro {
@@ -257,6 +263,7 @@ main {
   justify-content: space-between;
 
   gap: 12px;
+
   margin-bottom: 20px;
 }
 
@@ -384,6 +391,7 @@ main {
 
 .danger-button.compact {
   min-height: 42px;
+
   margin-top: 10px;
 }
 
@@ -785,8 +793,7 @@ main {
 
 
 /* ============================================================
-   DANCES — MAIN LIST
-   HANDLE FORCED TO FAR RIGHT
+   DANCES
    ============================================================ */
 
 .dance-group-list {
@@ -955,10 +962,6 @@ main {
   background: #f2ebe1 !important;
 }
 
-.dance-empty {
-  margin-bottom: 2px;
-}
-
 
 /* ============================================================
    DANCERS INSIDE DANCE
@@ -1069,7 +1072,7 @@ main {
 
 
 /* ============================================================
-   DANCE DETAILS
+   DETAILS
    ============================================================ */
 
 .dance-detail-status {
@@ -1141,7 +1144,7 @@ main {
 
 
 /* ============================================================
-   DANCE STATUS SELECTOR
+   DANCE STATUS
    ============================================================ */
 
 .dance-status-selector {
@@ -1202,7 +1205,7 @@ main {
 
 
 /* ============================================================
-   DANCE DANCER PICKER
+   DANCER PICKER
    ============================================================ */
 
 .picker-group {
@@ -1530,7 +1533,7 @@ main {
 
 
 /* ============================================================
-   PRACTICE HEADING
+   PRACTICE
    ============================================================ */
 
 .practice-heading-row {
@@ -1553,11 +1556,6 @@ main {
   font-weight: 800;
 }
 
-
-/* ============================================================
-   ADD PRACTICE BUTTON
-   ============================================================ */
-
 #addPracticeButton {
   position: static;
 
@@ -1574,11 +1572,6 @@ main {
 
   z-index: auto;
 }
-
-
-/* ============================================================
-   PRACTICES
-   ============================================================ */
 
 #practiceList,
 .stack-list {
@@ -2123,7 +2116,7 @@ main {
 
 
 /* ============================================================
-   SETTINGS — CURRENT HTML
+   SETTINGS
    ============================================================ */
 
 .settings-section {
@@ -2193,11 +2186,6 @@ main {
 
   box-shadow: var(--shadow);
 }
-
-
-/* ============================================================
-   LEGACY SETTINGS SUPPORT
-   ============================================================ */
 
 .settings-list {
   display: flex;
@@ -2422,7 +2410,7 @@ main {
 
 
 /* ============================================================
-   INSTRUCTOR NOTES FULL PAGE
+   INSTRUCTOR NOTES
    ============================================================ */
 
 .full-screen-modal #modalBody {
@@ -2775,6 +2763,13 @@ main {
 
     padding-left: 16px;
     padding-right: 16px;
+
+    padding-bottom:
+      calc(
+        var(--nav-height) +
+        env(safe-area-inset-bottom) +
+        125px
+      );
   }
 }
 
@@ -2863,5 +2858,5 @@ main {
 
 
 /* ============================================================
-   END STYLES.CSS — V10
+   END STYLES.CSS — V11
    ============================================================ */
