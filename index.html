@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -8,7 +10,10 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
   >
 
-  <meta name="theme-color" content="#f7f1e7">
+  <meta
+    name="theme-color"
+    content="#f7f1e7"
+  >
 
   <meta
     name="apple-mobile-web-app-capable"
@@ -32,17 +37,23 @@
     href="Vuk-app-icon.png"
   >
 
+  <!-- V12 STYLES -->
   <link
     rel="stylesheet"
-    href="styles.css?v=10"
+    href="styles.css?v=12"
   >
+
 </head>
+
 
 <body>
 
   <div id="app">
 
-    <!-- HEADER -->
+
+    <!-- ======================================================
+         HEADER
+         ====================================================== -->
 
     <header class="top-header">
 
@@ -60,6 +71,7 @@
 
       </div>
 
+
       <button
         id="ensembleButton"
         class="ensemble-pill"
@@ -73,7 +85,10 @@
     </header>
 
 
-    <!-- HOME -->
+
+    <!-- ======================================================
+         HOME
+         ====================================================== -->
 
     <main
       id="homePage"
@@ -88,6 +103,7 @@
 
       </div>
 
+
       <div
         id="ensembleList"
         class="ensemble-list"
@@ -96,7 +112,10 @@
     </main>
 
 
-    <!-- CALENDAR -->
+
+    <!-- ======================================================
+         CALENDAR
+         ====================================================== -->
 
     <main
       id="calendarPage"
@@ -113,6 +132,7 @@
 
       </div>
 
+
       <button
         id="todayButton"
         class="today-button"
@@ -121,12 +141,14 @@
         Today
       </button>
 
+
       <section class="calendar-card">
 
         <div class="calendar-header">
 
           <button
             class="calendar-arrow"
+            id="calendarPrev"
             type="button"
             data-direction="prev"
             aria-label="Previous month"
@@ -134,10 +156,13 @@
             ‹
           </button>
 
+
           <h2 id="calendarMonth"></h2>
+
 
           <button
             class="calendar-arrow"
+            id="calendarNext"
             type="button"
             data-direction="next"
             aria-label="Next month"
@@ -147,17 +172,19 @@
 
         </div>
 
+
         <div class="weekdays">
 
-          <span>Sun</span>
           <span>Mon</span>
           <span>Tue</span>
           <span>Wed</span>
           <span>Thu</span>
           <span>Fri</span>
           <span>Sat</span>
+          <span>Sun</span>
 
         </div>
+
 
         <div
           id="calendarGrid"
@@ -166,11 +193,13 @@
 
       </section>
 
+
       <div class="practice-heading-row">
 
         <h2 class="practice-heading">
           Practices
         </h2>
+
 
         <button
           id="addPracticeButton"
@@ -183,6 +212,7 @@
 
       </div>
 
+
       <div
         id="practiceList"
         class="stack-list"
@@ -191,7 +221,10 @@
     </main>
 
 
-    <!-- DANCES -->
+
+    <!-- ======================================================
+         DANCES
+         ====================================================== -->
 
     <main
       id="dancesPage"
@@ -208,6 +241,7 @@
 
       </div>
 
+
       <button
         id="addDanceButton"
         class="round-add"
@@ -217,12 +251,16 @@
         +
       </button>
 
+
       <div id="danceList"></div>
 
     </main>
 
 
-    <!-- DANCERS -->
+
+    <!-- ======================================================
+         DANCERS
+         ====================================================== -->
 
     <main
       id="dancersPage"
@@ -239,6 +277,7 @@
 
       </div>
 
+
       <button
         id="addDancerButton"
         class="round-add"
@@ -247,6 +286,7 @@
       >
         +
       </button>
+
 
       <div class="search-box">
 
@@ -264,12 +304,16 @@
 
       </div>
 
+
       <div id="dancerList"></div>
 
     </main>
 
 
-    <!-- SETTINGS -->
+
+    <!-- ======================================================
+         SETTINGS
+         ====================================================== -->
 
     <main
       id="settingsPage"
@@ -286,15 +330,35 @@
 
       </div>
 
+
       <section class="settings-section">
 
         <h2 class="settings-section-heading">
           SHARED
         </h2>
 
-        <div class="instructor-notes-card"></div>
+
+        <div class="settings-card">
+
+          <button
+            id="instructorNotesButton"
+            type="button"
+          >
+
+            <span>
+              Instructor Notes
+            </span>
+
+            <span class="settings-chevron">
+              ›
+            </span>
+
+          </button>
+
+        </div>
 
       </section>
+
 
       <section class="settings-section">
 
@@ -302,12 +366,14 @@
           APP SETTINGS
         </h2>
 
+
         <div class="settings-card">
 
           <button
             id="manageEnsembles"
             type="button"
           >
+
             <span>
               Manage Ensembles
             </span>
@@ -315,12 +381,15 @@
             <span class="settings-chevron">
               ›
             </span>
+
           </button>
+
 
           <button
             id="accountsButton"
             type="button"
           >
+
             <span>
               Instructor Accounts
             </span>
@@ -328,12 +397,15 @@
             <span class="settings-chevron">
               ›
             </span>
+
           </button>
+
 
           <button
             id="permissionsButton"
             type="button"
           >
+
             <span>
               Permissions
             </span>
@@ -341,6 +413,7 @@
             <span class="settings-chevron">
               ›
             </span>
+
           </button>
 
         </div>
@@ -350,9 +423,13 @@
     </main>
 
 
-    <!-- BOTTOM NAVIGATION -->
+
+    <!-- ======================================================
+         BOTTOM NAVIGATION
+         ====================================================== -->
 
     <nav class="bottom-nav">
+
 
       <button
         class="nav-button"
@@ -371,6 +448,8 @@
 
       </button>
 
+
+
       <button
         class="nav-button"
         type="button"
@@ -387,6 +466,8 @@
         </span>
 
       </button>
+
+
 
       <button
         class="nav-button home-nav active"
@@ -405,6 +486,8 @@
 
       </button>
 
+
+
       <button
         class="nav-button"
         type="button"
@@ -421,6 +504,8 @@
         </span>
 
       </button>
+
+
 
       <button
         class="nav-button"
@@ -444,7 +529,10 @@
   </div>
 
 
-  <!-- MODAL -->
+
+  <!-- ========================================================
+       MODAL
+       ======================================================== -->
 
   <div
     id="modalOverlay"
@@ -453,12 +541,14 @@
   >
 
     <section
+      id="modal"
       class="modal"
       role="dialog"
       aria-modal="true"
     >
 
       <header class="modal-header">
+
 
         <button
           id="modalBack"
@@ -468,6 +558,7 @@
           ‹ Back
         </button>
 
+
         <div class="modal-title-area">
 
           <div id="modalEyebrow"></div>
@@ -475,6 +566,7 @@
           <h2 id="modalTitle"></h2>
 
         </div>
+
 
         <button
           id="closeModal"
@@ -487,6 +579,7 @@
 
       </header>
 
+
       <div id="modalBody"></div>
 
     </section>
@@ -494,7 +587,10 @@
   </div>
 
 
-  <!-- TOAST -->
+
+  <!-- ========================================================
+       TOAST
+       ======================================================== -->
 
   <div
     id="appToast"
@@ -504,7 +600,10 @@
   ></div>
 
 
-  <!-- UPLOAD OVERLAY -->
+
+  <!-- ========================================================
+       UPLOAD OVERLAY
+       ======================================================== -->
 
   <div
     id="uploadOverlay"
@@ -514,14 +613,17 @@
 
     <div class="upload-box">
 
+
       <div
         class="upload-spinner"
         aria-hidden="true"
       ></div>
 
+
       <strong id="uploadMessage">
         Uploading...
       </strong>
+
 
       <button
         id="cancelUploadButton"
@@ -536,7 +638,10 @@
   </div>
 
 
-  <!-- FIREBASE -->
+
+  <!-- ========================================================
+       FIREBASE
+       ======================================================== -->
 
   <script type="module">
 
@@ -544,6 +649,7 @@
       initializeApp
     } from
       "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
 
     import {
       getDatabase,
@@ -556,6 +662,7 @@
     } from
       "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
+
     import {
       getStorage,
       ref as storageRef,
@@ -564,6 +671,7 @@
       deleteObject
     } from
       "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
+
 
     const firebaseConfig = {
 
@@ -589,20 +697,24 @@
         "1:895894448380:web:7f576b91e7da1da562cf79"
     };
 
+
     const firebaseApp =
       initializeApp(
         firebaseConfig
       );
+
 
     const database =
       getDatabase(
         firebaseApp
       );
 
+
     const storage =
       getStorage(
         firebaseApp
       );
+
 
     window.vukFirebase = {
 
@@ -629,7 +741,9 @@
       getDownloadURL,
 
       deleteObject
+
     };
+
 
     window.dispatchEvent(
       new Event(
@@ -640,12 +754,17 @@
   </script>
 
 
-  <!-- V11 APP -->
+
+  <!-- ========================================================
+       V11 JAVASCRIPT
+       ======================================================== -->
 
   <script
     src="script.js?v=11"
     defer
   ></script>
 
+
 </body>
+
 </html>
