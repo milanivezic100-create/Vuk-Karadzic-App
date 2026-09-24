@@ -3385,3 +3385,173 @@ button.excused.selected {
 .dance-use-status.inactive {
   color: #b3261e !important;
 }
+/* ============================================================
+   V17 — ATTENDANCE CIRCLE + CLEAN HISTORY + DANCE OUTLINES
+   ============================================================ */
+
+
+/* ------------------------------------------------------------
+   DANCER PROFILE — CIRCULAR ATTENDANCE %
+   ------------------------------------------------------------ */
+
+.attendance-profile-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+
+  width: 100% !important;
+  padding: 18px 0 4px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+
+  color: #241f1d !important;
+}
+
+.attendance-profile-card > div {
+  width: 128px !important;
+  height: 128px !important;
+
+  border-radius: 50% !important;
+
+  background: #f4eee5 !important;
+  border: 3px solid #7f172b !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  flex-shrink: 0 !important;
+}
+
+.attendance-percent {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+
+  color: #241f1d !important;
+}
+
+.attendance-percent strong {
+  color: #241f1d !important;
+  font-size: 29px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+}
+
+.attendance-percent span {
+  color: #241f1d !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  margin-top: 5px !important;
+}
+
+.attendance-profile-card .not-present-percent {
+  color: #6d6660 !important;
+  font-size: 12px !important;
+  margin-top: 5px !important;
+}
+
+.attendance-profile-card > .chevron {
+  margin-left: 14px !important;
+  color: #8e857c !important;
+}
+
+
+/* ------------------------------------------------------------
+   ATTENDANCE HISTORY — CLEAN / NEUTRAL
+   ------------------------------------------------------------ */
+
+.history-hero {
+  background: #ffffff !important;
+
+  border: 1px solid #e5ddd3 !important;
+  border-radius: 24px !important;
+
+  box-shadow: none !important;
+
+  padding: 28px 20px !important;
+
+  color: #241f1d !important;
+
+  text-align: center !important;
+}
+
+.history-percent {
+  color: #241f1d !important;
+
+  font-size: 54px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+}
+
+.history-caption {
+  color: #241f1d !important;
+
+  font-weight: 700 !important;
+  margin-top: 8px !important;
+}
+
+.history-not-present {
+  color: #6d6660 !important;
+  margin-top: 6px !important;
+}
+
+
+/* ------------------------------------------------------------
+   DANCE SECTION HEADINGS
+   ------------------------------------------------------------ */
+
+.dance-section-title.in-use {
+  color: #477255 !important;
+}
+
+.dance-section-title.not-in-use {
+  color: #9a5050 !important;
+}
+
+
+/* ------------------------------------------------------------
+   INDIVIDUAL DANCE CARDS
+
+   IN USE = muted green outline
+   NOT IN USE = muted red outline
+   ------------------------------------------------------------ */
+
+[data-dance-section="in-use"] .dance-row {
+  border: 2px solid #8eaa96 !important;
+  border-radius: 20px !important;
+}
+
+[data-dance-section="not-in-use"] .dance-row {
+  border: 2px solid #c99a9a !important;
+  border-radius: 20px !important;
+}
+
+
+/* Keep the inside of the dance cards neutral */
+
+.dance-row,
+.dance-open,
+.dance-row-main,
+.dance-row-main strong,
+.dance-row-main small {
+  color: #241f1d !important;
+}
+
+
+/* ------------------------------------------------------------
+   INDIVIDUAL DANCE DETAIL STATUS
+   ------------------------------------------------------------ */
+
+.dance-use-status.active {
+  color: #477255 !important;
+  border-color: #8eaa96 !important;
+}
+
+.dance-use-status.inactive {
+  color: #9a5050 !important;
+  border-color: #c99a9a !important;
+}
