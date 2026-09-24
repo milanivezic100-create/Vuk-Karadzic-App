@@ -1,7 +1,8 @@
 /* ============================================================
    VUK KARADZIC PROBE
-   SCRIPT.JS
+   SCRIPT.JS — V10
    Clean rebuild + recurrence + drag ordering
+   + instant attendance + targeted attendance sync
    ============================================================ */
 
 const STORAGE_KEY = "vukProbeV4";
@@ -559,11 +560,6 @@ function normalizeData(raw) {
                     ? dance.dancers
                     : [];
 
-                /*
-                  Each dance keeps
-                  its own dancer order.
-                */
-
                 const oldOrder =
                   Array.isArray(
                     dance.dancerOrder
@@ -719,6 +715,14 @@ let firebaseReady = false;
 let applyingCloudUpdate =
   false;
 
+/*
+  While a local write is being sent to Firebase,
+  the listener is allowed to receive the resulting cloud update.
+
+  Attendance itself will use a targeted Firebase path rather
+  than rewriting the complete vukProbeV4 object.
+*/
+
 function getFirebase() {
   return (
     window.vukFirebase ||
@@ -733,6 +737,20 @@ function saveLocalOnly() {
   );
 }
 
+
+/* ============================================================
+   GENERAL FULL-DATA SAVE
+
+   We keep this for existing app features such as:
+   - adding/editing dancers
+   - adding/editing dances
+   - ordering
+   - practices
+   - settings
+
+   Attendance gets its own targeted save later in the file.
+   ============================================================ */
+
 async function saveData() {
   saveLocalOnly();
 
@@ -740,14 +758,14 @@ async function saveData() {
     !firebaseReady ||
     applyingCloudUpdate
   ) {
-    return;
+    return true;
   }
 
   const fb =
     getFirebase();
 
   if (!fb) {
-    return;
+    return false;
   }
 
   try {
@@ -760,6 +778,8 @@ async function saveData() {
       data
     );
 
+    return true;
+
   } catch (error) {
 
     console.error(
@@ -770,6 +790,185 @@ async function saveData() {
     showToast(
       "Saved on this phone"
     );
+
+    return false;
+  }
+}
+
+
+/* ============================================================
+   TARGETED ATTENDANCE SAVE
+
+   Instead of replacing all of vukProbeV4 when one attendance
+   button is tapped, this saves ONLY:
+
+   ensembles/{ensembleIndex}/practices/{practiceIndex}/attendance/{dancerId}
+
+   This is safer for multiple instructors and much lighter.
+   ============================================================ */
+
+async function saveAttendanceStatusToCloud(
+  practiceId,
+  dancerId,
+  status
+) {
+  saveLocalOnly();
+
+  if (!firebaseReady) {
+    return false;
+  }
+
+  const fb =
+    getFirebase();
+
+  if (!fb) {
+    return false;
+  }
+
+  const ensembleIndex =
+    data.selectedEnsemble;
+
+  const ensemble =
+    data.ensembles[
+      ensembleIndex
+    ];
+
+  if (!ensemble) {
+    return false;
+  }
+
+  const practiceIndex =
+    ensemble.practices
+      .findIndex(
+        practice =>
+          sameId(
+            practice.id,
+            practiceId
+          )
+      );
+
+  if (practiceIndex < 0) {
+    console.error(
+      "Attendance save failed: practice not found."
+    );
+
+    return false;
+  }
+
+  const path =
+    `${CLOUD_ROOT}/ensembles/${ensembleIndex}/practices/${practiceIndex}/attendance/${String(
+      dancerId
+    )}`;
+
+  try {
+
+    await fb.set(
+      fb.dbRef(
+        fb.database,
+        path
+      ),
+      status
+    );
+
+    return true;
+
+  } catch (error) {
+
+    console.error(
+      "Attendance Firebase save failed:",
+      error
+    );
+
+    showToast(
+      "Saved on this phone"
+    );
+
+    return false;
+  }
+}
+
+
+/* ============================================================
+   TARGETED MARK-ALL-PRESENT SAVE
+
+   This writes only the attendance object for the selected
+   practice instead of rewriting the entire database.
+   ============================================================ */
+
+async function savePracticeAttendanceToCloud(
+  practiceId
+) {
+  saveLocalOnly();
+
+  if (!firebaseReady) {
+    return false;
+  }
+
+  const fb =
+    getFirebase();
+
+  if (!fb) {
+    return false;
+  }
+
+  const ensembleIndex =
+    data.selectedEnsemble;
+
+  const ensemble =
+    data.ensembles[
+      ensembleIndex
+    ];
+
+  if (!ensemble) {
+    return false;
+  }
+
+  const practiceIndex =
+    ensemble.practices
+      .findIndex(
+        practice =>
+          sameId(
+            practice.id,
+            practiceId
+          )
+      );
+
+  if (practiceIndex < 0) {
+    return false;
+  }
+
+  const practice =
+    ensemble.practices[
+      practiceIndex
+    ];
+
+  const path =
+    `${CLOUD_ROOT}/ensembles/${ensembleIndex}/practices/${practiceIndex}/attendance`;
+
+  try {
+
+    await fb.set(
+      fb.dbRef(
+        fb.database,
+        path
+      ),
+      practice.attendance || {}
+    );
+
+    return true;
+
+  } catch (error) {
+
+    console.error(
+      "Attendance Firebase save failed:",
+      error
+    );
+
+    showToast(
+      "Saved on this phone"
+    );
+
+    return false;
   }
 }
 
@@ -1009,8 +1208,8 @@ function renderEnsembles() {
 /* ============================================================
    END OF PART 1 OF 4
 
-   Part 2 goes DIRECTLY underneath this line.
-   Do not add another <script> tag.
+   Paste PART 2 directly underneath this line.
+   Do not add a <script> tag.
    Do not commit yet.
    ============================================================ */
 /* ============================================================
@@ -1371,8 +1570,10 @@ function showDancer(id) {
               class="not-present-percent"
             >
               ${
-                100 -
-                stats.percent
+                stats.total > 0
+                  ? 100 -
+                    stats.percent
+                  : 0
               }% Not Present
             </div>
 
@@ -1848,15 +2049,6 @@ function renderDances() {
         );
       }
     );
-
-  /*
-    This activates the dedicated
-    ≡ handles for the dance list.
-
-    IN USE dances stay within
-    IN USE and NOT IN USE dances
-    stay within NOT IN USE.
-  */
 
   setupDanceReordering();
 }
@@ -2856,7 +3048,7 @@ function danceDancerPickerHTML(
 /* ============================================================
    END OF PART 2 OF 4
 
-   Part 3 goes DIRECTLY underneath this line.
+   Paste PART 3 directly underneath this line.
    Do not add a <script> tag.
    Do not commit yet.
    ============================================================ */
@@ -2877,40 +3069,29 @@ function danceMediaHTML(dance) {
     null;
 
   return `
-    <h3
-      class="detail-heading"
-    >
+    <h3 class="detail-heading">
       Photos
     </h3>
 
     ${
       photos.length
         ? `
-          <div
-            class="media-grid"
-          >
+          <div class="media-grid">
             ${photos
               .map(
-                (
-                  photo,
-                  index
-                ) => {
+                (photo, index) => {
 
                   const url =
-                    typeof photo ===
-                    "string"
+                    typeof photo === "string"
                       ? photo
                       : photo.url;
 
                   return `
-                    <div
-                      class="media-tile"
-                    >
+                    <div class="media-tile">
 
                       <img
                         src="${escapeHTML(
-                          url ||
-                          ""
+                          url || ""
                         )}"
                         alt="Dance photo"
                       >
@@ -2932,17 +3113,13 @@ function danceMediaHTML(dance) {
           </div>
         `
         : `
-          <div
-            class="file-box"
-          >
+          <div class="file-box">
             No photos added
           </div>
         `
     }
 
-    <label
-      class="upload-button"
-    >
+    <label class="upload-button">
       Add Photo
 
       <input
@@ -2954,18 +3131,14 @@ function danceMediaHTML(dance) {
     </label>
 
 
-    <h3
-      class="detail-heading"
-    >
+    <h3 class="detail-heading">
       Music
     </h3>
 
     ${
       music?.url
         ? `
-          <div
-            class="audio-card"
-          >
+          <div class="audio-card">
 
             <strong>
               ${escapeHTML(
@@ -2992,17 +3165,13 @@ function danceMediaHTML(dance) {
           </div>
         `
         : `
-          <div
-            class="file-box"
-          >
+          <div class="file-box">
             No music added
           </div>
         `
     }
 
-    <label
-      class="upload-button"
-    >
+    <label class="upload-button">
       ${
         music?.url
           ? "Replace Music"
@@ -3429,10 +3598,6 @@ let suppressClickUntil =
   0;
 
 
-/* ------------------------------------------------------------
-   START REORDER
-   ------------------------------------------------------------ */
-
 function beginReorder(
   event,
   {
@@ -3497,10 +3662,6 @@ function beginReorder(
   );
 }
 
-
-/* ------------------------------------------------------------
-   MOVE REORDER
-   ------------------------------------------------------------ */
 
 function moveReorder(event) {
   if (!activeReorder) {
@@ -3575,10 +3736,6 @@ function moveReorder(event) {
   }
 }
 
-
-/* ------------------------------------------------------------
-   END REORDER
-   ------------------------------------------------------------ */
 
 async function endReorder(
   event
@@ -3763,7 +3920,6 @@ async function saveDancerOrderFromDOM(
 
 /* ============================================================
    MAIN DANCE REORDERING
-   NEW ≡ HANDLES
    ============================================================ */
 
 function setupDanceReordering() {
@@ -3863,15 +4019,6 @@ async function saveDanceOrderFromDOM(
       Symbol.iterator
     ]();
 
-  /*
-    Replace only dances belonging
-    to this status group.
-
-    This means IN USE dances can
-    never accidentally jump into
-    NOT IN USE, and vice versa.
-  */
-
   ensemble.dances =
     ensemble.dances.map(
       dance => {
@@ -3895,12 +4042,6 @@ async function saveDanceOrderFromDOM(
     );
 
   saveLocalOnly();
-
-  /*
-    Re-render immediately so
-    01, 02, 03... update to match
-    the new order.
-  */
 
   renderDances();
 
@@ -4024,12 +4165,6 @@ async function saveDanceDancerOrderFromDOM(
       Symbol.iterator
     ]();
 
-  /*
-    Replace only members of the
-    selected gender inside this
-    dance's custom order.
-  */
-
   const newOrder =
     oldOrder.map(
       dancerId => {
@@ -4062,12 +4197,6 @@ async function saveDanceDancerOrderFromDOM(
       }
     );
 
-  /*
-    Safety: if an assigned dancer
-    was missing from old order,
-    append them.
-  */
-
   orderedIds.forEach(
     dancerId => {
 
@@ -4093,11 +4222,6 @@ async function saveDanceDancerOrderFromDOM(
   saveLocalOnly();
 
   await saveData();
-
-  /*
-    Re-open the dance so the
-    numbers update immediately.
-  */
 
   showDance(
     dance.id
@@ -4242,18 +4366,14 @@ function renderCalendar() {
         data-calendar-date="${key}"
       >
 
-        <span
-          class="day-number"
-        >
+        <span class="day-number">
           ${day.getDate()}
         </span>
 
         ${
           dayPractices.length
             ? `
-              <span
-                class="event-dots"
-              >
+              <span class="event-dots">
                 ${dayPractices
                   .slice(
                     0,
@@ -4347,17 +4467,12 @@ function renderPractices() {
           selectedCalendarDate
       )
       .sort(
-        (
-          a,
-          b
-        ) =>
+        (a, b) =>
           String(
-            a.time ||
-            ""
+            a.time || ""
           ).localeCompare(
             String(
-              b.time ||
-              ""
+              b.time || ""
             )
           )
       );
@@ -4366,9 +4481,7 @@ function renderPractices() {
     practices.length === 0
   ) {
     practiceList.innerHTML = `
-      <div
-        class="empty"
-      >
+      <div class="empty">
         No practices on
         ${escapeHTML(
           formatDate(
@@ -4393,9 +4506,7 @@ function renderPractices() {
             )}"
           >
 
-            <div
-              class="practice-date"
-            >
+            <div class="practice-date">
               ${
                 practice.time
                   ? escapeHTML(
@@ -4407,9 +4518,7 @@ function renderPractices() {
               }
             </div>
 
-            <div
-              class="item-main"
-            >
+            <div class="item-main">
               <h3>
                 ${escapeHTML(
                   practice.title ||
@@ -4426,9 +4535,7 @@ function renderPractices() {
               </p>
             </div>
 
-            <span
-              class="item-arrow"
-            >
+            <span class="item-arrow">
               ›
             </span>
 
@@ -4478,13 +4585,9 @@ function showPracticeForm() {
       "Add Practice",
 
     body: `
-      <form
-        id="practiceForm"
-      >
+      <form id="practiceForm">
 
-        <div
-          class="form-group"
-        >
+        <div class="form-group">
           <label>
             Repeat
           </label>
@@ -4512,9 +4615,7 @@ function showPracticeForm() {
           </div>
         </div>
 
-        <div
-          class="form-group"
-        >
+        <div class="form-group">
           <label>
             Practice Name
           </label>
@@ -4526,9 +4627,7 @@ function showPracticeForm() {
           >
         </div>
 
-        <div
-          class="form-group"
-        >
+        <div class="form-group">
           <label>
             First Practice Date
           </label>
@@ -4557,9 +4656,7 @@ function showPracticeForm() {
           >
         </div>
 
-        <div
-          class="form-group"
-        >
+        <div class="form-group">
           <label>
             Time
           </label>
@@ -4570,9 +4667,7 @@ function showPracticeForm() {
           >
         </div>
 
-        <div
-          class="form-group"
-        >
+        <div class="form-group">
           <label>
             Location
           </label>
@@ -4699,11 +4794,20 @@ function showPracticeForm() {
               "practiceTitleInput"
             )
             .value
-            .trim() ||
-          "Practice";
+            .trim();
 
         const startDate =
-          startDateInput
+          document
+            .getElementById(
+              "practiceDateInput"
+            )
+            .value;
+
+        const endDate =
+          document
+            .getElementById(
+              "practiceEndDateInput"
+            )
             .value;
 
         const time =
@@ -4721,7 +4825,26 @@ function showPracticeForm() {
             .value
             .trim();
 
-        if (!startDate) {
+        if (
+          !title ||
+          !startDate
+        ) {
+          return;
+        }
+
+        if (
+          recurrence ===
+            "weekly" &&
+          (
+            !endDate ||
+            endDate <
+              startDate
+          )
+        ) {
+          alert(
+            "Please choose an end date on or after the first practice date."
+          );
+
           return;
         }
 
@@ -4730,63 +4853,19 @@ function showPracticeForm() {
 
         if (
           recurrence ===
-          "once"
+          "weekly"
         ) {
-
-          ensemble.practices
-            .push({
-              id:
-                uid("practice"),
-
-              title,
-              date:
-                startDate,
-              time,
-              location,
-
-              recurrence:
-                "once",
-
-              attendance: {}
-            });
-
-        } else {
-
-          const endDate =
-            endDateInput.value;
-
-          if (!endDate) {
-            showToast(
-              "Choose an end date"
-            );
-            return;
-          }
-
-          if (
-            endDate <
-            startDate
-          ) {
-            showToast(
-              "End date must be after the first practice"
-            );
-            return;
-          }
-
           const seriesId =
-            uid("series");
+            uid(
+              "practice-series"
+            );
 
-          let currentDate =
+          let date =
             startDate;
 
-          let safetyCount =
-            0;
-
           while (
-            currentDate <=
-              endDate &&
-            safetyCount < 105
+            date <= endDate
           ) {
-
             ensemble.practices
               .push({
                 id:
@@ -4794,37 +4873,50 @@ function showPracticeForm() {
                     "practice"
                   ),
 
-                title,
-
-                date:
-                  currentDate,
-
-                time,
-
-                location,
+                seriesId,
 
                 recurrence:
                   "weekly",
 
-                seriesId,
-
-                seriesStart:
+                seriesStartDate:
                   startDate,
 
-                seriesEnd:
+                seriesEndDate:
                   endDate,
 
+                title,
+                date,
+                time,
+                location,
                 attendance: {}
               });
 
-            currentDate =
+            date =
               addDaysToDateString(
-                currentDate,
+                date,
                 7
               );
-
-            safetyCount++;
           }
+
+        } else {
+
+          ensemble.practices
+            .push({
+              id:
+                uid(
+                  "practice"
+                ),
+
+              recurrence:
+                "once",
+
+              title,
+              date:
+                startDate,
+              time,
+              location,
+              attendance: {}
+            });
         }
 
         selectedCalendarDate =
@@ -4838,10 +4930,8 @@ function showPracticeForm() {
 
         calendarDate =
           new Date(
-            selected
-              .getFullYear(),
-            selected
-              .getMonth(),
+            selected.getFullYear(),
+            selected.getMonth(),
             1
           );
 
@@ -4865,7 +4955,14 @@ function showPracticeForm() {
 
 
 /* ============================================================
-   PRACTICE DETAILS + ATTENDANCE
+   END OF PART 3 OF 4
+
+   Paste PART 4 directly underneath this line.
+   Do not add a <script> tag.
+   Do not commit yet.
+   ============================================================ */
+/* ============================================================
+   PRACTICE DETAILS + INSTANT ATTENDANCE
    ============================================================ */
 
 function showPractice(id) {
@@ -4881,8 +4978,7 @@ function showPractice(id) {
       .dancers;
 
   openModal({
-    eyebrow:
-      "PRACTICE",
+    eyebrow: "PRACTICE",
 
     title:
       practice.title ||
@@ -4890,19 +4986,13 @@ function showPractice(id) {
       "Practice",
 
     body: `
-      <div
-        class="detail-card"
-      >
+      <div class="detail-card">
 
-        <span
-          class="detail-label"
-        >
+        <span class="detail-label">
           Date
         </span>
 
-        <div
-          class="detail-value"
-        >
+        <div class="detail-value">
           ${escapeHTML(
             formatDate(
               practice.date
@@ -4913,9 +5003,7 @@ function showPractice(id) {
         ${
           practice.time
             ? `
-              <div
-                class="practice-time"
-              >
+              <div class="practice-time">
                 ${escapeHTML(
                   formatTime(
                     practice.time
@@ -4929,9 +5017,7 @@ function showPractice(id) {
         ${
           practice.location
             ? `
-              <div
-                class="practice-time"
-              >
+              <div class="practice-time">
                 ${escapeHTML(
                   practice.location
                 )}
@@ -4944,9 +5030,7 @@ function showPractice(id) {
           practice.recurrence ===
             "weekly"
             ? `
-              <span
-                class="practice-repeat-badge"
-              >
+              <span class="practice-repeat-badge">
                 Weekly
               </span>
             `
@@ -4968,12 +5052,8 @@ function showPractice(id) {
         id="attendanceSummary"
       ></div>
 
-      <div
-        class="search-box attendance-search"
-      >
-        <span>
-          ⌕
-        </span>
+      <div class="search-box attendance-search">
+        <span>⌕</span>
 
         <input
           id="attendanceSearch"
@@ -4981,9 +5061,7 @@ function showPractice(id) {
         >
       </div>
 
-      <div
-        id="attendanceList"
-      ></div>
+      <div id="attendanceList"></div>
 
       <button
         type="button"
@@ -5005,11 +5083,15 @@ function showPractice(id) {
       "attendanceSearch"
     );
 
+
+  /* ----------------------------------------------------------
+     RENDER ATTENDANCE ROWS
+     ---------------------------------------------------------- */
+
   function renderAttendanceRows() {
     const query =
       String(
-        attendanceSearch
-          ?.value ||
+        attendanceSearch?.value ||
         ""
       )
         .trim()
@@ -5022,18 +5104,14 @@ function showPractice(id) {
             dancer
           )
             .toLowerCase()
-            .includes(
-              query
-            )
+            .includes(query)
       );
 
     if (
       filtered.length === 0
     ) {
       attendanceList.innerHTML = `
-        <div
-          class="empty"
-        >
+        <div class="empty">
           No dancers found
         </div>
       `;
@@ -5059,7 +5137,7 @@ function showPractice(id) {
             return `
               <div
                 class="attendance-row"
-                data-attendance-dancer="${escapeHTML(
+                data-attendance-row="${escapeHTML(
                   dancer.id
                 )}"
               >
@@ -5072,9 +5150,7 @@ function showPractice(id) {
                   )}
                 </h4>
 
-                <div
-                  class="attendance-buttons four"
-                >
+                <div class="attendance-buttons four">
 
                   ${attendanceButton(
                     dancer.id,
@@ -5112,6 +5188,14 @@ function showPractice(id) {
         )
         .join("");
 
+
+    /* --------------------------------------------------------
+       ATTENDANCE BUTTON CLICK
+
+       IMPORTANT:
+       UI changes BEFORE any Firebase request.
+       -------------------------------------------------------- */
+
     attendanceList
       .querySelectorAll(
         "[data-attendance-status]"
@@ -5121,7 +5205,7 @@ function showPractice(id) {
 
           button.addEventListener(
             "click",
-            async () => {
+            () => {
 
               const dancerId =
                 button.dataset
@@ -5132,7 +5216,7 @@ function showPractice(id) {
                   .attendanceStatus;
 
               /*
-                Update the data first.
+                1. Update memory immediately.
               */
 
               setAttendanceStatus(
@@ -5142,14 +5226,15 @@ function showPractice(id) {
               );
 
               /*
-                Then update this row
-                instantly BEFORE waiting
-                for Firebase.
+                2. Update ONLY this dancer's
+                   buttons immediately.
+
+                No waiting for Firebase.
               */
 
               const row =
                 button.closest(
-                  "[data-attendance-dancer]"
+                  "[data-attendance-row]"
                 );
 
               row
@@ -5158,23 +5243,55 @@ function showPractice(id) {
                 )
                 .forEach(
                   option => {
-                    option.classList
-                      .toggle(
-                        "selected",
-                        option.dataset
-                          .attendanceStatus ===
-                          status
-                      );
+
+                    const selected =
+                      option.dataset
+                        .attendanceStatus ===
+                      status;
+
+                    option.classList.toggle(
+                      "selected",
+                      selected
+                    );
                   }
                 );
+
+              /*
+                3. Update summary immediately.
+              */
 
               drawAttendanceSummary(
                 practice
               );
 
+              /*
+                4. Save phone copy immediately.
+              */
+
               saveLocalOnly();
 
-              await saveData();
+              /*
+                5. Firebase happens AFTER
+                   everything visual has
+                   already changed.
+
+                Do NOT await this.
+              */
+
+              saveAttendanceStatusToCloud(
+                practice.id,
+                dancerId,
+                status
+              ).then(
+                saved => {
+
+                  if (saved) {
+                    console.log(
+                      "Attendance synced"
+                    );
+                  }
+                }
+              );
             }
           );
         }
@@ -5185,11 +5302,19 @@ function showPractice(id) {
     );
   }
 
+
   attendanceSearch
     ?.addEventListener(
       "input",
       renderAttendanceRows
     );
+
+
+  /* ----------------------------------------------------------
+     MARK ALL PRESENT
+
+     Also changes the screen BEFORE Firebase.
+     ---------------------------------------------------------- */
 
   document
     .getElementById(
@@ -5197,10 +5322,11 @@ function showPractice(id) {
     )
     ?.addEventListener(
       "click",
-      async () => {
+      () => {
 
         dancers.forEach(
           dancer => {
+
             setAttendanceStatus(
               practice,
               dancer.id,
@@ -5210,20 +5336,32 @@ function showPractice(id) {
         );
 
         /*
-          Instant visual update.
+          Screen changes immediately.
         */
 
         renderAttendanceRows();
 
         saveLocalOnly();
 
-        await saveData();
+        /*
+          Save only this practice's
+          attendance object.
+        */
+
+        savePracticeAttendanceToCloud(
+          practice.id
+        );
 
         showToast(
           "Everyone marked present"
         );
       }
     );
+
+
+  /* ----------------------------------------------------------
+     DELETE PRACTICE
+     ---------------------------------------------------------- */
 
   document
     .getElementById(
@@ -5272,13 +5410,6 @@ function showPractice(id) {
 }
 
 
-/* ============================================================
-   END OF PART 3 OF 4
-
-   Part 4 goes DIRECTLY underneath this line.
-   Do not add a <script> tag.
-   Do not commit yet.
-   ============================================================ */
 /* ============================================================
    ATTENDANCE HELPERS
    ============================================================ */
@@ -5341,9 +5472,7 @@ function getAttendanceStatus(
     );
 
   return key
-    ? practice.attendance[
-        key
-      ]
+    ? practice.attendance[key]
     : "";
 }
 
@@ -5395,9 +5524,7 @@ function practiceAttendanceCounts(
               status
             )
         ) {
-          counts[
-            status
-          ]++;
+          counts[status]++;
         }
       }
     );
@@ -5457,9 +5584,7 @@ function summaryBox(
   className
 ) {
   return `
-    <div
-      class="summary-box ${className}"
-    >
+    <div class="summary-box ${className}">
       <strong>
         ${number}
       </strong>
@@ -5475,11 +5600,10 @@ function summaryBox(
 /* ============================================================
    DANCER ATTENDANCE STATS
 
-   IMPORTANT:
-   ONLY "Present" counts as present.
+   ONLY PRESENT COUNTS AS PRESENT.
 
-   Late, No Show and Excused
-   ALL count as Not Present.
+   Late + No Show + Excused
+   all count as NOT PRESENT.
    ============================================================ */
 
 function attendanceStatsForDancer(
@@ -5592,10 +5716,7 @@ function showAttendanceHistory(
   const history =
     [...stats.history]
       .sort(
-        (
-          a,
-          b
-        ) =>
+        (a, b) =>
           String(
             b.practice.date ||
             ""
@@ -5608,8 +5729,7 @@ function showAttendanceHistory(
       );
 
   openModal({
-    eyebrow:
-      "ATTENDANCE",
+    eyebrow: "ATTENDANCE",
 
     title:
       dancerName(
@@ -5624,25 +5744,17 @@ function showAttendanceHistory(
       },
 
     body: `
-      <div
-        class="history-hero"
-      >
+      <div class="history-hero">
 
-        <div
-          class="history-percent"
-        >
+        <div class="history-percent">
           ${stats.percent}%
         </div>
 
-        <div
-          class="history-caption"
-        >
+        <div class="history-caption">
           Present
         </div>
 
-        <div
-          class="history-not-present"
-        >
+        <div class="history-not-present">
           ${
             stats.total > 0
               ? 100 -
@@ -5653,9 +5765,7 @@ function showAttendanceHistory(
 
       </div>
 
-      <div
-        class="attendance-summary four"
-      >
+      <div class="attendance-summary four">
 
         ${summaryBox(
           stats.present,
@@ -5702,9 +5812,7 @@ function showAttendanceHistory(
                       : "Excused";
 
                   return `
-                    <div
-                      class="history-row"
-                    >
+                    <div class="history-row">
 
                       <div>
                         <strong>
@@ -5739,9 +5847,7 @@ function showAttendanceHistory(
               )
               .join("")
           : `
-            <div
-              class="empty"
-            >
+            <div class="empty">
               No attendance recorded yet
             </div>
           `
@@ -5764,15 +5870,12 @@ function showPlaceholder(
   title
 ) {
   openModal({
-    eyebrow:
-      "SETTINGS",
+    eyebrow: "SETTINGS",
 
     title,
 
     body: `
-      <div
-        class="detail-card"
-      >
+      <div class="detail-card">
         <p
           style="
             margin:0;
@@ -5808,13 +5911,10 @@ function showInstructorNotes() {
       true,
 
     body: `
-      <div
-        class="notes-full-page"
-      >
+      <div class="notes-full-page">
 
-        <div
-          class="notes-save-line"
-        >
+        <div class="notes-save-line">
+
           <span
             class="notes-live-dot"
           ></span>
@@ -5824,6 +5924,7 @@ function showInstructorNotes() {
           >
             Saved
           </span>
+
         </div>
 
         <textarea
@@ -5850,8 +5951,7 @@ function showInstructorNotes() {
       "notesSaveStatus"
     );
 
-  let timer =
-    null;
+  let timer = null;
 
   editor
     ?.addEventListener(
@@ -5963,8 +6063,7 @@ function openModal({
     "modal-open"
   );
 
-  modalBody.scrollTop =
-    0;
+  modalBody.scrollTop = 0;
 }
 
 
@@ -5990,8 +6089,7 @@ function closeModal() {
     "full-screen-modal"
   );
 
-  modalBackAction =
-    null;
+  modalBackAction = null;
 }
 
 
@@ -6211,8 +6309,7 @@ permissionsButton
 
 
 /* ============================================================
-   INSTRUCTOR NOTES SETTINGS ROW
-   Supports either ID used by the page.
+   INSTRUCTOR NOTES BUTTON
    ============================================================ */
 
 function setupInstructorNotesButton() {
@@ -6231,9 +6328,11 @@ function setupInstructorNotesButton() {
   ].filter(Boolean);
 
   const uniqueButtons =
-    [...new Set(
-      possibleButtons
-    )];
+    [
+      ...new Set(
+        possibleButtons
+      )
+    ];
 
   uniqueButtons.forEach(
     button => {
@@ -6320,8 +6419,7 @@ function setupFirebaseSync() {
     return;
   }
 
-  firebaseReady =
-    true;
+  firebaseReady = true;
 
   const cloudReference =
     fb.dbRef(
@@ -6336,11 +6434,6 @@ function setupFirebaseSync() {
       const cloudData =
         snapshot.val();
 
-      /*
-        If Firebase already contains
-        app data, use it.
-      */
-
       if (
         cloudData &&
         Array.isArray(
@@ -6351,14 +6444,55 @@ function setupFirebaseSync() {
         applyingCloudUpdate =
           true;
 
+        /*
+          Preserve which ensemble
+          THIS phone is currently
+          looking at.
+
+          The cloud data itself can
+          still contain the old
+          selectedEnsemble value, but
+          another instructor changing
+          ensembles should not throw
+          this phone onto another page.
+        */
+
+        const localSelectedEnsemble =
+          data.selectedEnsemble;
+
         data =
           normalizeData(
             cloudData
           );
 
+        data.selectedEnsemble =
+          localSelectedEnsemble;
+
         saveLocalOnly();
 
-        renderAll();
+        /*
+          IMPORTANT:
+          Do NOT call renderAll() here.
+
+          Re-rendering the whole app
+          during an attendance tap can
+          destroy/rebuild the open
+          attendance UI.
+
+          Instead, update the normal
+          background pages. If a
+          practice is open, the local
+          instant UI remains untouched.
+        */
+
+        updateEnsembleLabels();
+
+        renderEnsembles();
+        renderDancers();
+        renderDances();
+        renderCalendar();
+        renderPractices();
+        renderSettings();
 
         applyingCloudUpdate =
           false;
@@ -6366,9 +6500,10 @@ function setupFirebaseSync() {
         return;
       }
 
+
       /*
-        If Firebase is empty, upload
-        the current local data once.
+        If Firebase is completely empty,
+        upload the current local data.
       */
 
       if (!cloudData) {
@@ -6436,12 +6571,6 @@ function startApp() {
 
   renderAll();
 
-  /*
-    Keep whichever page index.html
-    marked active. If none is active,
-    open Home.
-  */
-
   const activePage =
     document.querySelector(
       ".page.active"
@@ -6451,10 +6580,12 @@ function startApp() {
     openPage(
       "homePage"
     );
+
   } else {
 
     navButtons.forEach(
       button => {
+
         button.classList.toggle(
           "active",
           button.dataset.page ===
@@ -6463,14 +6594,6 @@ function startApp() {
       }
     );
   }
-
-  /*
-    index.html creates
-    window.vukFirebase before this
-    script runs, but this tiny delay
-    also protects against timing
-    differences in Safari.
-  */
 
   setTimeout(
     setupFirebaseSync,
@@ -6483,5 +6606,5 @@ startApp();
 
 
 /* ============================================================
-   END OF SCRIPT.JS — V9.2
+   END OF SCRIPT.JS — V10
    ============================================================ */
