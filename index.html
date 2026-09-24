@@ -33,12 +33,11 @@
   >
 
   <!--
-    v9 keeps this clean rebuild separate from
-    the older cached versions on iPhone.
+    v10 forces iPhone to load the newest stylesheet.
   -->
   <link
     rel="stylesheet"
-    href="styles.css?v=9"
+    href="styles.css?v=10"
   >
 </head>
 
@@ -66,10 +65,6 @@
 
       </div>
 
-      <!--
-        Kept for JavaScript compatibility.
-        Ensemble selection happens from Home.
-      -->
       <button
         id="ensembleButton"
         class="ensemble-pill"
@@ -127,7 +122,6 @@
 
       </div>
 
-
       <button
         id="todayButton"
         class="today-button"
@@ -135,7 +129,6 @@
       >
         Today
       </button>
-
 
       <section class="calendar-card">
 
@@ -163,7 +156,6 @@
 
         </div>
 
-
         <div class="weekdays">
 
           <span>Sun</span>
@@ -176,14 +168,12 @@
 
         </div>
 
-
         <div
           id="calendarGrid"
           class="calendar-grid"
         ></div>
 
       </section>
-
 
       <div class="practice-heading-row">
 
@@ -201,7 +191,6 @@
         </button>
 
       </div>
-
 
       <div
         id="practiceList"
@@ -230,7 +219,6 @@
 
       </div>
 
-
       <button
         id="addDanceButton"
         class="round-add"
@@ -239,7 +227,6 @@
       >
         +
       </button>
-
 
       <div id="danceList"></div>
 
@@ -265,7 +252,6 @@
 
       </div>
 
-
       <button
         id="addDancerButton"
         class="round-add"
@@ -274,7 +260,6 @@
       >
         +
       </button>
-
 
       <div class="search-box">
 
@@ -291,7 +276,6 @@
         >
 
       </div>
-
 
       <div id="dancerList"></div>
 
@@ -317,7 +301,6 @@
 
       </div>
 
-
       <section class="settings-section">
 
         <h2 class="settings-section-heading">
@@ -327,7 +310,6 @@
         <div class="instructor-notes-card"></div>
 
       </section>
-
 
       <section class="settings-section">
 
@@ -350,7 +332,6 @@
             </span>
           </button>
 
-
           <button
             id="accountsButton"
             type="button"
@@ -363,7 +344,6 @@
               ›
             </span>
           </button>
-
 
           <button
             id="permissionsButton"
@@ -408,7 +388,6 @@
 
       </button>
 
-
       <button
         class="nav-button"
         type="button"
@@ -425,7 +404,6 @@
         </span>
 
       </button>
-
 
       <button
         class="nav-button home-nav active"
@@ -444,7 +422,6 @@
 
       </button>
 
-
       <button
         class="nav-button"
         type="button"
@@ -461,7 +438,6 @@
         </span>
 
       </button>
-
 
       <button
         class="nav-button"
@@ -511,7 +487,6 @@
           ‹ Back
         </button>
 
-
         <div class="modal-title-area">
 
           <div id="modalEyebrow"></div>
@@ -519,7 +494,6 @@
           <h2 id="modalTitle"></h2>
 
         </div>
-
 
         <button
           id="closeModal"
@@ -531,7 +505,6 @@
         </button>
 
       </header>
-
 
       <div id="modalBody"></div>
 
@@ -597,7 +570,6 @@
     } from
       "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 
-
     import {
       getDatabase,
       ref as dbRef,
@@ -609,7 +581,6 @@
     } from
       "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-
     import {
       getStorage,
       ref as storageRef,
@@ -618,7 +589,6 @@
       deleteObject
     } from
       "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
-
 
     const firebaseConfig = {
 
@@ -644,24 +614,20 @@
         "1:895894448380:web:7f576b91e7da1da562cf79"
     };
 
-
     const firebaseApp =
       initializeApp(
         firebaseConfig
       );
-
 
     const database =
       getDatabase(
         firebaseApp
       );
 
-
     const storage =
       getStorage(
         firebaseApp
       );
-
 
     window.vukFirebase = {
 
@@ -690,7 +656,6 @@
       deleteObject
     };
 
-
     window.dispatchEvent(
       new Event(
         "vukFirebaseReady"
@@ -702,7 +667,6 @@
 
   <!--
     Matching clean rebuild JavaScript.
-    v9 prevents iPhone from loading the old cached script.
   -->
   <script
     src="script.js?v=9"
