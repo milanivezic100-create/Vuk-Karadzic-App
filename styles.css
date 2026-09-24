@@ -2578,3 +2578,383 @@ button.excused.selected {
   }
 
 }
+
+/* ============================================================
+   V14 — FINAL TEXT COLOUR + DANCE HEADER FIX
+   KEEP THIS AT THE VERY BOTTOM OF styles.css
+   ============================================================ */
+
+
+/* ------------------------------------------------------------
+   1. HOME — ENSEMBLE NAMES BLACK
+   ------------------------------------------------------------ */
+
+#ensembleList button,
+#ensembleList h1,
+#ensembleList h2,
+#ensembleList h3,
+#ensembleList h4,
+#ensembleList strong {
+  color: #241f1d !important;
+}
+
+/* Keep ensemble numbers burgundy */
+#ensembleList .ensemble-number {
+  color: #741b2c !important;
+}
+
+/* Keep smaller dancer-count text grey */
+#ensembleList p,
+#ensembleList small {
+  color: #817870 !important;
+}
+
+
+/* ------------------------------------------------------------
+   2. MAIN DANCERS — NAMES BLACK
+   ------------------------------------------------------------ */
+
+#dancerList button,
+#dancerList strong,
+#dancerList h1,
+#dancerList h2,
+#dancerList h3,
+#dancerList h4,
+#dancerList .dancer-name {
+  color: #241f1d !important;
+}
+
+/* Boys' numbers stay blue */
+#dancerList .boys .dancer-number,
+#dancerList .boy .dancer-number,
+#dancerList [data-gender="boy"] .dancer-number,
+#dancerList [data-gender="boys"] .dancer-number {
+  color: #3976ad !important;
+}
+
+/* Girls' numbers stay pink */
+#dancerList .girls .dancer-number,
+#dancerList .girl .dancer-number,
+#dancerList [data-gender="girl"] .dancer-number,
+#dancerList [data-gender="girls"] .dancer-number {
+  color: #c26185 !important;
+}
+
+/* Height stays grey */
+#dancerList .dancer-height,
+#dancerList small {
+  color: #817870 !important;
+}
+
+/* Chevron stays grey */
+#dancerList .chevron {
+  color: #aaa198 !important;
+}
+
+
+/* ------------------------------------------------------------
+   3. MAIN DANCES — ALL WRITING BLACK
+   ------------------------------------------------------------ */
+
+#danceList button,
+#danceList strong,
+#danceList h1,
+#danceList h2,
+#danceList h3,
+#danceList h4,
+#danceList p,
+#danceList small,
+#danceList .dance-name,
+#danceList .dance-choreographer,
+#danceList .dance-card-content,
+#danceList .dance-card-content * {
+  color: #241f1d !important;
+}
+
+/* Chevron stays grey */
+#danceList .chevron {
+  color: #aaa198 !important;
+}
+
+
+/* ------------------------------------------------------------
+   4. DANCE DETAIL — ASSIGNED DANCER NAMES BLACK
+   ------------------------------------------------------------ */
+
+.dance-dancer-name,
+.dance-dancer-main .dance-dancer-name,
+.dance-dancer-main .dancer-name,
+[data-dance-dancer-row] .dance-dancer-name,
+[data-dance-dancer-row] .dancer-name {
+  color: #241f1d !important;
+}
+
+
+/* Boys' assigned dancer numbers stay blue */
+.dance-dancer-section.boys .dancer-number,
+.boys [data-dance-dancer-row] .dancer-number,
+.boys .dance-dancer-row .dancer-number {
+  color: #3976ad !important;
+}
+
+
+/* Girls' assigned dancer numbers stay pink */
+.dance-dancer-section.girls .dancer-number,
+.girls [data-dance-dancer-row] .dancer-number,
+.girls .dance-dancer-row .dancer-number {
+  color: #c26185 !important;
+}
+
+
+/* ------------------------------------------------------------
+   5. ASSIGNED DANCER LAYOUT
+
+   NUMBER | FULL NAME                         | ≡
+
+   ------------------------------------------------------------ */
+
+.dance-dancer-row,
+[data-dance-dancer-row] {
+  width: 100% !important;
+
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+
+  align-items: stretch !important;
+
+  overflow: hidden !important;
+}
+
+
+/* Main content takes ALL space except handle */
+
+.dance-dancer-main {
+  flex: 1 1 0 !important;
+
+  width: auto !important;
+  min-width: 0 !important;
+
+  display: flex !important;
+  flex-direction: row !important;
+
+  align-items: center !important;
+}
+
+
+/* Number */
+
+.dance-dancer-main .dancer-number,
+[data-dance-dancer-row] > .dancer-number {
+  flex: 0 0 48px !important;
+
+  width: 48px !important;
+  min-width: 48px !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+}
+
+
+/* Name gets remaining width */
+
+.dance-dancer-name,
+.dance-dancer-main .dancer-name,
+[data-dance-dancer-row] > .dance-dancer-name,
+[data-dance-dancer-row] > .dancer-name {
+  flex: 1 1 0 !important;
+
+  width: auto !important;
+  min-width: 0 !important;
+
+  margin: 0 !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+
+  color: #241f1d !important;
+
+  white-space: nowrap !important;
+
+  overflow: hidden !important;
+
+  text-overflow: ellipsis !important;
+}
+
+
+/* Handle locked to far right */
+
+.dance-dancer-row .drag-handle,
+.dance-dancer-row .dance-drag-handle,
+[data-dance-dancer-row] .drag-handle,
+[data-dance-dancer-row] .dance-drag-handle,
+[data-dance-dancer-drag] {
+  flex: 0 0 50px !important;
+
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+
+  margin-left: auto !important;
+
+  order: 999 !important;
+
+  align-self: stretch !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  color: #8b837a !important;
+
+  background: #faf6ef !important;
+
+  border-left: 1px solid #e5ddd2 !important;
+}
+
+
+/* ------------------------------------------------------------
+   6. MODAL HEADER — SHOW FULL DANCE NAME
+
+   Removes the "Čoba..." truncation.
+   ------------------------------------------------------------ */
+
+.modal-header {
+  min-height: 76px !important;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    52px !important;
+
+  padding:
+    12px
+    16px !important;
+
+  position: relative !important;
+}
+
+
+/*
+   Back button isn't being used on the main dance-detail screen.
+   When hidden it should take ZERO space.
+*/
+
+#modalBack.hidden {
+  display: none !important;
+}
+
+
+/* Title gets the full available width */
+
+.modal-title-area {
+  min-width: 0 !important;
+
+  width: 100% !important;
+
+  text-align: center !important;
+
+  padding-left: 44px !important;
+}
+
+
+/* FULL TITLE — NO ELLIPSIS */
+
+#modalTitle {
+  width: 100% !important;
+
+  max-width: none !important;
+
+  margin: 0 !important;
+
+  padding: 0 !important;
+
+  color: #241f1d !important;
+
+  font-size: 17px !important;
+  line-height: 1.15 !important;
+
+  font-weight: 800 !important;
+
+  white-space: normal !important;
+
+  overflow: visible !important;
+
+  text-overflow: clip !important;
+
+  overflow-wrap: anywhere !important;
+
+  word-break: normal !important;
+}
+
+
+/* DANCE label */
+
+#modalEyebrow {
+  color: #741b2c !important;
+
+  margin-bottom: 4px !important;
+}
+
+
+/* X always remains on far right */
+
+#closeModal {
+  grid-column: 2 !important;
+
+  justify-self: end !important;
+
+  width: 44px !important;
+  height: 44px !important;
+}
+
+
+/* ------------------------------------------------------------
+   7. EXTRA SAFETY — LINKS/BUTTONS SHOULD NOT TURN BLUE
+   ------------------------------------------------------------ */
+
+.ensemble-card,
+.dancer-row,
+.dancer-open,
+.dance-row,
+.dance-open,
+.dance-dancer-row,
+.dance-dancer-main {
+  -webkit-text-fill-color: initial;
+}
+
+
+/* Force the actual names specifically */
+
+.ensemble-card h3,
+.ensemble-card strong {
+  color: #241f1d !important;
+  -webkit-text-fill-color: #241f1d !important;
+}
+
+.dancer-open .dancer-name,
+.dancer-open strong {
+  color: #241f1d !important;
+  -webkit-text-fill-color: #241f1d !important;
+}
+
+.dance-open .dance-name,
+.dance-open strong,
+.dance-card-content strong {
+  color: #241f1d !important;
+  -webkit-text-fill-color: #241f1d !important;
+}
+
+.dance-card-content small,
+.dance-card-content p {
+  color: #241f1d !important;
+  -webkit-text-fill-color: #241f1d !important;
+}
+
+.dance-dancer-name,
+.dance-dancer-main .dancer-name {
+  color: #241f1d !important;
+  -webkit-text-fill-color: #241f1d !important;
+}
