@@ -1,6 +1,6 @@
 /* ============================================================
    VUK KARADZIC PROBE
-   STYLES.CSS — V9.3 CLEAN
+   STYLES.CSS — V10 CLEAN
    ============================================================ */
 
 :root {
@@ -31,9 +31,7 @@
   --orange: #c17b36;
   --orange-soft: #f8eee2;
 
-  --shadow:
-    0 5px 18px
-    rgba(55, 39, 29, 0.07);
+  --shadow: 0 5px 18px rgba(55, 39, 29, 0.07);
 
   --nav-height: 76px;
 }
@@ -123,6 +121,7 @@ body.modal-open {
 
 main {
   min-height: 100vh;
+
   padding-bottom:
     calc(
       var(--nav-height) +
@@ -133,18 +132,85 @@ main {
 
 
 /* ============================================================
+   TOP HEADER — V10 FIX
+   ============================================================ */
+
+.top-header {
+  width: 100%;
+  height: 72px;
+
+  padding:
+    calc(env(safe-area-inset-top) + 8px)
+    18px
+    8px;
+
+  background: var(--cream);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  position: relative;
+  z-index: 20;
+}
+
+.brand {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.vuk-logo {
+  display: block;
+
+  width: 46px !important;
+  height: 46px !important;
+
+  max-width: 46px !important;
+  max-height: 46px !important;
+
+  flex: 0 0 46px;
+
+  object-fit: contain;
+
+  margin: 0;
+  padding: 0;
+}
+
+.brand-title {
+  min-width: 0;
+
+  color: var(--burgundy);
+
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+.ensemble-pill {
+  display: none !important;
+}
+
+
+/* ============================================================
    PAGE
    ============================================================ */
 
 .page {
   display: none;
-  width: 100%;
-  min-height: 100vh;
 
-  padding:
-    calc(env(safe-area-inset-top) + 18px)
-    18px
-    28px;
+  width: 100%;
+  min-height: calc(100vh - 72px);
+
+  padding: 18px 18px 28px;
 }
 
 .page.active {
@@ -153,13 +219,43 @@ main {
 
 
 /* ============================================================
-   GENERAL PAGE HEADERS
+   PAGE INTRO — CURRENT HTML
+   ============================================================ */
+
+.page-intro {
+  margin-bottom: 18px;
+}
+
+.section-heading {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: 31px;
+  line-height: 1.05;
+  letter-spacing: -0.8px;
+  font-weight: 800;
+}
+
+.page-intro p {
+  margin: 8px 0 0;
+
+  color: var(--text);
+
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+
+/* ============================================================
+   LEGACY PAGE HEADER SUPPORT
    ============================================================ */
 
 .page-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+
   gap: 12px;
   margin-bottom: 20px;
 }
@@ -170,7 +266,9 @@ main {
 
 .page-heading h1 {
   margin: 0;
+
   color: var(--burgundy);
+
   font-size: 31px;
   line-height: 1.05;
   letter-spacing: -0.8px;
@@ -179,14 +277,18 @@ main {
 
 .page-heading p {
   margin: 5px 0 0;
+
   color: var(--muted);
+
   font-size: 14px;
   line-height: 1.35;
 }
 
 .eyebrow {
   margin-bottom: 5px;
+
   color: var(--burgundy);
+
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 1.5px;
@@ -200,8 +302,10 @@ main {
 
 .icon-button,
 .add-button,
-.round-button {
+.round-button,
+.round-add {
   border: 0;
+
   background: var(--burgundy);
   color: white;
 
@@ -210,14 +314,20 @@ main {
   justify-content: center;
 
   flex-shrink: 0;
+
   box-shadow: var(--shadow);
 }
 
 .add-button,
-.round-button {
+.round-button,
+.round-add {
   width: 48px;
   height: 48px;
+
+  padding: 0;
+
   border-radius: 50%;
+
   font-size: 27px;
   font-weight: 400;
   line-height: 1;
@@ -226,8 +336,15 @@ main {
 .icon-button {
   width: 42px;
   height: 42px;
+
   border-radius: 14px;
+
   font-size: 20px;
+}
+
+#addDanceButton,
+#addDancerButton {
+  margin: 0 0 16px auto;
 }
 
 .primary-button,
@@ -253,12 +370,14 @@ main {
 
 .primary-button {
   margin-top: 18px;
+
   background: var(--burgundy);
   color: white;
 }
 
 .danger-button {
   margin-top: 11px;
+
   background: var(--red-soft);
   color: var(--red);
 }
@@ -270,12 +389,14 @@ main {
 
 .upload-button {
   margin-top: 10px;
+
   background: var(--burgundy-soft);
   color: var(--burgundy);
 }
 
 .mark-all-button {
   margin: 16px 0 12px;
+
   background: var(--burgundy);
   color: white;
 }
@@ -288,18 +409,22 @@ main {
 .home-logo-wrap {
   display: flex;
   justify-content: center;
+
   margin: 6px 0 12px;
 }
 
 .home-logo {
   width: 105px;
   height: 105px;
+
   object-fit: contain;
 }
 
 .home-title {
   margin: 0;
+
   text-align: center;
+
   color: var(--burgundy);
 
   font-size: 31px;
@@ -310,14 +435,18 @@ main {
 
 .home-subtitle {
   margin: 7px 0 24px;
+
   text-align: center;
+
   color: var(--muted);
+
   font-size: 14px;
 }
 
 .ensemble-list {
   display: flex;
   flex-direction: column;
+
   gap: 10px;
 }
 
@@ -335,33 +464,41 @@ main {
   display: grid;
   grid-template-columns: 50px 1fr 22px;
   align-items: center;
+
   gap: 12px;
 
   text-align: left;
+
   box-shadow: var(--shadow);
 }
 
 .ensemble-card.selected {
   border-color: rgba(116, 27, 44, 0.55);
+
   background: #fffafa;
 }
 
 .ensemble-number {
   color: var(--burgundy);
+
   font-size: 20px;
   font-weight: 850;
 }
 
 .ensemble-card h3 {
   margin: 0;
+
   color: var(--text);
+
   font-size: 16px;
   font-weight: 750;
 }
 
 .ensemble-card p {
   margin: 4px 0 0;
+
   color: var(--muted);
+
   font-size: 13px;
 }
 
@@ -389,6 +526,7 @@ main {
   inset: 3px;
 
   border-radius: 50%;
+
   background: var(--burgundy);
 }
 
@@ -399,6 +537,7 @@ main {
 
 .search-box {
   min-height: 47px;
+
   padding: 0 13px;
 
   border: 1.5px solid var(--line);
@@ -408,6 +547,7 @@ main {
 
   display: flex;
   align-items: center;
+
   gap: 9px;
 
   box-shadow: var(--shadow);
@@ -415,6 +555,7 @@ main {
 
 .search-box span {
   color: var(--muted);
+
   font-size: 20px;
 }
 
@@ -428,6 +569,7 @@ main {
   background: transparent;
 
   color: var(--text);
+
   font-size: 15px;
 }
 
@@ -456,6 +598,7 @@ main {
 .mini-group-title {
   font-size: 14px;
   line-height: 1;
+
   font-weight: 850;
   letter-spacing: 0.9px;
 }
@@ -491,6 +634,7 @@ main {
 .roster-list {
   display: flex;
   flex-direction: column;
+
   gap: 9px;
 }
 
@@ -508,17 +652,20 @@ main {
   align-items: stretch;
 
   overflow: hidden;
+
   box-shadow: var(--shadow);
 }
 
 .dancer-open {
   flex: 1 1 auto;
+
   min-width: 0;
   min-height: 65px;
 
   padding: 10px 8px 10px 13px;
 
   border: 0;
+
   background: transparent;
 
   display: flex;
@@ -556,6 +703,7 @@ main {
   text-overflow: ellipsis;
 
   color: var(--text);
+
   font-size: 16px;
   font-weight: 720;
 }
@@ -567,15 +715,19 @@ main {
   padding-left: 8px;
 
   color: var(--muted);
+
   font-size: 13px;
+
   white-space: nowrap;
 }
 
 .chevron {
   flex-shrink: 0;
+
   margin-left: 9px;
 
   color: #aaa198;
+
   font-size: 25px;
   line-height: 1;
 }
@@ -588,6 +740,7 @@ main {
 .drag-handle {
   width: 48px;
   min-width: 48px;
+
   min-height: 100%;
 
   margin: 0;
@@ -604,6 +757,7 @@ main {
   justify-content: center;
 
   align-self: stretch;
+
   flex: 0 0 48px;
 
   font-size: 27px;
@@ -619,6 +773,7 @@ main {
 
 .draggable-row.dragging {
   opacity: 0.88;
+
   transform: scale(1.015);
 
   box-shadow:
@@ -631,12 +786,13 @@ main {
 
 /* ============================================================
    DANCES — MAIN LIST
-   SAME STRUCTURE AS DANCER CARDS
+   HANDLE FORCED TO FAR RIGHT
    ============================================================ */
 
 .dance-group-list {
   display: flex;
   flex-direction: column;
+
   gap: 9px;
 }
 
@@ -649,11 +805,13 @@ main {
 
   background: var(--white);
 
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
 
   overflow: hidden;
+
   box-shadow: var(--shadow);
 }
 
@@ -665,13 +823,17 @@ main {
   border-color: rgba(164, 71, 71, 0.18);
 }
 
-.dance-open {
-  flex: 1 1 auto;
-  width: auto;
-  min-width: 0;
+.dance-row > .dance-open {
+  order: 1;
+
+  flex: 1 1 0 !important;
+
+  width: auto !important;
+  min-width: 0 !important;
   min-height: 68px;
 
-  margin: 0;
+  margin: 0 !important;
+
   padding: 10px 8px 10px 13px;
 
   border: 0;
@@ -679,9 +841,9 @@ main {
 
   background: transparent;
 
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
 
   text-align: left;
 }
@@ -689,6 +851,7 @@ main {
 .dance-number {
   width: 48px;
   min-width: 48px;
+
   flex-shrink: 0;
 
   font-size: 19px;
@@ -705,11 +868,13 @@ main {
 
 .dance-card-content {
   flex: 1;
+
   min-width: 0;
 
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   gap: 3px;
 }
 
@@ -719,6 +884,7 @@ main {
   white-space: nowrap;
 
   color: var(--text);
+
   font-size: 16px;
   font-weight: 750;
 }
@@ -729,56 +895,53 @@ main {
   white-space: nowrap;
 
   color: var(--muted);
+
   font-size: 12px;
   font-weight: 500;
 }
 
 .dance-open .chevron {
   flex-shrink: 0;
+
   margin-left: 9px;
 
   color: #aaa198;
+
   font-size: 25px;
   line-height: 1;
 }
 
-
-/*
-   IMPORTANT V9.3 FIX:
-   Dance drag handle is forced to the far-right side
-   and stretches the full height of the dance card.
-*/
-
 .dance-row > .drag-handle,
 .dance-row > .dance-drag-handle {
+  order: 2 !important;
+
   position: static !important;
 
-  order: 2;
+  width: 48px !important;
+  min-width: 48px !important;
+  max-width: 48px !important;
 
-  width: 48px;
-  min-width: 48px;
-  max-width: 48px;
-
-  height: auto;
+  height: auto !important;
   min-height: 68px;
 
   margin: 0 !important;
-  padding: 0;
+  padding: 0 !important;
 
-  flex: 0 0 48px;
+  flex: 0 0 48px !important;
 
-  align-self: stretch;
+  align-self: stretch !important;
 
-  border: 0;
-  border-left: 1px solid var(--line);
-  border-radius: 0;
+  border: 0 !important;
+  border-left: 1px solid var(--line) !important;
 
-  background: #faf6ef;
+  border-radius: 0 !important;
+
+  background: #faf6ef !important;
   color: #8b837a;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 
   font-size: 27px;
   line-height: 1;
@@ -787,13 +950,9 @@ main {
   touch-action: none;
 }
 
-.dance-row > .dance-open {
-  order: 1;
-}
-
 .dance-row > .drag-handle:active,
 .dance-row > .dance-drag-handle:active {
-  background: #f2ebe1;
+  background: #f2ebe1 !important;
 }
 
 .dance-empty {
@@ -803,7 +962,6 @@ main {
 
 /* ============================================================
    DANCERS INSIDE DANCE
-   SAME CARD STYLE AS MAIN ROSTER
    ============================================================ */
 
 .dance-assigned-dancers {
@@ -821,6 +979,7 @@ main {
 .dance-dancer-order-list {
   display: flex;
   flex-direction: column;
+
   gap: 9px;
 }
 
@@ -838,11 +997,13 @@ main {
   align-items: stretch;
 
   overflow: hidden;
+
   box-shadow: var(--shadow);
 }
 
 .dance-dancer-main {
   flex: 1 1 auto;
+
   min-width: 0;
   min-height: 65px;
 
@@ -859,6 +1020,7 @@ main {
 
 .dance-dancer-name {
   flex: 1;
+
   min-width: 0;
 
   overflow: hidden;
@@ -866,6 +1028,7 @@ main {
   white-space: nowrap;
 
   color: var(--text);
+
   font-size: 16px;
   font-weight: 720;
 }
@@ -873,6 +1036,7 @@ main {
 .dance-dancer-row > .drag-handle {
   width: 48px;
   min-width: 48px;
+
   flex: 0 0 48px;
 
   align-self: stretch;
@@ -892,6 +1056,7 @@ main {
   background: rgba(255, 255, 255, 0.5);
 
   color: var(--muted);
+
   text-align: center;
 
   font-size: 14px;
@@ -911,6 +1076,7 @@ main {
   width: fit-content;
 
   margin-bottom: 12px;
+
   padding: 7px 11px;
 
   border-radius: 999px;
@@ -946,6 +1112,7 @@ main {
 
 .detail-label {
   display: block;
+
   margin-bottom: 5px;
 
   color: var(--muted);
@@ -958,6 +1125,7 @@ main {
 
 .detail-value {
   color: var(--text);
+
   font-size: 17px;
   font-weight: 750;
 }
@@ -966,6 +1134,7 @@ main {
   margin: 22px 0 10px;
 
   color: var(--burgundy);
+
   font-size: 16px;
   font-weight: 800;
 }
@@ -978,6 +1147,7 @@ main {
 .dance-status-selector {
   display: grid;
   grid-template-columns: 1fr 1fr;
+
   gap: 9px;
 }
 
@@ -995,6 +1165,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+
   gap: 7px;
 }
 
@@ -1003,11 +1174,13 @@ main {
   height: 9px;
 
   border-radius: 50%;
+
   background: #bdb4ac;
 }
 
 .dance-status-option.in-use.selected {
   border-color: rgba(50, 122, 84, 0.45);
+
   background: var(--green-soft);
   color: var(--green);
 }
@@ -1018,6 +1191,7 @@ main {
 
 .dance-status-option.not-in-use.selected {
   border-color: rgba(164, 71, 71, 0.45);
+
   background: var(--red-soft);
   color: var(--red);
 }
@@ -1046,6 +1220,7 @@ main {
 .dance-picker {
   display: flex;
   flex-direction: column;
+
   gap: 7px;
 }
 
@@ -1063,9 +1238,11 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 12px;
 
   color: var(--text);
+
   text-align: left;
 }
 
@@ -1088,11 +1265,13 @@ main {
 
 .edit-dancer-row.selected {
   border-color: rgba(116, 27, 44, 0.4);
+
   background: #fff9f9;
 }
 
 .edit-dancer-row.selected .checkmark {
   border-color: var(--burgundy);
+
   background: var(--burgundy);
   color: white;
 }
@@ -1105,14 +1284,17 @@ main {
 .media-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+
   gap: 9px;
 }
 
 .media-tile {
   position: relative;
+
   aspect-ratio: 1 / 1;
 
   border-radius: 15px;
+
   overflow: hidden;
 
   background: #e8e1d8;
@@ -1121,6 +1303,7 @@ main {
 .media-tile img {
   width: 100%;
   height: 100%;
+
   object-fit: cover;
 }
 
@@ -1129,6 +1312,7 @@ main {
   height: 30px;
 
   position: absolute;
+
   top: 7px;
   right: 7px;
 
@@ -1151,6 +1335,7 @@ main {
   background: rgba(255, 255, 255, 0.5);
 
   color: var(--muted);
+
   text-align: center;
 
   font-size: 13px;
@@ -1159,6 +1344,7 @@ main {
 .audio-card {
   display: flex;
   flex-direction: column;
+
   gap: 9px;
 }
 
@@ -1175,6 +1361,22 @@ main {
   position: relative;
 }
 
+.today-button {
+  min-height: 38px;
+
+  margin-bottom: 12px;
+
+  padding: 0 14px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+
+  font-weight: 750;
+}
+
 .calendar-card {
   padding: 14px;
 
@@ -1184,6 +1386,7 @@ main {
   background: var(--white);
 
   box-shadow: var(--shadow);
+
   margin-bottom: 12px;
 }
 
@@ -1194,13 +1397,17 @@ main {
   justify-content: space-between;
 
   gap: 10px;
+
   margin-bottom: 13px;
 }
 
 #calendarMonth {
   flex: 1;
 
+  margin: 0;
+
   color: var(--burgundy);
+
   text-align: center;
 
   font-size: 17px;
@@ -1229,14 +1436,18 @@ main {
   font-size: 22px;
 }
 
+.weekdays,
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+
   margin-bottom: 5px;
 }
 
+.weekdays span,
 .calendar-weekdays span {
   color: var(--muted);
+
   text-align: center;
 
   font-size: 10px;
@@ -1247,11 +1458,13 @@ main {
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+
   gap: 3px;
 }
 
 .calendar-day {
   min-width: 0;
+
   aspect-ratio: 1 / 1;
 
   padding: 3px;
@@ -1298,6 +1511,7 @@ main {
   bottom: 5px;
 
   display: flex;
+
   gap: 2px;
 }
 
@@ -1306,11 +1520,37 @@ main {
   height: 4px;
 
   border-radius: 50%;
+
   background: var(--burgundy);
 }
 
 .calendar-day.selected .event-dot {
   background: white;
+}
+
+
+/* ============================================================
+   PRACTICE HEADING
+   ============================================================ */
+
+.practice-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-top: 18px;
+  margin-bottom: 12px;
+}
+
+.practice-heading {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: 21px;
+  font-weight: 800;
 }
 
 
@@ -1321,16 +1561,17 @@ main {
 #addPracticeButton {
   position: static;
 
-  width: 54px;
-  height: 54px;
+  width: 48px;
+  height: 48px;
 
-  margin: 0 0 14px auto;
+  margin: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   border-radius: 50%;
+
   z-index: auto;
 }
 
@@ -1339,9 +1580,11 @@ main {
    PRACTICES
    ============================================================ */
 
-#practiceList {
+#practiceList,
+.stack-list {
   display: flex;
   flex-direction: column;
+
   gap: 9px;
 }
 
@@ -1358,9 +1601,11 @@ main {
 
   display: flex;
   align-items: center;
+
   gap: 12px;
 
   text-align: left;
+
   box-shadow: var(--shadow);
 }
 
@@ -1376,11 +1621,13 @@ main {
 
 .item-main {
   flex: 1;
+
   min-width: 0;
 }
 
 .item-main h3 {
   margin: 0;
+
   color: var(--text);
 
   font-size: 15px;
@@ -1389,18 +1636,23 @@ main {
 
 .item-main p {
   margin: 4px 0 0;
+
   color: var(--muted);
+
   font-size: 12px;
 }
 
 .item-arrow {
   color: #aaa198;
+
   font-size: 24px;
 }
 
 .practice-time {
   margin-top: 7px;
+
   color: var(--muted);
+
   font-size: 13px;
 }
 
@@ -1408,6 +1660,7 @@ main {
   display: inline-block;
 
   margin-top: 10px;
+
   padding: 5px 9px;
 
   border-radius: 999px;
@@ -1427,6 +1680,7 @@ main {
 .practice-repeat-selector {
   display: grid;
   grid-template-columns: 1fr 1fr;
+
   gap: 8px;
 }
 
@@ -1445,6 +1699,7 @@ main {
 
 .practice-repeat-option.selected {
   border-color: rgba(116, 27, 44, 0.45);
+
   background: var(--burgundy-soft);
   color: var(--burgundy);
 }
@@ -1464,6 +1719,7 @@ main {
 
 .form-group > label {
   display: block;
+
   margin-bottom: 7px;
 
   color: var(--text);
@@ -1484,18 +1740,22 @@ main {
   color: var(--text);
 
   font-size: 16px;
+
   outline: 0;
 }
 
 .form-group input,
 .form-group select {
   min-height: 49px;
+
   padding: 0 13px;
 }
 
 .form-group textarea {
   min-height: 110px;
+
   padding: 12px 13px;
+
   resize: vertical;
 }
 
@@ -1522,6 +1782,7 @@ main {
 .profile-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+
   gap: 8px;
 }
 
@@ -1531,11 +1792,13 @@ main {
   border-radius: 13px;
 
   background: #f8f4ee;
+
   text-align: center;
 }
 
 .profile-stat span {
   display: block;
+
   margin-bottom: 5px;
 
   color: var(--muted);
@@ -1546,6 +1809,7 @@ main {
 
 .profile-stat strong {
   color: var(--text);
+
   font-size: 13px;
 }
 
@@ -1553,6 +1817,7 @@ main {
   width: 100%;
 
   margin-top: 13px;
+
   padding: 13px;
 
   border: 1.5px solid var(--line);
@@ -1570,23 +1835,28 @@ main {
 .attendance-percent {
   display: flex;
   align-items: baseline;
+
   gap: 6px;
 }
 
 .attendance-percent strong {
   color: var(--green);
+
   font-size: 24px;
 }
 
 .attendance-percent span {
   color: var(--text);
+
   font-size: 13px;
   font-weight: 700;
 }
 
 .not-present-percent {
   margin-top: 2px;
+
   color: var(--muted);
+
   font-size: 11px;
 }
 
@@ -1596,7 +1866,9 @@ main {
 
 .notes-card h3 {
   margin: 0 0 7px;
+
   color: var(--burgundy);
+
   font-size: 14px;
 }
 
@@ -1622,22 +1894,26 @@ main {
 
 .attendance-row {
   margin-bottom: 10px;
+
   padding: 13px;
 
   border: 1.5px solid var(--line);
   border-radius: 16px;
 
   background: var(--white);
+
   box-shadow: var(--shadow);
 }
 
 .attendance-row h4 {
   margin: 0 0 10px;
+
   font-size: 14px;
 }
 
 .attendance-buttons {
   display: grid;
+
   gap: 6px;
 }
 
@@ -1662,30 +1938,35 @@ main {
 
 .attendance-buttons button.present.selected {
   border-color: var(--green);
+
   background: var(--green-soft);
   color: var(--green);
 }
 
 .attendance-buttons button.late.selected {
   border-color: var(--orange);
+
   background: var(--orange-soft);
   color: var(--orange);
 }
 
 .attendance-buttons button.absent.selected {
   border-color: var(--red);
+
   background: var(--red-soft);
   color: var(--red);
 }
 
 .attendance-buttons button.excused.selected {
   border-color: var(--blue);
+
   background: var(--blue-soft);
   color: var(--blue);
 }
 
 .attendance-summary {
   display: grid;
+
   gap: 7px;
 }
 
@@ -1699,17 +1980,21 @@ main {
   padding: 10px 4px;
 
   border-radius: 13px;
+
   text-align: center;
 }
 
 .summary-box strong {
   display: block;
+
   margin-bottom: 3px;
+
   font-size: 18px;
 }
 
 .summary-box span {
   display: block;
+
   font-size: 9px;
   font-weight: 750;
 }
@@ -1741,6 +2026,7 @@ main {
 
 .history-hero {
   margin-bottom: 14px;
+
   padding: 19px;
 
   border-radius: 18px;
@@ -1758,13 +2044,16 @@ main {
 
 .history-caption {
   margin-top: 1px;
+
   font-size: 13px;
   font-weight: 750;
 }
 
 .history-not-present {
   margin-top: 5px;
+
   opacity: 0.75;
+
   font-size: 11px;
 }
 
@@ -1772,6 +2061,7 @@ main {
   min-height: 61px;
 
   margin-top: 9px;
+
   padding: 11px 13px;
 
   border: 1.5px solid var(--line);
@@ -1782,6 +2072,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 10px;
 
   box-shadow: var(--shadow);
@@ -1793,7 +2084,9 @@ main {
 
 .history-row p {
   margin: 4px 0 0;
+
   color: var(--muted);
+
   font-size: 11px;
 }
 
@@ -1830,12 +2123,86 @@ main {
 
 
 /* ============================================================
-   SETTINGS
+   SETTINGS — CURRENT HTML
+   ============================================================ */
+
+.settings-section {
+  margin-top: 24px;
+}
+
+.settings-section-heading {
+  margin: 0 0 9px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.settings-card {
+  overflow: hidden;
+
+  border: 1.5px solid var(--line);
+  border-radius: 18px;
+
+  background: var(--white);
+
+  box-shadow: var(--shadow);
+}
+
+.settings-card button {
+  width: 100%;
+  min-height: 58px;
+
+  padding: 0 15px;
+
+  border: 0;
+  border-bottom: 1px solid var(--line);
+
+  background: transparent;
+  color: var(--text);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  text-align: left;
+
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.settings-card button:last-child {
+  border-bottom: 0;
+}
+
+.settings-chevron {
+  color: #aaa198;
+
+  font-size: 24px;
+}
+
+.instructor-notes-card {
+  overflow: hidden;
+
+  border: 1.5px solid var(--line);
+  border-radius: 18px;
+
+  background: var(--white);
+
+  box-shadow: var(--shadow);
+}
+
+
+/* ============================================================
+   LEGACY SETTINGS SUPPORT
    ============================================================ */
 
 .settings-list {
   display: flex;
   flex-direction: column;
+
   gap: 9px;
 }
 
@@ -1853,9 +2220,11 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 12px;
 
   color: var(--text);
+
   text-align: left;
 
   box-shadow: var(--shadow);
@@ -1863,14 +2232,17 @@ main {
 
 .settings-row strong {
   display: block;
+
   font-size: 14px;
 }
 
 .settings-row small {
   display: block;
+
   margin-top: 3px;
 
   color: var(--muted);
+
   font-size: 11px;
 }
 
@@ -1949,16 +2321,19 @@ main {
   background: rgba(244, 239, 230, 0.97);
 
   display: grid;
-  grid-template-columns: 43px 1fr 43px;
+  grid-template-columns: 70px 1fr 43px;
 
   align-items: center;
+
   gap: 7px;
 
   flex-shrink: 0;
 }
 
+.modal-title-area,
 .modal-heading {
   min-width: 0;
+
   text-align: center;
 }
 
@@ -1985,7 +2360,27 @@ main {
   font-weight: 800;
 }
 
-#modalBack,
+#modalBack {
+  width: auto;
+  min-width: 62px;
+  height: 41px;
+
+  padding: 0 8px;
+
+  border: 0;
+  border-radius: 13px;
+
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--burgundy);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
 #closeModal {
   width: 41px;
   height: 41px;
@@ -2007,6 +2402,7 @@ main {
 
 #modalBack.hidden {
   visibility: hidden;
+
   pointer-events: none;
 }
 
@@ -2015,6 +2411,7 @@ main {
   flex: 1;
 
   overflow-y: auto;
+
   -webkit-overflow-scrolling: touch;
 
   padding:
@@ -2030,6 +2427,7 @@ main {
 
 .full-screen-modal #modalBody {
   padding: 0;
+
   background: #080808;
 }
 
@@ -2051,6 +2449,7 @@ main {
 
   display: flex;
   align-items: center;
+
   gap: 6px;
 
   font-size: 11px;
@@ -2061,6 +2460,7 @@ main {
   height: 6px;
 
   border-radius: 50%;
+
   background: #5eaa72;
 }
 
@@ -2116,6 +2516,7 @@ main {
   display: flex;
 }
 
+.upload-box,
 .upload-panel {
   width: min(100%, 330px);
 
@@ -2124,6 +2525,7 @@ main {
   border-radius: 20px;
 
   background: var(--white);
+
   text-align: center;
 
   box-shadow:
@@ -2151,14 +2553,29 @@ main {
 }
 
 #uploadMessage {
+  display: block;
+
   color: var(--text);
 
   font-size: 14px;
   font-weight: 700;
 }
 
-#cancelUploadButton {
+#cancelUploadButton,
+.upload-cancel-button {
+  min-height: 42px;
+
   margin-top: 14px;
+
+  padding: 0 18px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+
+  font-weight: 750;
 }
 
 
@@ -2190,6 +2607,7 @@ main {
   color: white;
 
   opacity: 0;
+
   pointer-events: none;
 
   transform: translate(-50%, 8px);
@@ -2206,6 +2624,7 @@ main {
 
 #appToast.show {
   opacity: 1;
+
   transform: translate(-50%, 0);
 }
 
@@ -2283,7 +2702,7 @@ main {
   line-height: 1;
 }
 
-.nav-label {
+.nav-button > span:last-child {
   font-size: 9px;
   font-weight: 700;
 }
@@ -2319,8 +2738,44 @@ main {
   font-size: 21px;
 }
 
-.nav-button[data-page="homePage"] .nav-label {
+.nav-button[data-page="homePage"] > span:last-child {
   margin-top: -1px;
+}
+
+
+/* ============================================================
+   IPHONE ADJUSTMENTS
+   ============================================================ */
+
+@media (max-width: 430px) {
+
+  .top-header {
+    height: 68px;
+
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .vuk-logo {
+    width: 42px !important;
+    height: 42px !important;
+
+    max-width: 42px !important;
+    max-height: 42px !important;
+
+    flex-basis: 42px;
+  }
+
+  .brand-title {
+    font-size: 17px;
+  }
+
+  .page {
+    min-height: calc(100vh - 68px);
+
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }
 
 
@@ -2335,6 +2790,7 @@ main {
     padding-right: 15px;
   }
 
+  .section-heading,
   .page-heading h1 {
     font-size: 29px;
   }
@@ -2350,10 +2806,11 @@ main {
   .drag-handle,
   .dance-row > .dance-drag-handle,
   .dance-dancer-row > .drag-handle {
-    width: 45px;
-    min-width: 45px;
-    max-width: 45px;
-    flex-basis: 45px;
+    width: 45px !important;
+    min-width: 45px !important;
+    max-width: 45px !important;
+
+    flex-basis: 45px !important;
   }
 
   .dancer-name,
@@ -2406,5 +2863,5 @@ main {
 
 
 /* ============================================================
-   END STYLES.CSS — V9.3
+   END STYLES.CSS — V10
    ============================================================ */
