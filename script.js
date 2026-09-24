@@ -1,12 +1,28 @@
 /* ============================================================
    VUK KARADZIC PROBE
-   SCRIPT.JS — V11
-   Clean complete rebuild
+   SCRIPT.JS — V12
+   Persistent attendance sync rebuild
    ============================================================ */
 
 const STORAGE_KEY = "vukProbeV4";
 const OLD_STORAGE_KEY = "vukProbeV3";
 const CLOUD_ROOT = "vukProbeV4";
+
+/*
+  NEW IN V12:
+
+  Attendance changes waiting for Firebase are stored separately
+  from the main app data.
+
+  This means they survive:
+  - closing Safari
+  - closing the Home Screen app
+  - reopening the phone app
+  - an older Firebase snapshot arriving
+*/
+
+const PENDING_ATTENDANCE_KEY =
+  "vukProbePendingAttendanceV12";
 
 const ENSEMBLE_NAMES = [
   "First Ensemble",
@@ -21,52 +37,163 @@ const ENSEMBLE_NAMES = [
    DOM
    ============================================================ */
 
-const app = document.getElementById("app");
-const ensembleButton = document.getElementById("ensembleButton");
-const ensembleList = document.getElementById("ensembleList");
+const app =
+  document.getElementById("app");
 
-const pages = document.querySelectorAll(".page");
-const navButtons = document.querySelectorAll(".nav-button");
+const ensembleButton =
+  document.getElementById(
+    "ensembleButton"
+  );
 
-const danceEnsemble = document.getElementById("danceEnsemble");
-const dancerEnsemble = document.getElementById("dancerEnsemble");
-const settingsEnsemble = document.getElementById("settingsEnsemble");
+const ensembleList =
+  document.getElementById(
+    "ensembleList"
+  );
 
-const danceList = document.getElementById("danceList");
-const dancerList = document.getElementById("dancerList");
-const dancerSearch = document.getElementById("dancerSearch");
+const pages =
+  document.querySelectorAll(
+    ".page"
+  );
 
-const addDanceButton = document.getElementById("addDanceButton");
-const addDancerButton = document.getElementById("addDancerButton");
+const navButtons =
+  document.querySelectorAll(
+    ".nav-button"
+  );
 
-const calendarMonth = document.getElementById("calendarMonth");
-const calendarGrid = document.getElementById("calendarGrid");
-const todayButton = document.getElementById("todayButton");
-const practiceList = document.getElementById("practiceList");
-const addPracticeButton = document.getElementById("addPracticeButton");
+const danceEnsemble =
+  document.getElementById(
+    "danceEnsemble"
+  );
 
-const modalOverlay = document.getElementById("modalOverlay");
-const modal = modalOverlay?.querySelector(".modal");
-const modalBack = document.getElementById("modalBack");
-const modalEyebrow = document.getElementById("modalEyebrow");
-const modalTitle = document.getElementById("modalTitle");
-const modalBody = document.getElementById("modalBody");
-const closeModalButton = document.getElementById("closeModal");
+const dancerEnsemble =
+  document.getElementById(
+    "dancerEnsemble"
+  );
 
-const appToast = document.getElementById("appToast");
+const settingsEnsemble =
+  document.getElementById(
+    "settingsEnsemble"
+  );
 
-const uploadOverlay = document.getElementById("uploadOverlay");
-const uploadMessage = document.getElementById("uploadMessage");
-const cancelUploadButton = document.getElementById("cancelUploadButton");
+const danceList =
+  document.getElementById(
+    "danceList"
+  );
+
+const dancerList =
+  document.getElementById(
+    "dancerList"
+  );
+
+const dancerSearch =
+  document.getElementById(
+    "dancerSearch"
+  );
+
+const addDanceButton =
+  document.getElementById(
+    "addDanceButton"
+  );
+
+const addDancerButton =
+  document.getElementById(
+    "addDancerButton"
+  );
+
+const calendarMonth =
+  document.getElementById(
+    "calendarMonth"
+  );
+
+const calendarGrid =
+  document.getElementById(
+    "calendarGrid"
+  );
+
+const todayButton =
+  document.getElementById(
+    "todayButton"
+  );
+
+const practiceList =
+  document.getElementById(
+    "practiceList"
+  );
+
+const addPracticeButton =
+  document.getElementById(
+    "addPracticeButton"
+  );
+
+const modalOverlay =
+  document.getElementById(
+    "modalOverlay"
+  );
+
+const modal =
+  modalOverlay?.querySelector(
+    ".modal"
+  );
+
+const modalBack =
+  document.getElementById(
+    "modalBack"
+  );
+
+const modalEyebrow =
+  document.getElementById(
+    "modalEyebrow"
+  );
+
+const modalTitle =
+  document.getElementById(
+    "modalTitle"
+  );
+
+const modalBody =
+  document.getElementById(
+    "modalBody"
+  );
+
+const closeModalButton =
+  document.getElementById(
+    "closeModal"
+  );
+
+const appToast =
+  document.getElementById(
+    "appToast"
+  );
+
+const uploadOverlay =
+  document.getElementById(
+    "uploadOverlay"
+  );
+
+const uploadMessage =
+  document.getElementById(
+    "uploadMessage"
+  );
+
+const cancelUploadButton =
+  document.getElementById(
+    "cancelUploadButton"
+  );
 
 const manageEnsemblesButton =
-  document.getElementById("manageEnsembles");
+  document.getElementById(
+    "manageEnsembles"
+  );
 
 const accountsButton =
-  document.getElementById("accountsButton");
+  document.getElementById(
+    "accountsButton"
+  );
 
 const permissionsButton =
-  document.getElementById("permissionsButton");
+  document.getElementById(
+    "permissionsButton"
+  );
 
 
 /* ============================================================
@@ -85,7 +212,12 @@ function blankEnsemble(name) {
 
 const defaultData = {
   selectedEnsemble: 0,
-  ensembles: ENSEMBLE_NAMES.map(name => blankEnsemble(name))
+
+  ensembles:
+    ENSEMBLE_NAMES.map(
+      name =>
+        blankEnsemble(name)
+    )
 };
 
 
@@ -99,13 +231,17 @@ function uid(prefix = "id") {
     "-" +
     Date.now() +
     "-" +
-    Math.random().toString(36).slice(2, 9)
+    Math.random()
+      .toString(36)
+      .slice(2, 9)
   );
 }
+
 
 function sameId(a, b) {
   return String(a) === String(b);
 }
+
 
 function escapeHTML(value = "") {
   return String(value)
@@ -113,20 +249,27 @@ function escapeHTML(value = "") {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
 }
+
 
 function titleCase(value = "") {
   return String(value).replace(
     /\b\w/g,
-    char => char.toUpperCase()
+    char =>
+      char.toUpperCase()
   );
 }
 
+
 function normalGender(gender) {
-  const value = String(gender || "")
-    .trim()
-    .toLowerCase();
+  const value =
+    String(gender || "")
+      .trim()
+      .toLowerCase();
 
   if (
     value === "male" ||
@@ -147,8 +290,11 @@ function normalGender(gender) {
   return "Other";
 }
 
+
 function dancerName(dancer) {
-  if (!dancer) return "";
+  if (!dancer) {
+    return "";
+  }
 
   if (dancer.name) {
     return dancer.name;
@@ -162,12 +308,17 @@ function dancerName(dancer) {
     .join(" ");
 }
 
-function formatDate(dateString) {
-  if (!dateString) return "";
 
-  const date = new Date(
-    dateString + "T12:00:00"
-  );
+function formatDate(dateString) {
+  if (!dateString) {
+    return "";
+  }
+
+  const date =
+    new Date(
+      dateString +
+      "T12:00:00"
+    );
 
   return date.toLocaleDateString(
     "en-CA",
@@ -180,13 +331,20 @@ function formatDate(dateString) {
   );
 }
 
-function formatTime(time) {
-  if (!time) return "";
 
-  const [hour, minute] =
+function formatTime(time) {
+  if (!time) {
+    return "";
+  }
+
+  const [
+    hour,
+    minute
+  ] =
     time.split(":");
 
-  const date = new Date();
+  const date =
+    new Date();
 
   date.setHours(
     Number(hour),
@@ -204,59 +362,95 @@ function formatTime(time) {
   );
 }
 
+
 function dateToInputValue(date) {
-  const year = date.getFullYear();
+  const year =
+    date.getFullYear();
 
-  const month = String(
-    date.getMonth() + 1
-  ).padStart(2, "0");
+  const month =
+    String(
+      date.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
 
-  const day = String(
-    date.getDate()
-  ).padStart(2, "0");
+  const day =
+    String(
+      date.getDate()
+    ).padStart(
+      2,
+      "0"
+    );
 
-  return `${year}-${month}-${day}`;
+  return (
+    `${year}-${month}-${day}`
+  );
 }
+
 
 function addDaysToDateString(
   dateString,
   numberOfDays
 ) {
-  const date = new Date(
-    dateString + "T12:00:00"
-  );
+  const date =
+    new Date(
+      dateString +
+      "T12:00:00"
+    );
 
   date.setDate(
-    date.getDate() + numberOfDays
+    date.getDate() +
+    numberOfDays
   );
 
-  return dateToInputValue(date);
+  return dateToInputValue(
+    date
+  );
 }
+
 
 function showToast(message) {
-  if (!appToast) return;
-
-  appToast.textContent = message;
-  appToast.classList.add("show");
-
-  clearTimeout(showToast.timer);
-
-  showToast.timer = setTimeout(
-    () => {
-      appToast.classList.remove("show");
-    },
-    1800
-  );
-}
-
-function showUpload(message) {
-  if (!uploadOverlay) return;
-
-  if (uploadMessage) {
-    uploadMessage.textContent = message;
+  if (!appToast) {
+    return;
   }
 
-  uploadOverlay.classList.add("open");
+  appToast.textContent =
+    message;
+
+  appToast.classList.add(
+    "show"
+  );
+
+  clearTimeout(
+    showToast.timer
+  );
+
+  showToast.timer =
+    setTimeout(
+      () => {
+        appToast.classList.remove(
+          "show"
+        );
+      },
+      1800
+    );
+}
+
+
+function showUpload(message) {
+  if (!uploadOverlay) {
+    return;
+  }
+
+  if (uploadMessage) {
+    uploadMessage.textContent =
+      message;
+  }
+
+  uploadOverlay.classList.add(
+    "open"
+  );
 
   uploadOverlay.setAttribute(
     "aria-hidden",
@@ -264,13 +458,18 @@ function showUpload(message) {
   );
 }
 
-function hideUpload() {
-  uploadOverlay?.classList.remove("open");
 
-  uploadOverlay?.setAttribute(
-    "aria-hidden",
-    "true"
-  );
+function hideUpload() {
+  uploadOverlay
+    ?.classList.remove(
+      "open"
+    );
+
+  uploadOverlay
+    ?.setAttribute(
+      "aria-hidden",
+      "true"
+    );
 }
 
 
@@ -281,9 +480,13 @@ function hideUpload() {
 function normalizeData(raw) {
   if (
     !raw ||
-    !Array.isArray(raw.ensembles)
+    !Array.isArray(
+      raw.ensembles
+    )
   ) {
-    return structuredClone(defaultData);
+    return structuredClone(
+      defaultData
+    );
   }
 
   const normalized = {
@@ -291,37 +494,57 @@ function normalizeData(raw) {
   };
 
   let selected =
-    Number(normalized.selectedEnsemble);
+    Number(
+      normalized.selectedEnsemble
+    );
 
-  if (!Number.isInteger(selected)) {
+  if (
+    !Number.isInteger(
+      selected
+    )
+  ) {
     selected = 0;
   }
 
   normalized.selectedEnsemble =
     Math.max(
       0,
-      Math.min(4, selected)
+      Math.min(
+        4,
+        selected
+      )
     );
 
   normalized.ensembles =
     ENSEMBLE_NAMES.map(
-      (fallbackName, index) => {
+      (
+        fallbackName,
+        index
+      ) => {
 
         const old =
-          raw.ensembles[index] || {};
+          raw.ensembles[
+            index
+          ] || {};
 
         const dancers =
-          Array.isArray(old.dancers)
+          Array.isArray(
+            old.dancers
+          )
             ? old.dancers
             : [];
 
         const dances =
-          Array.isArray(old.dances)
+          Array.isArray(
+            old.dances
+          )
             ? old.dances
             : [];
 
         const practices =
-          Array.isArray(old.practices)
+          Array.isArray(
+            old.practices
+          )
             ? old.practices
             : [];
 
@@ -339,7 +562,9 @@ function normalizeData(raw) {
 
                 id:
                   dancer.id ??
-                  uid("dancer"),
+                  uid(
+                    "dancer"
+                  ),
 
                 gender:
                   normalGender(
@@ -347,7 +572,8 @@ function normalizeData(raw) {
                   ),
 
                 notes:
-                  dancer.notes || ""
+                  dancer.notes ||
+                  ""
               })
             ),
 
@@ -409,15 +635,19 @@ function normalizeData(raw) {
 
                   id:
                     dance.id ??
-                    uid("dance"),
+                    uid(
+                      "dance"
+                    ),
 
                   inUse:
-                    typeof dance.inUse ===
-                    "boolean"
+                    typeof
+                      dance.inUse ===
+                      "boolean"
                       ? dance.inUse
                       : true,
 
                   dancerIds,
+
                   dancerOrder,
 
                   photos:
@@ -437,11 +667,14 @@ function normalizeData(raw) {
 
                 id:
                   practice.id ??
-                  uid("practice"),
+                  uid(
+                    "practice"
+                  ),
 
                 attendance:
                   practice.attendance &&
-                  typeof practice.attendance ===
+                  typeof
+                    practice.attendance ===
                     "object"
                     ? practice.attendance
                     : {}
@@ -461,7 +694,7 @@ function normalizeData(raw) {
 
 
 /* ============================================================
-   LOCAL STORAGE
+   LOCAL STORAGE — MAIN APP DATA
    ============================================================ */
 
 function loadLocalData() {
@@ -474,7 +707,9 @@ function loadLocalData() {
 
     if (current) {
       return normalizeData(
-        JSON.parse(current)
+        JSON.parse(
+          current
+        )
       );
     }
 
@@ -485,7 +720,9 @@ function loadLocalData() {
 
     if (old) {
       return normalizeData(
-        JSON.parse(old)
+        JSON.parse(
+          old
+        )
       );
     }
 
@@ -497,17 +734,24 @@ function loadLocalData() {
     );
   }
 
-  return structuredClone(defaultData);
+  return structuredClone(
+    defaultData
+  );
 }
 
-let data = loadLocalData();
+
+let data =
+  loadLocalData();
+
 
 function saveLocalOnly() {
   try {
 
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify(data)
+      JSON.stringify(
+        data
+      )
     );
 
     return true;
@@ -534,15 +778,18 @@ function getSelectedEnsemble() {
   ];
 }
 
+
 function ensembleName() {
   return (
-    getSelectedEnsemble()?.name ||
+    getSelectedEnsemble()
+      ?.name ||
     ENSEMBLE_NAMES[
       data.selectedEnsemble
     ] ||
     "Ensemble"
   );
 }
+
 
 function findDancer(id) {
   return getSelectedEnsemble()
@@ -556,6 +803,7 @@ function findDancer(id) {
     );
 }
 
+
 function findDance(id) {
   return getSelectedEnsemble()
     .dances
@@ -568,6 +816,7 @@ function findDance(id) {
     );
 }
 
+
 function findPractice(id) {
   return getSelectedEnsemble()
     .practices
@@ -579,6 +828,7 @@ function findPractice(id) {
         )
     );
 }
+
 
 function groupDancers(gender) {
   return getSelectedEnsemble()
@@ -597,19 +847,311 @@ function groupDancers(gender) {
    ============================================================ */
 
 let firebaseReady = false;
+
 let cloudHasLoaded = false;
 
+let firebaseSyncStarted =
+  false;
+
+
 /*
-  These paths are temporarily protected from an older Firebase
-  snapshot while a local attendance write is in progress.
+  This Map protects newer attendance changes from older
+  Firebase snapshots.
+
+  V12 IMPORTANT CHANGE:
+  The Map is restored from localStorage when the app starts.
 */
 
 const pendingAttendanceWrites =
   new Map();
 
+
 function getFirebase() {
-  return window.vukFirebase || null;
+  return (
+    window.vukFirebase ||
+    null
+  );
 }
+
+
+/* ============================================================
+   V12 — PERSISTENT PENDING ATTENDANCE
+   ============================================================ */
+
+/*
+  Each saved entry looks like:
+
+  {
+    ensembleIndex: 4,
+    practiceId: "...",
+    dancerId: "...",
+    status: "present"
+  }
+
+  These entries remain on the phone until Firebase has
+  successfully accepted the corresponding attendance mark.
+*/
+
+
+function attendancePendingKey(
+  ensembleIndex,
+  practiceId,
+  dancerId
+) {
+  return [
+    Number(
+      ensembleIndex
+    ),
+    String(
+      practiceId
+    ),
+    String(
+      dancerId
+    )
+  ].join("|");
+}
+
+
+/*
+  Save the pending Map itself to localStorage.
+*/
+
+function savePendingAttendance() {
+  try {
+
+    const objectToSave =
+      Object.fromEntries(
+        pendingAttendanceWrites
+      );
+
+    localStorage.setItem(
+      PENDING_ATTENDANCE_KEY,
+      JSON.stringify(
+        objectToSave
+      )
+    );
+
+    return true;
+
+  } catch (error) {
+
+    console.error(
+      "Could not save pending attendance:",
+      error
+    );
+
+    return false;
+  }
+}
+
+
+/*
+  Restore pending attendance from the previous app session.
+
+  This is the piece V11 was missing.
+*/
+
+function loadPendingAttendance() {
+  try {
+
+    const stored =
+      localStorage.getItem(
+        PENDING_ATTENDANCE_KEY
+      );
+
+    if (!stored) {
+      return;
+    }
+
+    const parsed =
+      JSON.parse(
+        stored
+      );
+
+    if (
+      !parsed ||
+      typeof parsed !==
+        "object" ||
+      Array.isArray(
+        parsed
+      )
+    ) {
+      return;
+    }
+
+    Object.entries(
+      parsed
+    ).forEach(
+      ([
+        key,
+        status
+      ]) => {
+
+        if (
+          !key ||
+          !status
+        ) {
+          return;
+        }
+
+        pendingAttendanceWrites.set(
+          key,
+          String(
+            status
+          )
+        );
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Could not restore pending attendance:",
+      error
+    );
+  }
+}
+
+
+/*
+  Record a new attendance mark as pending.
+
+  IMPORTANT:
+  We save this BEFORE relying on Firebase.
+*/
+
+function rememberPendingAttendance(
+  ensembleIndex,
+  practiceId,
+  dancerId,
+  status
+) {
+  const key =
+    attendancePendingKey(
+      ensembleIndex,
+      practiceId,
+      dancerId
+    );
+
+  pendingAttendanceWrites.set(
+    key,
+    status
+  );
+
+  savePendingAttendance();
+
+  return key;
+}
+
+
+/*
+  Remove a pending attendance mark ONLY after Firebase
+  confirms that exact write succeeded.
+*/
+
+function forgetPendingAttendance(
+  ensembleIndex,
+  practiceId,
+  dancerId
+) {
+  const key =
+    attendancePendingKey(
+      ensembleIndex,
+      practiceId,
+      dancerId
+    );
+
+  pendingAttendanceWrites.delete(
+    key
+  );
+
+  savePendingAttendance();
+}
+
+
+/*
+  Restore the pending marks directly into the phone's live
+  data object.
+
+  This runs at startup BEFORE Firebase is allowed to replace
+  the data.
+
+  Therefore:
+  close app -> reopen -> attendance is restored immediately.
+*/
+
+function applyPendingAttendanceToLocalData() {
+
+  pendingAttendanceWrites.forEach(
+    (
+      status,
+      key
+    ) => {
+
+      const parts =
+        key.split("|");
+
+      if (
+        parts.length < 3
+      ) {
+        return;
+      }
+
+      const ensembleIndex =
+        Number(
+          parts[0]
+        );
+
+      const practiceId =
+        parts[1];
+
+      const dancerId =
+        parts
+          .slice(2)
+          .join("|");
+
+      const ensemble =
+        data.ensembles[
+          ensembleIndex
+        ];
+
+      if (!ensemble) {
+        return;
+      }
+
+      const practice =
+        ensemble.practices
+          .find(
+            item =>
+              sameId(
+                item.id,
+                practiceId
+              )
+          );
+
+      if (!practice) {
+        return;
+      }
+
+      setAttendanceStatus(
+        practice,
+        dancerId,
+        status
+      );
+    }
+  );
+
+  saveLocalOnly();
+}
+
+
+/*
+  Load pending attendance NOW.
+
+  This happens during script startup, before Firebase sync.
+*/
+
+loadPendingAttendance();
 
 
 /* ============================================================
@@ -617,13 +1159,19 @@ function getFirebase() {
    ============================================================ */
 
 async function saveData() {
+
+  /*
+    Always save the phone copy first.
+  */
+
   saveLocalOnly();
 
   if (!firebaseReady) {
     return false;
   }
 
-  const fb = getFirebase();
+  const fb =
+    getFirebase();
 
   if (!fb) {
     return false;
@@ -667,7 +1215,8 @@ function getAttendanceStatus(
 ) {
   if (
     !practice.attendance ||
-    typeof practice.attendance !==
+    typeof
+      practice.attendance !==
       "object"
   ) {
     practice.attendance = {};
@@ -675,7 +1224,9 @@ function getAttendanceStatus(
 
   const direct =
     practice.attendance[
-      String(dancerId)
+      String(
+        dancerId
+      )
     ];
 
   if (direct) {
@@ -700,6 +1251,7 @@ function getAttendanceStatus(
     : "";
 }
 
+
 function setAttendanceStatus(
   practice,
   dancerId,
@@ -707,20 +1259,23 @@ function setAttendanceStatus(
 ) {
   if (
     !practice.attendance ||
-    typeof practice.attendance !==
+    typeof
+      practice.attendance !==
       "object"
   ) {
     practice.attendance = {};
   }
 
   practice.attendance[
-    String(dancerId)
+    String(
+      dancerId
+    )
   ] = status;
 }
 
 
 /* ============================================================
-   TARGETED ATTENDANCE SAVE
+   V12 — TARGETED ATTENDANCE SAVE
    ============================================================ */
 
 async function saveAttendanceStatusToCloud(
@@ -729,6 +1284,7 @@ async function saveAttendanceStatusToCloud(
   dancerId,
   status
 ) {
+
   const ensemble =
     data.ensembles[
       ensembleIndex
@@ -739,22 +1295,25 @@ async function saveAttendanceStatusToCloud(
   }
 
   const practiceIndex =
-    ensemble.practices.findIndex(
-      practice =>
-        sameId(
-          practice.id,
-          practiceId
-        )
-    );
+    ensemble.practices
+      .findIndex(
+        practice =>
+          sameId(
+            practice.id,
+            practiceId
+          )
+      );
 
-  if (practiceIndex < 0) {
+  if (
+    practiceIndex < 0
+  ) {
     return false;
   }
 
+
   /*
-    IMPORTANT:
-    First make absolutely sure the LIVE data object contains
-    the attendance change, then save localStorage.
+    STEP 1:
+    Put the attendance mark into the CURRENT live practice.
   */
 
   const livePractice =
@@ -768,36 +1327,92 @@ async function saveAttendanceStatusToCloud(
     status
   );
 
+
+  /*
+    STEP 2:
+    Save the actual app data to the phone immediately.
+  */
+
   saveLocalOnly();
 
-  const pendingKey =
-    [
-      ensembleIndex,
-      practiceId,
-      dancerId
-    ].join("|");
 
-  pendingAttendanceWrites.set(
-    pendingKey,
+  /*
+    STEP 3:
+    Persistently mark this exact attendance change as pending.
+
+    This now survives closing the app.
+  */
+
+  rememberPendingAttendance(
+    ensembleIndex,
+    practiceId,
+    dancerId,
     status
   );
+
+
+  /*
+    STEP 4:
+    If Firebase isn't ready, STOP HERE.
+
+    The attendance is still safely stored on the phone and
+    remains pending for the next Firebase retry.
+  */
 
   if (!firebaseReady) {
     return false;
   }
 
-  const fb = getFirebase();
+  const fb =
+    getFirebase();
 
   if (!fb) {
     return false;
   }
 
+
+  /*
+    IMPORTANT:
+
+    We find the practice index immediately before writing.
+
+    Firebase stores practices as an array, so the path needs
+    the current practice array index.
+  */
+
+  const currentPracticeIndex =
+    data.ensembles[
+      ensembleIndex
+    ]?.practices
+      ?.findIndex(
+        practice =>
+          sameId(
+            practice.id,
+            practiceId
+          )
+      );
+
+  if (
+    currentPracticeIndex ===
+      undefined ||
+    currentPracticeIndex < 0
+  ) {
+    return false;
+  }
+
+
   const path =
     `${CLOUD_ROOT}/ensembles/${ensembleIndex}` +
-    `/practices/${practiceIndex}` +
+    `/practices/${currentPracticeIndex}` +
     `/attendance/${String(dancerId)}`;
 
+
   try {
+
+    /*
+      Only this ONE attendance value is written.
+      We are NOT replacing the whole database.
+    */
 
     await fb.set(
       fb.dbRef(
@@ -807,8 +1422,17 @@ async function saveAttendanceStatusToCloud(
       status
     );
 
-    pendingAttendanceWrites.delete(
-      pendingKey
+
+    /*
+      Firebase confirmed the write.
+
+      NOW — and only now — remove the persistent protection.
+    */
+
+    forgetPendingAttendance(
+      ensembleIndex,
+      practiceId,
+      dancerId
     );
 
     return true;
@@ -816,10 +1440,16 @@ async function saveAttendanceStatusToCloud(
   } catch (error) {
 
     /*
-      Do NOT delete the pending local value here.
+      Firebase failed.
 
-      The phone copy remains authoritative for this attendance
-      mark until a later successful cloud save.
+      DO NOT remove the pending attendance.
+
+      It remains:
+      - in main localStorage
+      - in pending localStorage
+      - in the live app
+
+      The app will retry it later.
     */
 
     console.error(
@@ -837,13 +1467,14 @@ async function saveAttendanceStatusToCloud(
 
 
 /* ============================================================
-   MARK ALL PRESENT — TARGETED SAVE
+   V12 — MARK ALL PRESENT
    ============================================================ */
 
 async function savePracticeAttendanceToCloud(
   ensembleIndex,
   practiceId
 ) {
+
   const ensemble =
     data.ensembles[
       ensembleIndex
@@ -854,15 +1485,18 @@ async function savePracticeAttendanceToCloud(
   }
 
   const practiceIndex =
-    ensemble.practices.findIndex(
-      practice =>
-        sameId(
-          practice.id,
-          practiceId
-        )
-    );
+    ensemble.practices
+      .findIndex(
+        practice =>
+          sameId(
+            practice.id,
+            practiceId
+          )
+      );
 
-  if (practiceIndex < 0) {
+  if (
+    practiceIndex < 0
+  ) {
     return false;
   }
 
@@ -871,7 +1505,18 @@ async function savePracticeAttendanceToCloud(
       practiceIndex
     ];
 
+
+  /*
+    Save main data first.
+  */
+
   saveLocalOnly();
+
+
+  /*
+    Every attendance value in this practice becomes
+    persistently pending before we attempt Firebase.
+  */
 
   ensemble.dancers.forEach(
     dancer => {
@@ -882,36 +1527,58 @@ async function savePracticeAttendanceToCloud(
           dancer.id
         );
 
-      if (!status) return;
+      if (!status) {
+        return;
+      }
 
-      const pendingKey =
-        [
-          ensembleIndex,
-          practiceId,
-          dancer.id
-        ].join("|");
-
-      pendingAttendanceWrites.set(
-        pendingKey,
+      rememberPendingAttendance(
+        ensembleIndex,
+        practiceId,
+        dancer.id,
         status
       );
     }
   );
 
+
   if (!firebaseReady) {
     return false;
   }
 
-  const fb = getFirebase();
+  const fb =
+    getFirebase();
 
   if (!fb) {
     return false;
   }
 
+
+  const currentPracticeIndex =
+    data.ensembles[
+      ensembleIndex
+    ]?.practices
+      ?.findIndex(
+        item =>
+          sameId(
+            item.id,
+            practiceId
+          )
+      );
+
+  if (
+    currentPracticeIndex ===
+      undefined ||
+    currentPracticeIndex < 0
+  ) {
+    return false;
+  }
+
+
   const path =
     `${CLOUD_ROOT}/ensembles/${ensembleIndex}` +
-    `/practices/${practiceIndex}` +
+    `/practices/${currentPracticeIndex}` +
     `/attendance`;
+
 
   try {
 
@@ -920,21 +1587,34 @@ async function savePracticeAttendanceToCloud(
         fb.database,
         path
       ),
-      practice.attendance || {}
+      practice.attendance ||
+      {}
     );
+
+
+    /*
+      Firebase accepted the practice attendance.
+
+      Clear only the pending marks belonging to this practice.
+    */
 
     ensemble.dancers.forEach(
       dancer => {
 
-        const pendingKey =
-          [
-            ensembleIndex,
-            practiceId,
+        const status =
+          getAttendanceStatus(
+            practice,
             dancer.id
-          ].join("|");
+          );
 
-        pendingAttendanceWrites.delete(
-          pendingKey
+        if (!status) {
+          return;
+        }
+
+        forgetPendingAttendance(
+          ensembleIndex,
+          practiceId,
+          dancer.id
         );
       }
     );
@@ -958,26 +1638,35 @@ async function savePracticeAttendanceToCloud(
 
 
 /* ============================================================
-   MERGE CLOUD DATA SAFELY
-
-   This is the important V11 change.
-
-   Firebase can update the app, BUT any attendance mark that
-   this phone has just made and is still waiting to sync is
-   restored into the incoming cloud copy before it becomes the
-   live app data.
+   V12 — SAFE FIREBASE MERGE
    ============================================================ */
 
 function mergeCloudDataSafely(
   cloudRaw
 ) {
+
   const incoming =
     normalizeData(
       cloudRaw
     );
 
+  /*
+    Which ensemble THIS phone is viewing is local UI state.
+    Firebase should not change it.
+  */
+
   const localSelectedEnsemble =
     data.selectedEnsemble;
+
+
+  /*
+    Overlay every UNSYNCED attendance change onto the incoming
+    Firebase data BEFORE Firebase is allowed to become our live
+    data.
+
+    This is what prevents an old Firebase copy from turning a
+    newly marked dancer blank again.
+  */
 
   pendingAttendanceWrites.forEach(
     (
@@ -985,17 +1674,27 @@ function mergeCloudDataSafely(
       pendingKey
     ) => {
 
-      const [
-        ensembleIndexText,
-        practiceId,
-        dancerId
-      ] =
+      const parts =
         pendingKey.split("|");
+
+      if (
+        parts.length < 3
+      ) {
+        return;
+      }
 
       const ensembleIndex =
         Number(
-          ensembleIndexText
+          parts[0]
         );
+
+      const practiceId =
+        parts[1];
+
+      const dancerId =
+        parts
+          .slice(2)
+          .join("|");
 
       const incomingEnsemble =
         incoming.ensembles[
@@ -1029,6 +1728,7 @@ function mergeCloudDataSafely(
     }
   );
 
+
   incoming.selectedEnsemble =
     localSelectedEnsemble;
 
@@ -1037,12 +1737,87 @@ function mergeCloudDataSafely(
 
 
 /* ============================================================
+   V12 — RETRY PENDING ATTENDANCE
+   ============================================================ */
+
+async function retryPendingAttendanceWrites() {
+
+  if (
+    !firebaseReady ||
+    pendingAttendanceWrites.size ===
+      0
+  ) {
+    return;
+  }
+
+
+  /*
+    Make a copy because successful saves remove entries from
+    pendingAttendanceWrites while we're looping.
+  */
+
+  const pending =
+    Array.from(
+      pendingAttendanceWrites.entries()
+    );
+
+
+  for (
+    const [
+      pendingKey,
+      status
+    ] of pending
+  ) {
+
+    const parts =
+      pendingKey.split("|");
+
+    if (
+      parts.length < 3
+    ) {
+      continue;
+    }
+
+    const ensembleIndex =
+      Number(
+        parts[0]
+      );
+
+    const practiceId =
+      parts[1];
+
+    const dancerId =
+      parts
+        .slice(2)
+        .join("|");
+
+
+    await saveAttendanceStatusToCloud(
+      ensembleIndex,
+      practiceId,
+      dancerId,
+      status
+    );
+  }
+}
+
+
+/* ============================================================
+   APPLY SAVED PENDING ATTENDANCE BEFORE FIREBASE STARTS
+   ============================================================ */
+
+applyPendingAttendanceToLocalData();
+
+
+/* ============================================================
    PAGE NAVIGATION
    ============================================================ */
 
 function openPage(pageId) {
+
   pages.forEach(
     page => {
+
       page.classList.toggle(
         "active",
         page.id === pageId
@@ -1066,30 +1841,49 @@ function openPage(pageId) {
     behavior: "instant"
   });
 
-  renderPage(pageId);
+  renderPage(
+    pageId
+  );
 }
 
+
 function renderPage(pageId) {
+
   updateEnsembleLabels();
 
-  if (pageId === "homePage") {
+  if (
+    pageId ===
+    "homePage"
+  ) {
     renderEnsembles();
   }
 
-  if (pageId === "dancersPage") {
+  if (
+    pageId ===
+    "dancersPage"
+  ) {
     renderDancers();
   }
 
-  if (pageId === "dancesPage") {
+  if (
+    pageId ===
+    "dancesPage"
+  ) {
     renderDances();
   }
 
-  if (pageId === "calendarPage") {
+  if (
+    pageId ===
+    "calendarPage"
+  ) {
     renderCalendar();
     renderPractices();
   }
 
-  if (pageId === "settingsPage") {
+  if (
+    pageId ===
+    "settingsPage"
+  ) {
     renderSettings();
   }
 }
@@ -1100,6 +1894,7 @@ function renderPage(pageId) {
    ============================================================ */
 
 function removeHeaderEnsembleButton() {
+
   if (!ensembleButton) {
     return;
   }
@@ -1113,7 +1908,9 @@ function removeHeaderEnsembleButton() {
   );
 }
 
+
 function updateEnsembleLabels() {
+
   const name =
     ensembleName();
 
@@ -1139,6 +1936,7 @@ function updateEnsembleLabels() {
    ============================================================ */
 
 function renderEnsembles() {
+
   if (!ensembleList) {
     return;
   }
@@ -1198,13 +1996,16 @@ function renderEnsembles() {
                 </p>
               </div>
 
-              <span class="radio"></span>
+              <span
+                class="radio"
+              ></span>
 
             </button>
           `;
         }
       )
       .join("");
+
 
   ensembleList
     .querySelectorAll(
@@ -1224,9 +2025,10 @@ function renderEnsembles() {
               );
 
             /*
-              Ensemble selection is local UI state.
-              We do not need another instructor's phone
-              changing which ensemble this phone is viewing.
+              Ensemble selection remains local.
+
+              Another instructor choosing Fifth Ensemble on
+              their phone should not switch this phone too.
             */
 
             saveLocalOnly();
@@ -1245,6 +2047,7 @@ function renderEnsembles() {
 
 /* ============================================================
    END PART 1 OF 4
+
    Paste Part 2 immediately underneath this.
    DO NOT commit yet.
    ============================================================ */
@@ -1929,11 +2732,6 @@ function showDancerForm(
                 )
             );
 
-        /*
-          Also remove this dancer from
-          every dance assignment.
-        */
-
         ensemble.dances
           .forEach(
             dance => {
@@ -2210,11 +3008,6 @@ function danceOrderedDancers(
     )
       ? [...dance.dancerOrder]
       : [];
-
-  /*
-    Make sure every assigned dancer
-    appears in dancerOrder.
-  */
 
   assignedIds.forEach(
     dancerId => {
@@ -2837,18 +3630,15 @@ function showDanceForm(
         if (dance) {
 
           dance.name = name;
+
           dance.choreographer =
             choreographer;
-          dance.inUse = inUse;
+
+          dance.inUse =
+            inUse;
 
           dance.dancerIds =
             selectedIds;
-
-          /*
-            Preserve the existing
-            dance-specific order for
-            dancers who remain selected.
-          */
 
           const oldOrder =
             Array.isArray(
@@ -3592,13 +4382,6 @@ function renderCalendar() {
   const daysInMonth =
     lastDay.getDate();
 
-  /*
-    Sunday = 0
-    Monday = 1
-
-    Calendar begins Monday.
-  */
-
   const leadingDays =
     (
       firstDay.getDay() +
@@ -4209,10 +4992,6 @@ function showPracticeForm() {
             1
           );
 
-        /*
-          Local first, then cloud.
-        */
-
         saveLocalOnly();
 
         closeModal();
@@ -4241,6 +5020,7 @@ function showPracticeForm() {
 /* ============================================================
    PART 4 OF 4
    ATTENDANCE + SETTINGS + MODAL + FIREBASE + STARTUP
+   V12
    ============================================================ */
 
 
@@ -4255,12 +5035,15 @@ function showPractice(id) {
   const practiceId =
     String(id);
 
+
   /*
     IMPORTANT:
-    Never keep using one old practice object.
 
-    Firebase may replace data while this modal is open,
-    so every operation finds the CURRENT live practice.
+    We never hold onto an old practice object.
+
+    Firebase can update "data" while this screen is open.
+    Every attendance operation therefore looks up the CURRENT
+    live practice again.
   */
 
   function getLivePractice() {
@@ -4273,23 +5056,29 @@ function showPractice(id) {
       return null;
     }
 
-    return ensemble.practices
-      .find(
-        practice =>
-          sameId(
-            practice.id,
-            practiceId
-          )
-      ) || null;
+    return (
+      ensemble.practices
+        .find(
+          practice =>
+            sameId(
+              practice.id,
+              practiceId
+            )
+        ) ||
+      null
+    );
   }
+
 
   function getLiveEnsemble() {
     return (
       data.ensembles[
         ensembleIndex
-      ] || null
+      ] ||
+      null
     );
   }
+
 
   const initialPractice =
     getLivePractice();
@@ -4297,12 +5086,14 @@ function showPractice(id) {
   const initialEnsemble =
     getLiveEnsemble();
 
+
   if (
     !initialPractice ||
     !initialEnsemble
   ) {
     return;
   }
+
 
   openModal({
     eyebrow: "PRACTICE",
@@ -4368,6 +5159,7 @@ function showPractice(id) {
 
       </div>
 
+
       <button
         type="button"
         class="mark-all-button"
@@ -4376,10 +5168,12 @@ function showPractice(id) {
         Mark All Present
       </button>
 
+
       <div
         class="attendance-summary four"
         id="attendanceSummary"
       ></div>
+
 
       <div
         class="search-box attendance-search"
@@ -4392,7 +5186,9 @@ function showPractice(id) {
         >
       </div>
 
+
       <div id="attendanceList"></div>
+
 
       <button
         type="button"
@@ -4403,6 +5199,7 @@ function showPractice(id) {
       </button>
     `
   });
+
 
   const attendanceList =
     document.getElementById(
@@ -4426,6 +5223,7 @@ function showPractice(id) {
     const ensemble =
       getLiveEnsemble();
 
+
     if (
       !practice ||
       !ensemble ||
@@ -4433,6 +5231,7 @@ function showPractice(id) {
     ) {
       return;
     }
+
 
     const query =
       String(
@@ -4442,6 +5241,7 @@ function showPractice(id) {
         .trim()
         .toLowerCase();
 
+
     const filtered =
       ensemble.dancers.filter(
         dancer =>
@@ -4449,6 +5249,7 @@ function showPractice(id) {
             .toLowerCase()
             .includes(query)
       );
+
 
     if (!filtered.length) {
       attendanceList.innerHTML = `
@@ -4464,6 +5265,7 @@ function showPractice(id) {
 
       return;
     }
+
 
     attendanceList.innerHTML =
       filtered
@@ -4491,6 +5293,7 @@ function showPractice(id) {
                     )
                   )}
                 </h4>
+
 
                 <div
                   class="attendance-buttons four"
@@ -4534,8 +5337,7 @@ function showPractice(id) {
 
 
     /*
-      Attach attendance buttons after
-      creating the rows.
+      Attach the click event to every attendance button.
     */
 
     attendanceList
@@ -4556,10 +5358,9 @@ function showPractice(id) {
               button.dataset
                 .attendanceStatus;
 
+
             /*
-              Get CURRENT practice,
-              not the practice object
-              from when the modal opened.
+              Get CURRENT live practice.
             */
 
             const livePractice =
@@ -4569,8 +5370,10 @@ function showPractice(id) {
               return;
             }
 
+
             /*
-              1. Change live memory.
+              STEP 1:
+              Change the live data immediately.
             */
 
             setAttendanceStatus(
@@ -4579,16 +5382,37 @@ function showPractice(id) {
               status
             );
 
+
             /*
-              2. Save localStorage BEFORE
-                 doing anything online.
+              STEP 2:
+              Save the main data to the phone immediately.
             */
 
             saveLocalOnly();
 
+
             /*
-              3. Change the button
-                 immediately.
+              STEP 3:
+              IMPORTANT V12 CHANGE.
+
+              Record this attendance change in persistent
+              pending storage BEFORE Firebase gets involved.
+
+              This means closing the app right now will NOT
+              cause this attendance mark to disappear.
+            */
+
+            rememberPendingAttendance(
+              ensembleIndex,
+              practiceId,
+              dancerId,
+              status
+            );
+
+
+            /*
+              STEP 4:
+              Change the colour immediately.
             */
 
             const row =
@@ -4604,14 +5428,17 @@ function showPractice(id) {
 
                 option.classList.toggle(
                   "selected",
+
                   option.dataset
                     .attendanceStatus ===
                     status
                 );
               });
 
+
             /*
-              4. Update counts immediately.
+              STEP 5:
+              Update the attendance counters immediately.
             */
 
             drawAttendanceSummary(
@@ -4619,12 +5446,14 @@ function showPractice(id) {
               ensembleIndex
             );
 
-            /*
-              5. Send only this attendance
-                 mark to Firebase.
 
-              We intentionally do not await
-              this before updating the UI.
+            /*
+              STEP 6:
+              Send ONLY this attendance mark to Firebase.
+
+              saveAttendanceStatusToCloud() also keeps the
+              pending mark protected until Firebase confirms
+              the write.
             */
 
             saveAttendanceStatusToCloud(
@@ -4636,6 +5465,7 @@ function showPractice(id) {
           }
         );
       });
+
 
     drawAttendanceSummary(
       practice,
@@ -4669,12 +5499,14 @@ function showPractice(id) {
         const ensemble =
           getLiveEnsemble();
 
+
         if (
           !practice ||
           !ensemble
         ) {
           return;
         }
+
 
         ensemble.dancers.forEach(
           dancer => {
@@ -4684,27 +5516,44 @@ function showPractice(id) {
               dancer.id,
               "present"
             );
+
+
+            /*
+              V12:
+              Protect every mark before the cloud write.
+            */
+
+            rememberPendingAttendance(
+              ensembleIndex,
+              practiceId,
+              dancer.id,
+              "present"
+            );
           }
         );
 
+
         /*
-          Save locally first.
+          Save the phone copy first.
         */
 
         saveLocalOnly();
 
+
         /*
-          Update screen immediately.
+          Update the screen immediately.
         */
 
         renderAttendanceRows();
+
 
         showToast(
           "Everyone marked present"
         );
 
+
         /*
-          Then Firebase.
+          Then attempt Firebase.
         */
 
         savePracticeAttendanceToCloud(
@@ -4735,12 +5584,45 @@ function showPractice(id) {
           return;
         }
 
+
         const ensemble =
           getLiveEnsemble();
 
         if (!ensemble) {
           return;
         }
+
+
+        /*
+          Remove any pending attendance belonging to the
+          practice being deleted.
+        */
+
+        const pendingPrefix =
+          `${ensembleIndex}|${practiceId}|`;
+
+
+        Array.from(
+          pendingAttendanceWrites.keys()
+        ).forEach(
+          key => {
+
+            if (
+              key.startsWith(
+                pendingPrefix
+              )
+            ) {
+              pendingAttendanceWrites
+                .delete(
+                  key
+                );
+            }
+          }
+        );
+
+
+        savePendingAttendance();
+
 
         ensemble.practices =
           ensemble.practices
@@ -4752,16 +5634,21 @@ function showPractice(id) {
                 )
             );
 
+
         saveLocalOnly();
 
+
         closeModal();
+
 
         renderCalendar();
         renderPractices();
 
+
         showToast(
           "Practice deleted"
         );
+
 
         await saveData();
       }
@@ -4817,14 +5704,17 @@ function practiceAttendanceCounts(
     excused: 0
   };
 
+
   const ensemble =
     data.ensembles[
       ensembleIndex
     ];
 
+
   if (!ensemble) {
     return counts;
   }
+
 
   ensemble.dancers.forEach(
     dancer => {
@@ -4834,6 +5724,7 @@ function practiceAttendanceCounts(
           practice,
           dancer.id
         );
+
 
       if (
         Object.prototype
@@ -4846,6 +5737,7 @@ function practiceAttendanceCounts(
       }
     }
   );
+
 
   return counts;
 }
@@ -4861,15 +5753,18 @@ function drawAttendanceSummary(
       "attendanceSummary"
     );
 
+
   if (!container) {
     return;
   }
+
 
   const counts =
     practiceAttendanceCounts(
       practice,
       ensembleIndex
     );
+
 
   container.innerHTML = `
     ${summaryBox(
@@ -4923,11 +5818,10 @@ function summaryBox(
 /* ============================================================
    DANCER ATTENDANCE STATS
 
-   IMPORTANT:
-   ONLY "present" counts as present.
+   ONLY Present counts as Present.
 
-   Late + No Show + Excused
-   all count as NOT PRESENT.
+   Late + No Show + Excused all count toward the denominator
+   but NOT toward Present.
    ============================================================ */
 
 function attendanceStatsForDancer(
@@ -4937,12 +5831,15 @@ function attendanceStatsForDancer(
     getSelectedEnsemble()
       .practices;
 
+
   let present = 0;
   let late = 0;
   let absent = 0;
   let excused = 0;
 
+
   const history = [];
+
 
   practices.forEach(
     practice => {
@@ -4953,9 +5850,11 @@ function attendanceStatsForDancer(
           dancerId
         );
 
+
       if (!status) {
         return;
       }
+
 
       if (
         status === "present"
@@ -4963,11 +5862,13 @@ function attendanceStatsForDancer(
         present++;
       }
 
+
       if (
         status === "late"
       ) {
         late++;
       }
+
 
       if (
         status === "absent"
@@ -4975,11 +5876,13 @@ function attendanceStatsForDancer(
         absent++;
       }
 
+
       if (
         status === "excused"
       ) {
         excused++;
       }
+
 
       history.push({
         practice,
@@ -4988,11 +5891,13 @@ function attendanceStatsForDancer(
     }
   );
 
+
   const total =
     present +
     late +
     absent +
     excused;
+
 
   const percent =
     total > 0
@@ -5003,6 +5908,7 @@ function attendanceStatsForDancer(
           ) * 100
         )
       : 0;
+
 
   return {
     present,
@@ -5028,14 +5934,17 @@ function showAttendanceHistory(
       dancerId
     );
 
+
   if (!dancer) {
     return;
   }
+
 
   const stats =
     attendanceStatsForDancer(
       dancer.id
     );
+
 
   const history =
     [...stats.history]
@@ -5051,6 +5960,7 @@ function showAttendanceHistory(
             )
           )
       );
+
 
   openModal({
     eyebrow: "ATTENDANCE",
@@ -5091,6 +6001,7 @@ function showAttendanceHistory(
 
       </div>
 
+
       <div
         class="attendance-summary four"
       >
@@ -5121,6 +6032,7 @@ function showAttendanceHistory(
 
       </div>
 
+
       ${
         history.length
           ? history
@@ -5137,6 +6049,7 @@ function showAttendanceHistory(
                       "absent"
                     ? "No Show"
                     : "Excused";
+
 
                 return `
                   <div
@@ -5165,6 +6078,7 @@ function showAttendanceHistory(
                       </p>
 
                     </div>
+
 
                     <span
                       class="history-status ${item.status}"
@@ -5231,6 +6145,7 @@ function setupInstructorNotesButton() {
   ]
     .filter(Boolean);
 
+
   possibleButtons.forEach(
     button => {
 
@@ -5241,8 +6156,10 @@ function setupInstructorNotesButton() {
         return;
       }
 
+
       button.dataset.notesReady =
         "true";
+
 
       button.addEventListener(
         "click",
@@ -5256,6 +6173,7 @@ function setupInstructorNotesButton() {
 function showInstructorNotes() {
   const ensemble =
     getSelectedEnsemble();
+
 
   openModal({
     eyebrow: "SETTINGS",
@@ -5278,6 +6196,7 @@ function showInstructorNotes() {
           ""
         )}</textarea>
 
+
         <button
           type="button"
           class="primary-button"
@@ -5289,6 +6208,7 @@ function showInstructorNotes() {
       </div>
     `
   });
+
 
   document
     .getElementById(
@@ -5305,11 +6225,14 @@ function showInstructorNotes() {
             )
             .value;
 
+
         saveLocalOnly();
+
 
         showToast(
           "Notes saved"
         );
+
 
         await saveData();
       }
@@ -5322,6 +6245,7 @@ function showInstructorNotes() {
    ============================================================ */
 
 let modalBackAction = null;
+
 
 function openModal({
   eyebrow = "",
@@ -5336,41 +6260,50 @@ function openModal({
     return;
   }
 
+
   modalBackAction =
     typeof back === "function"
       ? back
       : null;
+
 
   if (modalEyebrow) {
     modalEyebrow.textContent =
       eyebrow;
   }
 
+
   if (modalTitle) {
     modalTitle.textContent =
       title;
   }
 
+
   modalBody.innerHTML =
     body;
+
 
   if (modalBack) {
     modalBack.hidden =
       !modalBackAction;
   }
 
+
   modalOverlay.classList.add(
     "open"
   );
+
 
   modalOverlay.setAttribute(
     "aria-hidden",
     "false"
   );
 
+
   document.body.classList.add(
     "modal-open"
   );
+
 
   if (modal) {
     modal.scrollTop = 0;
@@ -5383,20 +6316,25 @@ function closeModal() {
     return;
   }
 
+
   modalOverlay.classList.remove(
     "open"
   );
+
 
   modalOverlay.setAttribute(
     "aria-hidden",
     "true"
   );
 
+
   document.body.classList.remove(
     "modal-open"
   );
 
+
   modalBackAction = null;
+
 
   if (modalBody) {
     modalBody.innerHTML = "";
@@ -5417,6 +6355,7 @@ navButtons.forEach(
 
         const pageId =
           button.dataset.page;
+
 
         if (pageId) {
           openPage(
@@ -5482,7 +6421,9 @@ modalBack
         modalBackAction = null;
 
         action();
+
       } else {
+
         closeModal();
       }
     }
@@ -5510,9 +6451,12 @@ document.addEventListener(
 
     if (
       event.key ===
-      "Escape" &&
-      modalOverlay?.classList
-        .contains("open")
+        "Escape" &&
+      modalOverlay
+        ?.classList
+        .contains(
+          "open"
+        )
     ) {
       closeModal();
     }
@@ -5573,7 +6517,9 @@ function setupCalendarArrows() {
     document.getElementById(
       "prevMonth"
     )
-  ].filter(Boolean);
+  ]
+    .filter(Boolean);
+
 
   const nextButtons = [
     document.getElementById(
@@ -5583,7 +6529,9 @@ function setupCalendarArrows() {
     document.getElementById(
       "nextMonth"
     )
-  ].filter(Boolean);
+  ]
+    .filter(Boolean);
+
 
   previousButtons.forEach(
     button => {
@@ -5596,9 +6544,11 @@ function setupCalendarArrows() {
         return;
       }
 
+
       button.dataset
         .calendarReady =
         "true";
+
 
       button.addEventListener(
         "click",
@@ -5608,16 +6558,20 @@ function setupCalendarArrows() {
             new Date(
               calendarDate
                 .getFullYear(),
+
               calendarDate
                 .getMonth() - 1,
+
               1
             );
+
 
           renderCalendar();
         }
       );
     }
   );
+
 
   nextButtons.forEach(
     button => {
@@ -5630,9 +6584,11 @@ function setupCalendarArrows() {
         return;
       }
 
+
       button.dataset
         .calendarReady =
         "true";
+
 
       button.addEventListener(
         "click",
@@ -5642,16 +6598,20 @@ function setupCalendarArrows() {
             new Date(
               calendarDate
                 .getFullYear(),
+
               calendarDate
                 .getMonth() + 1,
+
               1
             );
+
 
           renderCalendar();
         }
       );
     }
   );
+
 
   todayButton
     ?.addEventListener(
@@ -5661,6 +6621,7 @@ function setupCalendarArrows() {
         const today =
           new Date();
 
+
         calendarDate =
           new Date(
             today.getFullYear(),
@@ -5668,10 +6629,12 @@ function setupCalendarArrows() {
             1
           );
 
+
         selectedCalendarDate =
           dateToInputValue(
             today
           );
+
 
         renderCalendar();
         renderPractices();
@@ -5681,35 +6644,28 @@ function setupCalendarArrows() {
 
 
 /* ============================================================
-   FIREBASE SYNC
-
-   V11 RULES:
-
-   1. Existing local data is kept until Firebase actually loads.
-
-   2. Cloud data is normalized before use.
-
-   3. Pending attendance changes are merged back into the
-      incoming snapshot so an older snapshot cannot erase a
-      button the instructor just tapped.
-
-   4. Firebase data is saved back to localStorage after merge.
-
-   5. We DO NOT rebuild an open attendance modal here.
+   V12 — FIREBASE SYNC
    ============================================================ */
 
 function setupFirebaseSync() {
+
+  /*
+    Prevent multiple Firebase listeners from being attached.
+  */
+
+  if (firebaseSyncStarted) {
+    return;
+  }
+
+
   const fb =
     getFirebase();
 
-  if (!fb) {
-    /*
-      The Firebase module in index.html
-      may still be loading.
 
-      Try again shortly instead of
-      starting the app permanently
-      without Firebase.
+  if (!fb) {
+
+    /*
+      Firebase from index.html may still be loading.
     */
 
     setTimeout(
@@ -5720,17 +6676,20 @@ function setupFirebaseSync() {
     return;
   }
 
-  if (firebaseReady) {
-    return;
-  }
 
-  firebaseReady = true;
+  firebaseSyncStarted =
+    true;
+
+  firebaseReady =
+    true;
+
 
   const cloudReference =
     fb.dbRef(
       fb.database,
       CLOUD_ROOT
     );
+
 
   fb.onValue(
     cloudReference,
@@ -5740,26 +6699,41 @@ function setupFirebaseSync() {
       const cloudData =
         snapshot.val();
 
-      cloudHasLoaded = true;
 
-      /*
-        EMPTY FIREBASE
+      cloudHasLoaded =
+        true;
 
-        If the cloud has no database yet,
-        upload the phone's existing data.
-      */
+
+      /* --------------------------------------------------------
+         EMPTY FIREBASE
+         -------------------------------------------------------- */
 
       if (!cloudData) {
+
+        /*
+          If Firebase is genuinely empty, upload the phone's
+          existing data rather than replacing the phone with
+          an empty database.
+        */
 
         fb.set(
           cloudReference,
           data
         )
           .then(
-            () => {
+            async () => {
+
               console.log(
                 "Initial data uploaded"
               );
+
+
+              /*
+                Retry any attendance changes that were waiting
+                from an earlier app session.
+              */
+
+              await retryPendingAttendanceWrites();
             }
           )
           .catch(
@@ -5770,19 +6744,21 @@ function setupFirebaseSync() {
                 error
               );
 
+
               showToast(
                 "Cloud sync unavailable"
               );
             }
           );
 
+
         return;
       }
 
 
-      /*
-        VALID FIREBASE DATA
-      */
+      /* --------------------------------------------------------
+         VALIDATE FIREBASE DATA
+         -------------------------------------------------------- */
 
       if (
         !Array.isArray(
@@ -5798,9 +6774,11 @@ function setupFirebaseSync() {
 
 
       /*
-        Merge cloud data while preserving
-        any local attendance write that
-        has not finished syncing yet.
+        Merge Firebase with the persistent pending attendance
+        BEFORE allowing the Firebase snapshot to replace data.
+
+        Therefore an old cloud attendance value cannot erase
+        an unsynced phone attendance value.
       */
 
       data =
@@ -5808,26 +6786,63 @@ function setupFirebaseSync() {
           cloudData
         );
 
+
+      /*
+        Save the merged copy back to the phone.
+      */
+
       saveLocalOnly();
 
 
       /*
         Refresh background pages.
 
-        IMPORTANT:
-        We intentionally do NOT call
-        showPractice() or replace
-        modalBody here.
+        We deliberately do NOT rebuild an open practice modal.
+        Its button listeners use getLivePractice(), so they
+        always operate on the latest data object.
       */
 
       updateEnsembleLabels();
 
       renderEnsembles();
+
       renderDancers();
+
       renderDances();
+
       renderCalendar();
+
       renderPractices();
+
       renderSettings();
+
+
+      /*
+        V12 IMPORTANT:
+
+        If this phone has attendance waiting from before the
+        app was closed, try sending those marks to Firebase now.
+
+        We wait until after the cloud snapshot has been safely
+        merged so the cloud cannot erase them first.
+      */
+
+      if (
+        pendingAttendanceWrites.size >
+        0
+      ) {
+
+        retryPendingAttendanceWrites()
+          .catch(
+            error => {
+
+              console.error(
+                "Pending attendance retry failed:",
+                error
+              );
+            }
+          );
+      }
     },
 
     error => {
@@ -5836,6 +6851,12 @@ function setupFirebaseSync() {
         "Firebase listener failed:",
         error
       );
+
+
+      /*
+        Local attendance remains intact even when Firebase
+        cannot connect.
+      */
 
       showToast(
         "Cloud sync unavailable"
@@ -5848,13 +6869,13 @@ function setupFirebaseSync() {
 /* ============================================================
    FIREBASE READY EVENT
 
-   index.html dispatches this event once
-   its Firebase module is initialized.
+   index.html dispatches this when its Firebase module is ready.
    ============================================================ */
 
 window.addEventListener(
   "vukFirebaseReady",
   () => {
+
     setupFirebaseSync();
   }
 );
@@ -5868,10 +6889,15 @@ function renderAll() {
   updateEnsembleLabels();
 
   renderEnsembles();
+
   renderDancers();
+
   renderDances();
+
   renderCalendar();
+
   renderPractices();
+
   renderSettings();
 }
 
@@ -5881,18 +6907,33 @@ function renderAll() {
    ============================================================ */
 
 function startApp() {
+
+  /*
+    Part 1 has already:
+    - loaded main local data
+    - loaded persistent pending attendance
+    - reapplied pending attendance to local data
+
+    So the phone copy is protected BEFORE Firebase begins.
+  */
+
   removeHeaderEnsembleButton();
+
 
   setupInstructorNotesButton();
 
+
   setupCalendarArrows();
 
+
   renderAll();
+
 
   const activePage =
     document.querySelector(
       ".page.active"
     );
+
 
   if (!activePage) {
 
@@ -5907,6 +6948,7 @@ function startApp() {
 
         button.classList.toggle(
           "active",
+
           button.dataset.page ===
             activePage.id
         );
@@ -5914,13 +6956,13 @@ function startApp() {
     );
   }
 
-  /*
-    If Firebase is already available,
-    this connects immediately.
 
-    Otherwise setupFirebaseSync()
-    retries until index.html finishes
-    loading Firebase.
+  /*
+    Connect Firebase last.
+
+    This is deliberate: the local attendance protection has
+    already been restored before Firebase is allowed to send
+    us a snapshot.
   */
 
   setupFirebaseSync();
@@ -5931,5 +6973,5 @@ startApp();
 
 
 /* ============================================================
-   END SCRIPT.JS — V11
+   END SCRIPT.JS — V12
    ============================================================ */
