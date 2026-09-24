@@ -2958,3 +2958,411 @@ button.excused.selected {
   color: #241f1d !important;
   -webkit-text-fill-color: #241f1d !important;
 }
+
+/* ============================================================
+   V15 — DANCE DETAIL HEADER + DANCER SPACING
+   PUT AT ABSOLUTE BOTTOM OF styles.css
+   ============================================================ */
+
+
+/* ============================================================
+   FULL DANCE NAME IN MODAL HEADER
+   ============================================================ */
+
+.modal-header {
+  position: relative !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 100% !important;
+
+  min-height: 92px !important;
+
+  padding:
+    14px
+    76px
+    14px
+    24px !important;
+}
+
+
+/* Hidden back button must take up zero space */
+
+#modalBack.hidden {
+  display: none !important;
+}
+
+
+/* Title section gets the available middle space */
+
+.modal-title-area {
+  display: block !important;
+
+  width: 100% !important;
+  max-width: 100% !important;
+
+  min-width: 0 !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  text-align: left !important;
+}
+
+
+/* DANCE label */
+
+#modalEyebrow {
+  display: block !important;
+
+  width: 100% !important;
+
+  margin:
+    0
+    0
+    4px !important;
+
+  color: #741b2c !important;
+
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+
+  font-weight: 850 !important;
+
+  letter-spacing: 1.5px !important;
+
+  text-align: left !important;
+}
+
+
+/* FULL DANCE NAME — NEVER TURN INTO "Čoba..." */
+
+#modalTitle {
+  display: block !important;
+
+  width: 100% !important;
+  max-width: 100% !important;
+
+  min-width: 0 !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  color: #241f1d !important;
+
+  font-size: 19px !important;
+  line-height: 1.15 !important;
+
+  font-weight: 800 !important;
+
+  text-align: left !important;
+
+  white-space: normal !important;
+
+  overflow: visible !important;
+
+  text-overflow: unset !important;
+
+  overflow-wrap: normal !important;
+
+  word-break: normal !important;
+}
+
+
+/* X stays locked on right */
+
+#closeModal {
+  position: absolute !important;
+
+  top: 50% !important;
+  right: 16px !important;
+
+  transform:
+    translateY(-50%) !important;
+
+  width: 44px !important;
+  height: 44px !important;
+
+  margin: 0 !important;
+}
+
+
+/* ============================================================
+   ASSIGNED DANCER ROW
+   ============================================================ */
+
+.dance-dancer-row,
+[data-dance-dancer-row] {
+  width: 100% !important;
+
+  min-height: 62px !important;
+
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+
+  align-items: stretch !important;
+
+  overflow: hidden !important;
+}
+
+
+/* Main number/name area */
+
+.dance-dancer-main {
+  flex:
+    1
+    1
+    0 !important;
+
+  min-width: 0 !important;
+
+  padding:
+    0
+    14px
+    0
+    18px !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+
+  gap: 14px !important;
+}
+
+
+/* ============================================================
+   NUMBER
+
+   More room on left + gap before name
+   ============================================================ */
+
+.dance-dancer-main .dancer-number {
+  flex:
+    0
+    0
+    38px !important;
+
+  width: 38px !important;
+  min-width: 38px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+  justify-content: flex-start !important;
+
+  font-size: 19px !important;
+
+  font-weight: 850 !important;
+}
+
+
+/* ============================================================
+   NAME
+   ============================================================ */
+
+.dance-dancer-main .dance-dancer-name,
+.dance-dancer-main .dancer-name {
+  flex:
+    1
+    1
+    auto !important;
+
+  width: auto !important;
+  min-width: 0 !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  color: #241f1d !important;
+
+  -webkit-text-fill-color:
+    #241f1d !important;
+
+  font-size: 16px !important;
+
+  font-weight: 500 !important;
+
+  white-space: nowrap !important;
+
+  overflow: hidden !important;
+
+  text-overflow: ellipsis !important;
+}
+
+
+/* ============================================================
+   SUPPORT THE OTHER V11 ROW STRUCTURE TOO
+   ============================================================ */
+
+[data-dance-dancer-row]
+> .dancer-number {
+  flex:
+    0
+    0
+    52px !important;
+
+  width: 52px !important;
+  min-width: 52px !important;
+
+  margin: 0 !important;
+
+  padding:
+    0
+    0
+    0
+    18px !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+  justify-content: flex-start !important;
+
+  font-size: 19px !important;
+
+  font-weight: 850 !important;
+}
+
+
+[data-dance-dancer-row]
+> .dance-dancer-name,
+
+[data-dance-dancer-row]
+> .dancer-name {
+  flex:
+    1
+    1
+    auto !important;
+
+  min-width: 0 !important;
+
+  margin: 0 !important;
+
+  padding:
+    0
+    12px
+    0
+    10px !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+
+  color: #241f1d !important;
+
+  -webkit-text-fill-color:
+    #241f1d !important;
+
+  font-size: 16px !important;
+
+  font-weight: 500 !important;
+
+  white-space: nowrap !important;
+
+  overflow: hidden !important;
+
+  text-overflow: ellipsis !important;
+}
+
+
+/* ============================================================
+   DRAG HANDLE — KEEP ON FAR RIGHT
+   ============================================================ */
+
+.dance-dancer-row .drag-handle,
+.dance-dancer-row .dance-drag-handle,
+
+[data-dance-dancer-row] .drag-handle,
+[data-dance-dancer-row] .dance-drag-handle,
+
+[data-dance-dancer-drag] {
+  flex:
+    0
+    0
+    52px !important;
+
+  width: 52px !important;
+  min-width: 52px !important;
+  max-width: 52px !important;
+
+  margin:
+    0
+    0
+    0
+    auto !important;
+
+  padding: 0 !important;
+
+  order: 999 !important;
+
+  align-self: stretch !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 0 !important;
+
+  border-left:
+    1px
+    solid
+    #e5ddd2 !important;
+
+  background:
+    #faf6ef !important;
+
+  color:
+    #8b837a !important;
+
+  font-size: 26px !important;
+}
+
+
+/* ============================================================
+   COLOURS — KEEP NUMBERS CORRECT
+   ============================================================ */
+
+/* Boys */
+
+.dance-dancer-section.boys
+.dancer-number,
+
+.boys
+[data-dance-dancer-row]
+.dancer-number,
+
+.boys
+.dance-dancer-row
+.dancer-number {
+  color:
+    #3976ad !important;
+
+  -webkit-text-fill-color:
+    #3976ad !important;
+}
+
+
+/* Girls */
+
+.dance-dancer-section.girls
+.dancer-number,
+
+.girls
+[data-dance-dancer-row]
+.dancer-number,
+
+.girls
+.dance-dancer-row
+.dancer-number {
+  color:
+    #c26185 !important;
+
+  -webkit-text-fill-color:
+    #c26185 !important;
+}
