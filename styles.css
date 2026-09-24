@@ -3366,3 +3366,22 @@ button.excused.selected {
   -webkit-text-fill-color:
     #c26185 !important;
 }
+/* ============================================================
+   IN USE / NOT IN USE COLOURS
+   ============================================================ */
+
+.dance-section-title.in-use {
+  color: #2f7d32 !important;
+}
+
+.dance-section-title.not-in-use {
+  color: #b3261e !important;
+}
+
+.dance-use-status.active {
+  color: #2f7d32 !important;
+}
+
+.dance-use-status.inactive {
+  color: #b3261e !important;
+}
