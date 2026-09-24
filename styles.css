@@ -1,6 +1,6 @@
 /* ============================================================
    VUK KARADZIC PROBE
-   STYLES.CSS — V9.2 CLEAN
+   STYLES.CSS — V9.3 CLEAN
    ============================================================ */
 
 :root {
@@ -93,8 +93,7 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid
-    rgba(116, 27, 44, 0.35);
+  outline: 2px solid rgba(116, 27, 44, 0.35);
   outline-offset: 2px;
 }
 
@@ -143,10 +142,7 @@ main {
   min-height: 100vh;
 
   padding:
-    calc(
-      env(safe-area-inset-top) +
-      18px
-    )
+    calc(env(safe-area-inset-top) + 18px)
     18px
     28px;
 }
@@ -165,7 +161,6 @@ main {
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-
   margin-bottom: 20px;
 }
 
@@ -175,7 +170,6 @@ main {
 
 .page-heading h1 {
   margin: 0;
-
   color: var(--burgundy);
   font-size: 31px;
   line-height: 1.05;
@@ -185,7 +179,6 @@ main {
 
 .page-heading p {
   margin: 5px 0 0;
-
   color: var(--muted);
   font-size: 14px;
   line-height: 1.35;
@@ -193,7 +186,6 @@ main {
 
 .eyebrow {
   margin-bottom: 5px;
-
   color: var(--burgundy);
   font-size: 11px;
   font-weight: 800;
@@ -218,7 +210,6 @@ main {
   justify-content: center;
 
   flex-shrink: 0;
-
   box-shadow: var(--shadow);
 }
 
@@ -227,7 +218,6 @@ main {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-
   font-size: 27px;
   font-weight: 400;
   line-height: 1;
@@ -237,7 +227,6 @@ main {
   width: 42px;
   height: 42px;
   border-radius: 14px;
-
   font-size: 20px;
 }
 
@@ -259,20 +248,17 @@ main {
 
   font-size: 15px;
   font-weight: 750;
-
   text-align: center;
 }
 
 .primary-button {
   margin-top: 18px;
-
   background: var(--burgundy);
   color: white;
 }
 
 .danger-button {
   margin-top: 11px;
-
   background: var(--red-soft);
   color: var(--red);
 }
@@ -284,14 +270,12 @@ main {
 
 .upload-button {
   margin-top: 10px;
-
   background: var(--burgundy-soft);
   color: var(--burgundy);
 }
 
 .mark-all-button {
   margin: 16px 0 12px;
-
   background: var(--burgundy);
   color: white;
 }
@@ -304,23 +288,17 @@ main {
 .home-logo-wrap {
   display: flex;
   justify-content: center;
-
-  margin:
-    6px
-    0
-    12px;
+  margin: 6px 0 12px;
 }
 
 .home-logo {
   width: 105px;
   height: 105px;
-
   object-fit: contain;
 }
 
 .home-title {
   margin: 0;
-
   text-align: center;
   color: var(--burgundy);
 
@@ -331,13 +309,8 @@ main {
 }
 
 .home-subtitle {
-  margin:
-    7px
-    0
-    24px;
-
+  margin: 7px 0 24px;
   text-align: center;
-
   color: var(--muted);
   font-size: 14px;
 }
@@ -360,36 +333,27 @@ main {
   background: var(--white);
 
   display: grid;
-  grid-template-columns:
-    50px
-    1fr
-    22px;
-
+  grid-template-columns: 50px 1fr 22px;
   align-items: center;
   gap: 12px;
 
   text-align: left;
-
   box-shadow: var(--shadow);
 }
 
 .ensemble-card.selected {
-  border-color:
-    rgba(116, 27, 44, 0.55);
-
+  border-color: rgba(116, 27, 44, 0.55);
   background: #fffafa;
 }
 
 .ensemble-number {
   color: var(--burgundy);
-
   font-size: 20px;
   font-weight: 850;
 }
 
 .ensemble-card h3 {
   margin: 0;
-
   color: var(--text);
   font-size: 16px;
   font-weight: 750;
@@ -397,7 +361,6 @@ main {
 
 .ensemble-card p {
   margin: 4px 0 0;
-
   color: var(--muted);
   font-size: 13px;
 }
@@ -412,13 +375,11 @@ main {
   position: relative;
 }
 
-.ensemble-card.selected
-.radio {
+.ensemble-card.selected .radio {
   border-color: var(--burgundy);
 }
 
-.ensemble-card.selected
-.radio::after {
+.ensemble-card.selected .radio::after {
   content: "";
 
   width: 9px;
@@ -428,7 +389,6 @@ main {
   inset: 3px;
 
   border-radius: 50%;
-
   background: var(--burgundy);
 }
 
@@ -439,7 +399,6 @@ main {
 
 .search-box {
   min-height: 47px;
-
   padding: 0 13px;
 
   border: 1.5px solid var(--line);
@@ -545,23 +504,19 @@ main {
   background: var(--white);
 
   display: flex;
+  flex-direction: row;
   align-items: stretch;
 
   overflow: hidden;
-
   box-shadow: var(--shadow);
 }
 
 .dancer-open {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
   min-height: 65px;
 
-  padding:
-    10px
-    8px
-    10px
-    13px;
+  padding: 10px 8px 10px 13px;
 
   border: 0;
   background: transparent;
@@ -613,13 +568,11 @@ main {
 
   color: var(--muted);
   font-size: 13px;
-
   white-space: nowrap;
 }
 
 .chevron {
   flex-shrink: 0;
-
   margin-left: 9px;
 
   color: #aaa198;
@@ -637,11 +590,11 @@ main {
   min-width: 48px;
   min-height: 100%;
 
+  margin: 0;
   padding: 0;
 
   border: 0;
-  border-left:
-    1px solid var(--line);
+  border-left: 1px solid var(--line);
 
   background: #faf6ef;
   color: #8b837a;
@@ -651,14 +604,13 @@ main {
   justify-content: center;
 
   align-self: stretch;
+  flex: 0 0 48px;
 
   font-size: 27px;
   line-height: 1;
   font-weight: 500;
 
   touch-action: none;
-
-  flex-shrink: 0;
 }
 
 .drag-handle:active {
@@ -667,9 +619,7 @@ main {
 
 .draggable-row.dragging {
   opacity: 0.88;
-
-  transform:
-    scale(1.015);
+  transform: scale(1.015);
 
   box-shadow:
     0 10px 26px
@@ -681,6 +631,7 @@ main {
 
 /* ============================================================
    DANCES — MAIN LIST
+   SAME STRUCTURE AS DANCER CARDS
    ============================================================ */
 
 .dance-group-list {
@@ -699,39 +650,37 @@ main {
   background: var(--white);
 
   display: flex;
+  flex-direction: row;
   align-items: stretch;
 
   overflow: hidden;
-
   box-shadow: var(--shadow);
 }
 
 .dance-row.in-use {
-  border-color:
-    rgba(50, 122, 84, 0.18);
+  border-color: rgba(50, 122, 84, 0.18);
 }
 
 .dance-row.not-in-use {
-  border-color:
-    rgba(164, 71, 71, 0.18);
+  border-color: rgba(164, 71, 71, 0.18);
 }
 
 .dance-open {
-  flex: 1;
+  flex: 1 1 auto;
+  width: auto;
   min-width: 0;
   min-height: 68px;
 
-  padding:
-    10px
-    8px
-    10px
-    13px;
+  margin: 0;
+  padding: 10px 8px 10px 13px;
 
   border: 0;
+  border-radius: 0;
 
   background: transparent;
 
   display: flex;
+  flex-direction: row;
   align-items: center;
 
   text-align: left;
@@ -740,6 +689,7 @@ main {
 .dance-number {
   width: 48px;
   min-width: 48px;
+  flex-shrink: 0;
 
   font-size: 19px;
   font-weight: 850;
@@ -759,6 +709,7 @@ main {
 
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 3px;
 }
 
@@ -768,7 +719,6 @@ main {
   white-space: nowrap;
 
   color: var(--text);
-
   font-size: 16px;
   font-weight: 750;
 }
@@ -779,28 +729,71 @@ main {
   white-space: nowrap;
 
   color: var(--muted);
-
   font-size: 12px;
   font-weight: 500;
 }
 
+.dance-open .chevron {
+  flex-shrink: 0;
+  margin-left: 9px;
+
+  color: #aaa198;
+  font-size: 25px;
+  line-height: 1;
+}
+
+
 /*
-  V9.2:
-  dedicated far-right handle
-  for ordering dances.
+   IMPORTANT V9.3 FIX:
+   Dance drag handle is forced to the far-right side
+   and stretches the full height of the dance card.
 */
 
-.dance-row
-> .dance-drag-handle {
+.dance-row > .drag-handle,
+.dance-row > .dance-drag-handle {
+  position: static !important;
+
+  order: 2;
+
   width: 48px;
   min-width: 48px;
+  max-width: 48px;
 
-  margin-left: 0;
+  height: auto;
+  min-height: 68px;
 
-  border-left:
-    1px solid var(--line);
+  margin: 0 !important;
+  padding: 0;
+
+  flex: 0 0 48px;
 
   align-self: stretch;
+
+  border: 0;
+  border-left: 1px solid var(--line);
+  border-radius: 0;
+
+  background: #faf6ef;
+  color: #8b837a;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 27px;
+  line-height: 1;
+  font-weight: 500;
+
+  touch-action: none;
+}
+
+.dance-row > .dance-open {
+  order: 1;
+}
+
+.dance-row > .drag-handle:active,
+.dance-row > .dance-drag-handle:active {
+  background: #f2ebe1;
 }
 
 .dance-empty {
@@ -821,8 +814,7 @@ main {
   margin-top: 18px;
 }
 
-.dance-dancer-section
-.roster-title {
+.dance-dancer-section .roster-title {
   margin-bottom: 8px;
 }
 
@@ -842,30 +834,25 @@ main {
   background: var(--white);
 
   display: flex;
+  flex-direction: row;
   align-items: stretch;
 
   overflow: hidden;
-
   box-shadow: var(--shadow);
 }
 
 .dance-dancer-main {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
   min-height: 65px;
 
-  padding:
-    10px
-    10px
-    10px
-    13px;
+  padding: 10px 10px 10px 13px;
 
   display: flex;
   align-items: center;
 }
 
-.dance-dancer-main
-.dancer-number {
+.dance-dancer-main .dancer-number {
   width: 48px;
   min-width: 48px;
 }
@@ -879,15 +866,14 @@ main {
   white-space: nowrap;
 
   color: var(--text);
-
   font-size: 16px;
   font-weight: 720;
 }
 
-.dance-dancer-row
-> .drag-handle {
+.dance-dancer-row > .drag-handle {
   width: 48px;
   min-width: 48px;
+  flex: 0 0 48px;
 
   align-self: stretch;
 }
@@ -903,11 +889,9 @@ main {
   border: 1.5px dashed #d7cec4;
   border-radius: 17px;
 
-  background:
-    rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.5);
 
   color: var(--muted);
-
   text-align: center;
 
   font-size: 14px;
@@ -927,7 +911,6 @@ main {
   width: fit-content;
 
   margin-bottom: 12px;
-
   padding: 7px 11px;
 
   border-radius: 999px;
@@ -963,7 +946,6 @@ main {
 
 .detail-label {
   display: block;
-
   margin-bottom: 5px;
 
   color: var(--muted);
@@ -976,19 +958,14 @@ main {
 
 .detail-value {
   color: var(--text);
-
   font-size: 17px;
   font-weight: 750;
 }
 
 .detail-heading {
-  margin:
-    22px
-    0
-    10px;
+  margin: 22px 0 10px;
 
   color: var(--burgundy);
-
   font-size: 16px;
   font-weight: 800;
 }
@@ -1000,10 +977,7 @@ main {
 
 .dance-status-selector {
   display: grid;
-  grid-template-columns:
-    1fr
-    1fr;
-
+  grid-template-columns: 1fr 1fr;
   gap: 9px;
 }
 
@@ -1016,7 +990,6 @@ main {
   border-radius: 15px;
 
   background: var(--white);
-
   color: var(--muted);
 
   display: flex;
@@ -1025,39 +998,31 @@ main {
   gap: 7px;
 }
 
-.dance-status-option
-.status-dot {
+.dance-status-option .status-dot {
   width: 9px;
   height: 9px;
 
   border-radius: 50%;
-
   background: #bdb4ac;
 }
 
 .dance-status-option.in-use.selected {
-  border-color:
-    rgba(50, 122, 84, 0.45);
-
+  border-color: rgba(50, 122, 84, 0.45);
   background: var(--green-soft);
   color: var(--green);
 }
 
-.dance-status-option.in-use.selected
-.status-dot {
+.dance-status-option.in-use.selected .status-dot {
   background: var(--green);
 }
 
 .dance-status-option.not-in-use.selected {
-  border-color:
-    rgba(164, 71, 71, 0.45);
-
+  border-color: rgba(164, 71, 71, 0.45);
   background: var(--red-soft);
   color: var(--red);
 }
 
-.dance-status-option.not-in-use.selected
-.status-dot {
+.dance-status-option.not-in-use.selected .status-dot {
   background: var(--red);
 }
 
@@ -1101,12 +1066,10 @@ main {
   gap: 12px;
 
   color: var(--text);
-
   text-align: left;
 }
 
-.edit-dancer-row
-.checkmark {
+.edit-dancer-row .checkmark {
   width: 24px;
   height: 24px;
 
@@ -1124,18 +1087,13 @@ main {
 }
 
 .edit-dancer-row.selected {
-  border-color:
-    rgba(116, 27, 44, 0.4);
-
+  border-color: rgba(116, 27, 44, 0.4);
   background: #fff9f9;
 }
 
-.edit-dancer-row.selected
-.checkmark {
+.edit-dancer-row.selected .checkmark {
   border-color: var(--burgundy);
-
   background: var(--burgundy);
-
   color: white;
 }
 
@@ -1146,23 +1104,15 @@ main {
 
 .media-grid {
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
-
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 9px;
 }
 
 .media-tile {
   position: relative;
-
   aspect-ratio: 1 / 1;
 
   border-radius: 15px;
-
   overflow: hidden;
 
   background: #e8e1d8;
@@ -1171,7 +1121,6 @@ main {
 .media-tile img {
   width: 100%;
   height: 100%;
-
   object-fit: cover;
 }
 
@@ -1186,9 +1135,7 @@ main {
   border: 0;
   border-radius: 50%;
 
-  background:
-    rgba(0, 0, 0, 0.65);
-
+  background: rgba(0, 0, 0, 0.65);
   color: white;
 
   font-size: 20px;
@@ -1201,11 +1148,9 @@ main {
   border: 1.5px dashed #d7cec4;
   border-radius: 15px;
 
-  background:
-    rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.5);
 
   color: var(--muted);
-
   text-align: center;
 
   font-size: 13px;
@@ -1239,7 +1184,6 @@ main {
   background: var(--white);
 
   box-shadow: var(--shadow);
-
   margin-bottom: 12px;
 }
 
@@ -1250,7 +1194,6 @@ main {
   justify-content: space-between;
 
   gap: 10px;
-
   margin-bottom: 13px;
 }
 
@@ -1258,7 +1201,6 @@ main {
   flex: 1;
 
   color: var(--burgundy);
-
   text-align: center;
 
   font-size: 17px;
@@ -1278,7 +1220,6 @@ main {
   border-radius: 12px;
 
   background: var(--burgundy-soft);
-
   color: var(--burgundy);
 
   display: flex;
@@ -1290,18 +1231,12 @@ main {
 
 .calendar-weekdays {
   display: grid;
-  grid-template-columns:
-    repeat(
-      7,
-      1fr
-    );
-
+  grid-template-columns: repeat(7, 1fr);
   margin-bottom: 5px;
 }
 
 .calendar-weekdays span {
   color: var(--muted);
-
   text-align: center;
 
   font-size: 10px;
@@ -1311,12 +1246,7 @@ main {
 #calendarGrid,
 .calendar-grid {
   display: grid;
-  grid-template-columns:
-    repeat(
-      7,
-      1fr
-    );
-
+  grid-template-columns: repeat(7, 1fr);
   gap: 3px;
 }
 
@@ -1330,7 +1260,6 @@ main {
   border-radius: 11px;
 
   background: transparent;
-
   color: var(--text);
 
   display: flex;
@@ -1349,11 +1278,7 @@ main {
 
 .calendar-day.today {
   box-shadow:
-    inset
-    0
-    0
-    0
-    1.5px
+    inset 0 0 0 1.5px
     rgba(116, 27, 44, 0.28);
 }
 
@@ -1381,19 +1306,16 @@ main {
   height: 4px;
 
   border-radius: 50%;
-
   background: var(--burgundy);
 }
 
-.calendar-day.selected
-.event-dot {
+.calendar-day.selected .event-dot {
   background: white;
 }
 
 
 /* ============================================================
    ADD PRACTICE BUTTON
-   FIXED IN FLOW DIRECTLY BELOW CALENDAR
    ============================================================ */
 
 #addPracticeButton {
@@ -1402,18 +1324,13 @@ main {
   width: 54px;
   height: 54px;
 
-  margin:
-    0
-    0
-    14px
-    auto;
+  margin: 0 0 14px auto;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   border-radius: 50%;
-
   z-index: auto;
 }
 
@@ -1444,7 +1361,6 @@ main {
   gap: 12px;
 
   text-align: left;
-
   box-shadow: var(--shadow);
 }
 
@@ -1465,7 +1381,6 @@ main {
 
 .item-main h3 {
   margin: 0;
-
   color: var(--text);
 
   font-size: 15px;
@@ -1474,9 +1389,7 @@ main {
 
 .item-main p {
   margin: 4px 0 0;
-
   color: var(--muted);
-
   font-size: 12px;
 }
 
@@ -1487,9 +1400,7 @@ main {
 
 .practice-time {
   margin-top: 7px;
-
   color: var(--muted);
-
   font-size: 13px;
 }
 
@@ -1497,13 +1408,11 @@ main {
   display: inline-block;
 
   margin-top: 10px;
-
   padding: 5px 9px;
 
   border-radius: 999px;
 
   background: var(--burgundy-soft);
-
   color: var(--burgundy);
 
   font-size: 11px;
@@ -1517,10 +1426,7 @@ main {
 
 .practice-repeat-selector {
   display: grid;
-  grid-template-columns:
-    1fr
-    1fr;
-
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
@@ -1531,7 +1437,6 @@ main {
   border-radius: 14px;
 
   background: var(--white);
-
   color: var(--muted);
 
   font-size: 14px;
@@ -1539,11 +1444,8 @@ main {
 }
 
 .practice-repeat-option.selected {
-  border-color:
-    rgba(116, 27, 44, 0.45);
-
+  border-color: rgba(116, 27, 44, 0.45);
   background: var(--burgundy-soft);
-
   color: var(--burgundy);
 }
 
@@ -1562,7 +1464,6 @@ main {
 
 .form-group > label {
   display: block;
-
   margin-bottom: 7px;
 
   color: var(--text);
@@ -1580,34 +1481,28 @@ main {
   border-radius: 14px;
 
   background: var(--white);
-
   color: var(--text);
 
   font-size: 16px;
-
   outline: 0;
 }
 
 .form-group input,
 .form-group select {
   min-height: 49px;
-
   padding: 0 13px;
 }
 
 .form-group textarea {
   min-height: 110px;
-
   padding: 12px 13px;
-
   resize: vertical;
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-  border-color:
-    rgba(116, 27, 44, 0.5);
+  border-color: rgba(116, 27, 44, 0.5);
 }
 
 
@@ -1626,12 +1521,7 @@ main {
 
 .profile-grid {
   display: grid;
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
-
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -1641,13 +1531,11 @@ main {
   border-radius: 13px;
 
   background: #f8f4ee;
-
   text-align: center;
 }
 
 .profile-stat span {
   display: block;
-
   margin-bottom: 5px;
 
   color: var(--muted);
@@ -1658,7 +1546,6 @@ main {
 
 .profile-stat strong {
   color: var(--text);
-
   font-size: 13px;
 }
 
@@ -1688,22 +1575,18 @@ main {
 
 .attendance-percent strong {
   color: var(--green);
-
   font-size: 24px;
 }
 
 .attendance-percent span {
   color: var(--text);
-
   font-size: 13px;
   font-weight: 700;
 }
 
 .not-present-percent {
   margin-top: 2px;
-
   color: var(--muted);
-
   font-size: 11px;
 }
 
@@ -1712,13 +1595,8 @@ main {
 }
 
 .notes-card h3 {
-  margin:
-    0
-    0
-    7px;
-
+  margin: 0 0 7px;
   color: var(--burgundy);
-
   font-size: 14px;
 }
 
@@ -1750,16 +1628,11 @@ main {
   border-radius: 16px;
 
   background: var(--white);
-
   box-shadow: var(--shadow);
 }
 
 .attendance-row h4 {
-  margin:
-    0
-    0
-    10px;
-
+  margin: 0 0 10px;
   font-size: 14px;
 }
 
@@ -1769,11 +1642,7 @@ main {
 }
 
 .attendance-buttons.four {
-  grid-template-columns:
-    repeat(
-      2,
-      1fr
-    );
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .attendance-buttons button {
@@ -1785,46 +1654,33 @@ main {
   border-radius: 11px;
 
   background: #faf8f5;
-
   color: var(--muted);
 
   font-size: 11px;
   font-weight: 750;
 }
 
-.attendance-buttons
-button.present.selected {
+.attendance-buttons button.present.selected {
   border-color: var(--green);
-
   background: var(--green-soft);
-
   color: var(--green);
 }
 
-.attendance-buttons
-button.late.selected {
+.attendance-buttons button.late.selected {
   border-color: var(--orange);
-
   background: var(--orange-soft);
-
   color: var(--orange);
 }
 
-.attendance-buttons
-button.absent.selected {
+.attendance-buttons button.absent.selected {
   border-color: var(--red);
-
   background: var(--red-soft);
-
   color: var(--red);
 }
 
-.attendance-buttons
-button.excused.selected {
+.attendance-buttons button.excused.selected {
   border-color: var(--blue);
-
   background: var(--blue-soft);
-
   color: var(--blue);
 }
 
@@ -1834,11 +1690,7 @@ button.excused.selected {
 }
 
 .attendance-summary.four {
-  grid-template-columns:
-    repeat(
-      4,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .summary-box {
@@ -1847,21 +1699,17 @@ button.excused.selected {
   padding: 10px 4px;
 
   border-radius: 13px;
-
   text-align: center;
 }
 
 .summary-box strong {
   display: block;
-
   margin-bottom: 3px;
-
   font-size: 18px;
 }
 
 .summary-box span {
   display: block;
-
   font-size: 9px;
   font-weight: 750;
 }
@@ -1898,7 +1746,6 @@ button.excused.selected {
   border-radius: 18px;
 
   background: var(--burgundy);
-
   color: white;
 
   text-align: center;
@@ -1911,16 +1758,13 @@ button.excused.selected {
 
 .history-caption {
   margin-top: 1px;
-
   font-size: 13px;
   font-weight: 750;
 }
 
 .history-not-present {
   margin-top: 5px;
-
   opacity: 0.75;
-
   font-size: 11px;
 }
 
@@ -1949,9 +1793,7 @@ button.excused.selected {
 
 .history-row p {
   margin: 4px 0 0;
-
   color: var(--muted);
-
   font-size: 11px;
 }
 
@@ -2014,7 +1856,6 @@ button.excused.selected {
   gap: 12px;
 
   color: var(--text);
-
   text-align: left;
 
   box-shadow: var(--shadow);
@@ -2022,17 +1863,14 @@ button.excused.selected {
 
 .settings-row strong {
   display: block;
-
   font-size: 14px;
 }
 
 .settings-row small {
   display: block;
-
   margin-top: 3px;
 
   color: var(--muted);
-
   font-size: 11px;
 }
 
@@ -2047,15 +1885,13 @@ button.excused.selected {
 
   z-index: 1000;
 
-  background:
-    rgba(34, 25, 22, 0.38);
+  background: rgba(34, 25, 22, 0.38);
 
   display: none;
   align-items: flex-end;
   justify-content: center;
 
-  padding-top:
-    env(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
 }
 
 .modal-overlay.open {
@@ -2065,6 +1901,7 @@ button.excused.selected {
 .modal {
   width: 100%;
   max-width: 520px;
+
   max-height:
     calc(
       100dvh -
@@ -2072,11 +1909,7 @@ button.excused.selected {
       8px
     );
 
-  border-radius:
-    25px
-    25px
-    0
-    0;
+  border-radius: 25px 25px 0 0;
 
   background: var(--cream);
 
@@ -2103,29 +1936,20 @@ button.excused.selected {
       env(safe-area-inset-top)
     );
 
-  border-radius:
-    0;
+  border-radius: 0;
 }
 
 .modal-header {
   min-height: 73px;
 
-  padding:
-    13px
-    14px
-    11px;
+  padding: 13px 14px 11px;
 
-  border-bottom:
-    1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 
-  background:
-    rgba(244, 239, 230, 0.97);
+  background: rgba(244, 239, 230, 0.97);
 
   display: grid;
-  grid-template-columns:
-    43px
-    1fr
-    43px;
+  grid-template-columns: 43px 1fr 43px;
 
   align-items: center;
   gap: 7px;
@@ -2135,7 +1959,6 @@ button.excused.selected {
 
 .modal-heading {
   min-width: 0;
-
   text-align: center;
 }
 
@@ -2172,9 +1995,7 @@ button.excused.selected {
   border: 0;
   border-radius: 13px;
 
-  background:
-    rgba(255, 255, 255, 0.7);
-
+  background: rgba(255, 255, 255, 0.7);
   color: var(--burgundy);
 
   display: flex;
@@ -2199,10 +2020,7 @@ button.excused.selected {
   padding:
     17px
     18px
-    calc(
-      26px +
-      env(safe-area-inset-bottom)
-    );
+    calc(26px + env(safe-area-inset-bottom));
 }
 
 
@@ -2210,10 +2028,8 @@ button.excused.selected {
    INSTRUCTOR NOTES FULL PAGE
    ============================================================ */
 
-.full-screen-modal
-#modalBody {
+.full-screen-modal #modalBody {
   padding: 0;
-
   background: #080808;
 }
 
@@ -2223,10 +2039,7 @@ button.excused.selected {
   padding:
     15px
     17px
-    calc(
-      20px +
-      env(safe-area-inset-bottom)
-    );
+    calc(20px + env(safe-area-inset-bottom));
 
   background: #080808;
 }
@@ -2248,12 +2061,12 @@ button.excused.selected {
   height: 6px;
 
   border-radius: 50%;
-
   background: #5eaa72;
 }
 
 .instructor-notes-editor {
   width: 100%;
+
   min-height:
     calc(
       100dvh -
@@ -2291,18 +2104,11 @@ button.excused.selected {
   justify-content: center;
 
   padding:
-    calc(
-      env(safe-area-inset-top) +
-      20px
-    )
+    calc(env(safe-area-inset-top) + 20px)
     24px
-    calc(
-      env(safe-area-inset-bottom) +
-      20px
-    );
+    calc(env(safe-area-inset-bottom) + 20px);
 
-  background:
-    rgba(22, 18, 16, 0.72);
+  background: rgba(22, 18, 16, 0.72);
 }
 
 #uploadOverlay.open,
@@ -2311,17 +2117,13 @@ button.excused.selected {
 }
 
 .upload-panel {
-  width: min(
-    100%,
-    330px
-  );
+  width: min(100%, 330px);
 
   padding: 22px;
 
   border-radius: 20px;
 
   background: var(--white);
-
   text-align: center;
 
   box-shadow:
@@ -2333,27 +2135,18 @@ button.excused.selected {
   width: 35px;
   height: 35px;
 
-  margin:
-    0
-    auto
-    14px;
+  margin: 0 auto 14px;
 
   border: 4px solid #eadfd7;
-  border-top-color:
-    var(--burgundy);
+  border-top-color: var(--burgundy);
   border-radius: 50%;
 
-  animation:
-    spin
-    0.8s
-    linear
-    infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
   to {
-    transform:
-      rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
@@ -2377,6 +2170,7 @@ button.excused.selected {
   position: fixed;
 
   left: 50%;
+
   bottom:
     calc(
       var(--nav-height) +
@@ -2386,37 +2180,23 @@ button.excused.selected {
 
   z-index: 4000;
 
-  max-width:
-    calc(
-      100% -
-      40px
-    );
+  max-width: calc(100% - 40px);
 
-  padding:
-    10px
-    14px;
+  padding: 10px 14px;
 
   border-radius: 999px;
 
-  background:
-    rgba(31, 27, 25, 0.92);
-
+  background: rgba(31, 27, 25, 0.92);
   color: white;
 
   opacity: 0;
   pointer-events: none;
 
-  transform:
-    translate(
-      -50%,
-      8px
-    );
+  transform: translate(-50%, 8px);
 
   transition:
-    opacity
-      0.18s ease,
-    transform
-      0.18s ease;
+    opacity 0.18s ease,
+    transform 0.18s ease;
 
   white-space: nowrap;
 
@@ -2426,12 +2206,7 @@ button.excused.selected {
 
 #appToast.show {
   opacity: 1;
-
-  transform:
-    translate(
-      -50%,
-      0
-    );
+  transform: translate(-50%, 0);
 }
 
 
@@ -2459,33 +2234,21 @@ button.excused.selected {
   padding:
     7px
     7px
-    calc(
-      7px +
-      env(safe-area-inset-bottom)
-    );
+    calc(7px + env(safe-area-inset-bottom));
 
-  transform:
-    translateX(-50%);
+  transform: translateX(-50%);
 
   border-top:
     1px solid
     rgba(213, 202, 191, 0.8);
 
-  background:
-    rgba(250, 247, 242, 0.96);
+  background: rgba(250, 247, 242, 0.96);
 
-  backdrop-filter:
-    blur(16px);
-
-  -webkit-backdrop-filter:
-    blur(16px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 
   display: grid;
-  grid-template-columns:
-    repeat(
-      5,
-      1fr
-    );
+  grid-template-columns: repeat(5, 1fr);
 
   align-items: end;
 }
@@ -2534,16 +2297,11 @@ button.excused.selected {
    HOME NAV BUTTON
    ============================================================ */
 
-.nav-button[
-  data-page="homePage"
-] {
+.nav-button[data-page="homePage"] {
   justify-content: flex-end;
 }
 
-.nav-button[
-  data-page="homePage"
-]
-.nav-icon {
+.nav-button[data-page="homePage"] .nav-icon {
   width: 49px;
   height: 49px;
 
@@ -2552,7 +2310,6 @@ button.excused.selected {
   border-radius: 50%;
 
   background: var(--burgundy);
-
   color: white;
 
   box-shadow:
@@ -2562,10 +2319,7 @@ button.excused.selected {
   font-size: 21px;
 }
 
-.nav-button[
-  data-page="homePage"
-]
-.nav-label {
+.nav-button[data-page="homePage"] .nav-label {
   margin-top: -1px;
 }
 
@@ -2574,9 +2328,7 @@ button.excused.selected {
    SMALL IPHONE ADJUSTMENTS
    ============================================================ */
 
-@media (
-  max-width: 390px
-) {
+@media (max-width: 390px) {
 
   .page {
     padding-left: 15px;
@@ -2596,12 +2348,12 @@ button.excused.selected {
   }
 
   .drag-handle,
-  .dance-row
-  > .dance-drag-handle,
-  .dance-dancer-row
-  > .drag-handle {
+  .dance-row > .dance-drag-handle,
+  .dance-dancer-row > .drag-handle {
     width: 45px;
     min-width: 45px;
+    max-width: 45px;
+    flex-basis: 45px;
   }
 
   .dancer-name,
@@ -2619,9 +2371,7 @@ button.excused.selected {
   }
 
   .summary-box {
-    padding:
-      9px
-      2px;
+    padding: 9px 2px;
   }
 
   .summary-box strong {
@@ -2638,28 +2388,23 @@ button.excused.selected {
    VERY SMALL SCREENS
    ============================================================ */
 
-@media (
-  max-width: 350px
-) {
+@media (max-width: 350px) {
 
   .profile-grid {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
   }
 
   .attendance-buttons.four {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
   }
 
   .dance-status-selector,
   .practice-repeat-selector {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
   }
 }
 
 
 /* ============================================================
-   END STYLES.CSS — V9.2
+   END STYLES.CSS — V9.3
    ============================================================ */
